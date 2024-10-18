@@ -18,9 +18,6 @@ fun main() {
 }
 
 /*
-TODO: KeyListener in GameRoom.
-      Listen for onKeyDown, onKeyPressed, onKeyRepeated, onKeyUp. Something like that.
-
 TODO: A globally accessible map of game objects by id. Or by name (string)?
 TODO: Menu system
 TODO: Sound effects. Music.
