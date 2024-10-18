@@ -15,6 +15,7 @@ fun main() {
     val gameThread = Thread(gameWindow)
     gameThread.start()
     gameThread.join()
+    gameWindow.frame.dispose()
 }
 
 /*

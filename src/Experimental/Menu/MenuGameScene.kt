@@ -14,7 +14,8 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
         MenuPointGameObject("Settings", this, Pos2D(100.0, 100.0)),
         NumberSelectorMenuPoint("Players", this, Pos2D(100.0, 120.0), 2, 2, 10),
         TextInputMenuPoint("Name", this, Pos2D(100.0, 140.0), "", 10),
-        MenuPointGameObject("Go!", this, Pos2D(100.0, 160.0))
+        MenuPointGameObject("Go!", this, Pos2D(100.0, 160.0)),
+        ExitGameMenuPoint("Exit", this, Pos2D(100.0, 180.0))
     )
     val selected: MenuPointGameObject
         get() {
@@ -70,8 +71,11 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
                     }
                 }
             }
+        } else if (e?.keyCode == KeyEvent.VK_ENTER){
+            if ((selected as? ExitGameMenuPoint)?.selected == true) {
+                GameWindow.exitGame = true
+            }
         }
-
     }
 
     override fun keyReleased(e: KeyEvent?) = Unit
@@ -160,4 +164,12 @@ class TextInputMenuPoint(
 
         g.drawString("$text: $textValue${if (selected) "|" else ""}", position.x.toFloat(), position.y.toFloat())
     }
+}
+
+class ExitGameMenuPoint(
+    text: String,
+    parent: IGameScene,
+    position: Pos2D
+): MenuPointGameObject(text, parent, position){
+
 }

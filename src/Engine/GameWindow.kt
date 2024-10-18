@@ -40,6 +40,10 @@ open class GameWindow(val width: Int, val height: Int, title: String, gameScene:
         panel.addKeyListener(gameScene)
     }
 
+    companion object {
+        var exitGame: Boolean = false
+    }
+
     var image: VolatileImage = panel.createVolatileImage(width, height).also {
         if (it == null) { throw Error("Could not create image") }
     }
@@ -60,7 +64,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, gameScene:
         val period: Duration = (1 / fps).seconds
         var maxSkips: Int = 5
         var timeTaken: Duration
-        while(true){
+        while(!exitGame){
             var updatesPerDraw = 1
             timeTaken = 0.seconds
             while (updatesPerDraw < maxSkips){
