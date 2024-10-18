@@ -16,7 +16,7 @@ import kotlin.time.times
  * Contains the game loop in the function run().
  * Contains currentGameScene, on which update() and draw() is called.
  */
-open class GameWindow(val width: Int, val height: Int, title: String) {
+open class GameWindow(val width: Int, val height: Int, title: String, gameScene: IGameScene) {
     val panel: JPanel = JPanel()
     val frame: JFrame = JFrame()
 
@@ -31,12 +31,21 @@ open class GameWindow(val width: Int, val height: Int, title: String) {
         frame.pack()
         frame.setLocationRelativeTo(null)
         frame.isVisible = true
+        gameScene.load()
     }
 
     var image: VolatileImage = panel.createVolatileImage(width, height).also {
         if (it == null) { throw Error("Could not create image") }
     }
-    lateinit var currentGameScene: IGameScene
+    var currentGameScene: IGameScene = gameScene
+        get() {
+            return field
+        }
+        set(value) {
+            currentGameScene.unload()
+            field = value
+            field.load()
+        }
 
     val fps: Double = 60.0
 

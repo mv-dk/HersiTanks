@@ -31,6 +31,14 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
         selected = 0
     }
 
+    override fun load() {
+        println("MenuGameScene.load")
+    }
+
+    override fun unload() {
+        println("MenuGameScene.unload")
+    }
+
 }
 
 class MenuPointGameObject(val text: String, parent: IGameScene, val position: Pos2D): GameObject2(parent, position) {

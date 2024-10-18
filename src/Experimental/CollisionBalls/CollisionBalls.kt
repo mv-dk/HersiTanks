@@ -34,6 +34,14 @@ class CollisionBallsGameScene(color: Color, width: Int, height: Int) : GameScene
         }
     }
 
+    override fun load() {
+
+    }
+
+    override fun unload() {
+
+    }
+
     override fun add(gameObject: IGameObject) {
         super.add(gameObject)
         if (gameObject is CollisionBallsGameObject){

@@ -3,7 +3,7 @@ package Experimental.ManyBalls
 import Engine.GameObject
 import Engine.GameScene
 import Engine.IGameScene
-import translate
+import Engine.translate
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.geom.Point2D
@@ -24,6 +24,14 @@ class BallGameScene(windowWidth: Int, windowHeight: Int) : GameScene(Color.LIGHT
                 ballsToCreate -= 1
             }
         }
+    }
+
+    override fun load() {
+
+    }
+
+    override fun unload() {
+
     }
 }
 

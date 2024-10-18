@@ -7,6 +7,8 @@ interface IGameScene {
     fun draw(g: Graphics2D)
     fun add(gameObject: IGameObject)
     fun remove(gameObject: IGameObject)
+    fun load()
+    fun unload()
     val width: Int
     val height: Int
 }

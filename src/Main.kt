@@ -7,12 +7,10 @@ fun nextId(): Int { return _id++ }
 
 fun main() {
     println("Hello World!")
-    GameWindow(800, 600, "Hersi").apply {
-        //currentGameScene = BallGameScene(width, height)
-        //currentGameScene = CollisionBallsGameScene(Color.LIGHT_GRAY, width, height)
-        currentGameScene = MenuGameScene(width, height, Color.WHITE)
-        run()
-    }
+    val gameScene = MenuGameScene(800, 600, Color.WHITE)
+    //val gameScene = BallGameScene(width, height)
+    //val gameScene = CollisionBallsGameScene(Color.LIGHT_GRAY, width, height)
+    GameWindow(800, 600, "Hersi", gameScene).run()
 }
 
 /*
@@ -29,6 +27,13 @@ TODO: There needs to be a lifecycle on GameObjects and on GameRooms.
        2. (update / draw)
        3. onAddedToRoom / onRemovedFromRoom ?
        3. onDelete
-      
+
+TODO: KeyListener in GameRoom.
+      Listen for onKeyDown, onKeyPressed, onKeyRepeated, onKeyUp. Something like that.
+
+TODO: A globally accessible map of game objects by id. Or by name (string)?
+TODO: Menu system
+TODO: Sound effects. Music.
+TODO: Scrolling if GameScene is larger than GameWindow
  */
 
