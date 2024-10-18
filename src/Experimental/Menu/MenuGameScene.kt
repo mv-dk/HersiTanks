@@ -13,12 +13,12 @@ import kotlin.reflect.KFunction3
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
 
     val menuPoints = mutableListOf(
-        MenuPointGameObject("Settings", this, Pos2D(100.0, 100.0)),
-        NumberSelectorMenuPoint("Players", this, Pos2D(100.0, 120.0), 2, 2, 10),
-        TextInputMenuPoint("Name", this, Pos2D(100.0, 140.0), "", 10),
         ChangeSceneMenuPoint("Go!", this, Pos2D(100.0, 160.0), {
-            CollisionBallsGameScene(Color.BLUE, 800, 600)
+            CollisionBallsGameScene(Color.LIGHT_GRAY, 800, 600)
         }),
+        NumberSelectorMenuPoint("Players", this, Pos2D(100.0, 120.0), 2, 2, 10),
+        MenuPointGameObject("Settings", this, Pos2D(100.0, 100.0)),
+        TextInputMenuPoint("Name", this, Pos2D(100.0, 140.0), "", 10),
         ExitGameMenuPoint("Exit", this, Pos2D(100.0, 180.0))
     )
     val selected: MenuPointGameObject

@@ -22,9 +22,10 @@ fun main() {
 
 /*
 TODO: Menu system
-      1. A number selector
-      2. A text input
-      3. A go-to-scene button
+      1. A number selector (done)
+      2. A text input (done)
+      3. A go-to-scene button (done)
+      4. A show-dialog selector
 TODO: A globally accessible map of game objects by id. Or by name (string)?
 TODO: Sound effects. Music.
 TODO: Scrolling if GameScene is larger than GameWindow
