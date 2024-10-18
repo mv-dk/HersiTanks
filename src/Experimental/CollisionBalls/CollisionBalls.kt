@@ -3,6 +3,7 @@ package Experimental.CollisionBalls
 import Engine.*
 import java.awt.Color
 import java.awt.Graphics2D
+import java.awt.event.KeyEvent
 import kotlin.random.Random
 
 val random = Random(1)
@@ -34,13 +35,11 @@ class CollisionBallsGameScene(color: Color, width: Int, height: Int) : GameScene
         }
     }
 
-    override fun load() {
-
-    }
-
-    override fun unload() {
-
-    }
+    override fun load() = Unit
+    override fun keyTyped(e: KeyEvent?) = Unit
+    override fun keyPressed(e: KeyEvent?) = Unit
+    override fun keyReleased(e: KeyEvent?) = Unit
+    override fun unload() = Unit
 
     override fun add(gameObject: IGameObject) {
         super.add(gameObject)

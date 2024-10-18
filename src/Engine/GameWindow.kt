@@ -3,6 +3,8 @@ package Engine
 import java.awt.Dimension
 import java.awt.Graphics2D
 import java.awt.Toolkit
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
 import java.awt.image.VolatileImage
 import javax.swing.JFrame
 import javax.swing.JPanel
@@ -32,6 +34,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, gameScene:
         frame.setLocationRelativeTo(null)
         frame.isVisible = true
         gameScene.load()
+        panel.addKeyListener(gameScene)
     }
 
     var image: VolatileImage = panel.createVolatileImage(width, height).also {
@@ -43,8 +46,10 @@ open class GameWindow(val width: Int, val height: Int, title: String, gameScene:
         }
         set(value) {
             currentGameScene.unload()
+            frame.removeKeyListener(currentGameScene)
             field = value
             field.load()
+            frame.addKeyListener(field)
         }
 
     val fps: Double = 60.0

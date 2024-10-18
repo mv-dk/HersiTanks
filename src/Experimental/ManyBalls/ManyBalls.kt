@@ -6,6 +6,7 @@ import Engine.IGameScene
 import Engine.translate
 import java.awt.Color
 import java.awt.Graphics2D
+import java.awt.event.KeyEvent
 import java.awt.geom.Point2D
 import kotlin.random.Random
 
@@ -26,13 +27,11 @@ class BallGameScene(windowWidth: Int, windowHeight: Int) : GameScene(Color.LIGHT
         }
     }
 
-    override fun load() {
-
-    }
-
-    override fun unload() {
-
-    }
+    override fun load() = Unit
+    override fun keyTyped(e: KeyEvent?) = Unit
+    override fun keyPressed(e: KeyEvent?) = Unit
+    override fun keyReleased(e: KeyEvent?) = Unit
+    override fun unload() = Unit
 }
 
 class BallGameObject(

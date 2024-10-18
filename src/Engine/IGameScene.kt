@@ -1,8 +1,9 @@
 package Engine
 
 import java.awt.Graphics2D
+import java.awt.event.KeyListener
 
-interface IGameScene {
+interface IGameScene : KeyListener {
     fun update()
     fun draw(g: Graphics2D)
     fun add(gameObject: IGameObject)

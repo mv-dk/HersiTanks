@@ -4,6 +4,7 @@ import Engine.*
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
+import java.awt.event.KeyEvent
 
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
 
@@ -32,6 +33,17 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
         println("MenuGameScene.load")
     }
 
+    override fun keyTyped(e: KeyEvent?) = Unit
+
+    override fun keyPressed(e: KeyEvent?) {
+        if (e?.keyCode == KeyEvent.VK_DOWN) {
+            selected = (selected + 1) % menuPoints.size
+        } else if (e?.keyCode == KeyEvent.VK_UP) {
+            selected = if (selected == 0) menuPoints.size-1 else selected - 1
+        }
+    }
+
+    override fun keyReleased(e: KeyEvent?) = Unit
 
     override fun unload() {
         println("MenuGameScene.unload")
