@@ -118,12 +118,12 @@ class NumberSelectorMenuPoint(
         if (selected) {
             g.color = selectedColor
             g.font = selectedFont
+            g.drawString("$text: < $numberValue >", position.x.toFloat(), position.y.toFloat())
         } else {
             g.color = unselectedColor
             g.font = unselectedFont
+            g.drawString("$text: $numberValue", position.x.toFloat(), position.y.toFloat())
         }
-
-        g.drawString("$text: $numberValue", position.x.toFloat(), position.y.toFloat())
     }
 
     fun increase() {
