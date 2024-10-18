@@ -1,8 +1,12 @@
+import Experimental.CollisionBalls.Pos2D
+import Experimental.Menu.MenuGameScene
 import java.awt.*
 import java.awt.geom.Point2D
 import java.awt.image.VolatileImage
 import javax.swing.JFrame
 import javax.swing.JPanel
+import kotlin.math.pow
+import kotlin.math.sqrt
 import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -11,7 +15,12 @@ import kotlin.time.times
 
 fun main() {
     println("Hello World!")
-    GameWindow(800, 600, "Hersi").apply { run() }
+    GameWindow(800, 600, "Hersi").apply {
+        //currentGameScene = BallGameScene(width, height)
+        //currentGameScene = CollisionBallsGameScene(Color.LIGHT_GRAY, width, height)
+        currentGameScene = MenuGameScene(width, height, Color.WHITE)
+        run()
+    }
 }
 
 var _id: Int = 1
@@ -37,7 +46,7 @@ open class GameWindow(val width: Int, val height: Int, title: String) {
     var image: VolatileImage = panel.createVolatileImage(width, height).also {
         if (it == null) { throw Error("Could not create image") }
     }
-    var currentGameScene: IGameScene = BallGameScene(width, height)
+    lateinit var currentGameScene: IGameScene
 
     val fps: Double = 60.0
 
@@ -88,23 +97,22 @@ open class GameWindow(val width: Int, val height: Int, title: String) {
 interface IGameScene {
     fun update()
     fun draw(g: Graphics2D)
-    fun add(gameObject: GameObject)
-    fun remove(gameObject: GameObject)
+    fun add(gameObject: IGameObject)
+    fun remove(gameObject: IGameObject)
     val width: Int
     val height: Int
 }
 
 abstract class GameScene(val color: Color, override val width: Int, override val height:Int) :IGameScene{
     val id = nextId()
-    private val gameObjects: MutableMap<Int, GameObject> = mutableMapOf()
-    private val gameObjectsToAdd: MutableMap<Int, GameObject> = mutableMapOf()
+    private val gameObjects: MutableMap<Int, IGameObject> = mutableMapOf()
+    private val gameObjectsToAdd: MutableMap<Int, IGameObject> = mutableMapOf()
     private val gameObjectsToRemove: MutableSet<Int> = mutableSetOf()
 
-    override fun add(gameObject: GameObject) { gameObjectsToAdd.put(gameObject.id, gameObject) }
-    override fun remove(gameObject: GameObject) { gameObjectsToRemove.add(gameObject.id) }
+    override fun add(gameObject: IGameObject) { gameObjectsToAdd.put(gameObject.id, gameObject) }
+    override fun remove(gameObject: IGameObject) { gameObjectsToRemove.add(gameObject.id) }
 
     override fun update(){
-
         gameObjects.forEach {
             it.value.update()
         }
@@ -128,10 +136,22 @@ abstract class GameScene(val color: Color, override val width: Int, override val
     }
 }
 
-abstract class GameObject(parent: IGameScene, position: Point2D.Float) {
-    val id = nextId()
-    abstract fun update()
-    abstract fun draw(g: Graphics2D)
+interface IGameObject{
+    val id: Int
+    fun update()
+    fun draw(g: Graphics2D)
+}
+
+abstract class GameObject(parent: IGameScene, position: Point2D.Float) : IGameObject {
+    override val id = nextId()
+    override abstract fun update()
+    override abstract fun draw(g: Graphics2D)
+}
+
+abstract class GameObject2(parent: IGameScene, position: Pos2D) : IGameObject {
+    override val id = nextId()
+    override abstract fun update()
+    override abstract fun draw(g: Graphics2D)
 }
 
 fun Point2D.Float.translate(other: Point2D.Float) {
@@ -139,77 +159,30 @@ fun Point2D.Float.translate(other: Point2D.Float) {
     this.y += other.y
 }
 
-class BallGameObject(
-    private val parent: IGameScene,
-    var position: Point2D.Float,
-    val size: Float,
-    val color: Color
-): GameObject(parent, position) {
-    var velocity = Point2D.Float(0f,0f)
-    var life: Int = 10000
-
-    constructor(parent: IGameScene):
-            this(parent,
-                Point2D.Float(
-                    Random.nextInt(0, parent.width).toFloat(),
-                    Random.nextInt(0, parent.height).toFloat()),
-                Random.nextDouble(10.0, 40.0).toFloat(),
-                Color(
-                    Random.nextInt(255),
-                    Random.nextInt(255),
-                    Random.nextInt(255))) {
-        velocity = Point2D.Float(
-            -10f + 20 * Random.nextFloat(),
-            -10f + 20 * Random.nextFloat())
-    }
-
-
-    override fun update() {
-        life -= 1
-        if (life == 0) {
-            parent.remove(this)
-            return
-        }
-        position.translate(velocity)
-
-        velocity.y += 1f
-        if (position.x - size/2 < 0) {
-            position.x = size/2
-            velocity.x *= -1
-        }
-        else if (position.x + size/2 > parent.width) {
-            position.x = parent.width - size/2
-            velocity.x *= -1
-        }
-        if (position.y - size/2 < 0){
-            position.y = (size/2) + 1
-            velocity.y *= -1
-        }
-        else if (position.y + size/2 > parent.height){
-            position.y = parent.height - size/2
-            //velocity.y *= -0.6f
-            velocity.y *= -1
-            if (Math.abs(velocity.y) <= 3) velocity.y = 0f
-            velocity.x *= 0.8f
-        }
-    }
-
-    override fun draw(g: Graphics2D) {
-        g.color = color
-        g.fillOval((position.x - size/2).toInt(), (position.y - size/2).toInt(), size.toInt(), size.toInt())
-    }
-
+fun Point2D.Float.distance(other: Point2D.Float): Float {
+    return sqrt((this.x.toDouble() - other.x.toDouble()).pow(2.0) + (this.y.toDouble() - other.y.toDouble()).pow(
+        2.0
+    )
+    ).toFloat()
 }
 
-class BallGameScene(windowWidth: Int, windowHeight: Int) :GameScene(Color.LIGHT_GRAY, windowWidth, windowHeight) {
-    var ballsToCreate = 10000
-
-    override fun update() {
-        super.update()
-
-        if (ballsToCreate > 0){
-            add(BallGameObject(this))
-            ballsToCreate -= 1
-        }
-    }
+fun Random.nextFloat(from: Float, to: Float): Float{
+    return from + Random.nextFloat()*(to-from)
 }
+
+fun Random.nextPoint2D(width: Int, height: Int): Point2D.Float {
+    return Random.nextPoint2D(width.toFloat(), height.toFloat())
+}
+
+fun Random.nextPoint2D(width: Float, height: Float): Point2D.Float {
+    return Point2D.Float(Random.nextFloat(0f, width), Random.nextFloat(0f, height))
+}
+
+fun Random.nextPos2D(width: Double, height: Double): Pos2D {
+    return Pos2D(Random.nextDouble(0.0, width), Random.nextDouble(0.0, height))
+}
+
+fun Random.nextColor(): Color {
+    return Color(Random.nextInt(255), Random.nextInt(255), Random.nextInt(255))
+}
+
