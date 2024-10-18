@@ -9,6 +9,7 @@ interface IGameScene {
     fun remove(gameObject: IGameObject)
     fun load()
     fun unload()
+    fun forEachGameObject(act: (obj: IGameObject) -> Unit)
     val width: Int
     val height: Int
 }

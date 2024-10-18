@@ -7,4 +7,8 @@ interface IGameObject{
 
     fun update()
     fun draw(g: Graphics2D)
+    fun unload()
+    fun onAdded()
+    fun onBeforeRemoved()
+    fun onAfterRemoved()
 }

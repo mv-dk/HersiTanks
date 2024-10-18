@@ -94,5 +94,10 @@ class BallGameObject(
         g.color = color
         g.fillOval((position.x - size/2).toInt(), (position.y - size/2).toInt(), size.toInt(), size.toInt())
     }
+
+    override fun unload() = Unit
+    override fun onAdded() = Unit
+    override fun onBeforeRemoved() = Unit
+    override fun onAfterRemoved() = Unit
 }
 

@@ -109,4 +109,8 @@ class CollisionBallsGameObject(val parent: IGameScene, val position: Pos2D, var 
         g.drawLine(position.x.toInt(), position.y.toInt(), velocityEndpoint.x.toInt(), velocityEndpoint.y.toInt())
     }
 
+    override fun unload() = Unit
+    override fun onAdded() = Unit
+    override fun onBeforeRemoved() = Unit
+    override fun onAfterRemoved() = Unit
 }

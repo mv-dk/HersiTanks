@@ -1,9 +1,6 @@
 package Experimental.Menu
 
-import Engine.Pos2D
-import Engine.GameObject2
-import Engine.GameScene
-import Engine.IGameScene
+import Engine.*
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
@@ -35,8 +32,10 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
         println("MenuGameScene.load")
     }
 
+
     override fun unload() {
         println("MenuGameScene.unload")
+
     }
 
 }
@@ -48,9 +47,7 @@ class MenuPointGameObject(val text: String, parent: IGameScene, val position: Po
     val selectedFont = Font("Helvetica", Font.BOLD, 24)
     val unselectedFont = Font("Helvetica", Font.PLAIN, 24)
 
-    override fun update() {
-
-    }
+    override fun update() = Unit
 
     override fun draw(g: Graphics2D) {
         if (selected){
@@ -63,4 +60,9 @@ class MenuPointGameObject(val text: String, parent: IGameScene, val position: Po
 
         g.drawString(text, position.x.toFloat(), position.y.toFloat())
     }
+
+    override fun unload() = Unit
+    override fun onAdded() = Unit
+    override fun onBeforeRemoved() = Unit
+    override fun onAfterRemoved() = Unit
 }

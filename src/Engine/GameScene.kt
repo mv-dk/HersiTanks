@@ -13,13 +13,22 @@ abstract class GameScene(val color: Color, override val width: Int, override val
     override fun add(gameObject: IGameObject) { gameObjectsToAdd.put(gameObject.id, gameObject) }
     override fun remove(gameObject: IGameObject) { gameObjectsToRemove.add(gameObject.id) }
 
+    override fun forEachGameObject(act: (obj: IGameObject) -> Unit) = gameObjects.forEach { act(it.value) }
+    override fun unload() = forEachGameObject { it.unload() }
+
     override fun update(){
         gameObjects.forEach {
             it.value.update()
         }
 
-        gameObjectsToRemove.forEach { gameObjects.remove(it) }
+        gameObjectsToRemove.forEach {
+            gameObjects[it]?.onBeforeRemoved()
+            gameObjects.remove(it)?.onAfterRemoved()
+        }
         gameObjects.putAll(gameObjectsToAdd)
+        gameObjectsToAdd.forEach {
+            it.value.onAdded()
+        }
         if (gameObjectsToAdd.size > 0 || gameObjectsToRemove.size > 0){
             println("GameObjects: ${gameObjects.size}")
         }
