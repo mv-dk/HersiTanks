@@ -1,13 +1,8 @@
 package Experimental.CollisionBalls
 
-import GameObject2
-import GameScene
-import IGameObject
-import IGameScene
+import Engine.*
 import java.awt.Color
 import java.awt.Graphics2D
-import kotlin.math.acos
-import kotlin.math.sqrt
 import kotlin.random.Random
 
 val random = Random(1)
@@ -49,37 +44,6 @@ class CollisionBallsGameScene(color: Color, width: Int, height: Int) : GameScene
     override fun remove(gameObject: IGameObject){
         super.remove(gameObject)
         balls.remove(gameObject) // sikkert ikke helt optimalt
-    }
-}
-
-data class Pos2D(var x: Double, var y: Double){
-    fun translate(vec: Vec2D) {
-        x += vec.x
-        y += vec.y
-    }
-
-    operator fun plus(vec: Vec2D) : Pos2D = Pos2D(x + vec.x, y + vec.y)
-
-    fun distance(other: Pos2D): Double = Vec2D(this, other).mag()
-}
-
-data class Vec2D(var x: Double, var y: Double) {
-    constructor(p1: Pos2D, p2: Pos2D) : this(p2.x - p1.x, p2.y - p1.y)
-
-    fun copy(): Vec2D = Vec2D(x,y)
-    operator fun plus(other: Vec2D): Vec2D = Vec2D(x + other.x, y + other.y)
-    fun unaryMinus(): Vec2D { return Vec2D(-x, -y) }
-    operator fun minus(other: Vec2D) : Vec2D = Vec2D(x - other.x, y - other.y)
-    fun mag(): Double = sqrt(x*x + y*y)
-    fun dot(other: Vec2D) : Double = x * other.x + y * other.y
-    fun angleTo(other: Vec2D) : Double = acos(this.dot(other) / (mag() * other.mag()))
-    fun hat(): Vec2D = Vec2D(-y, x)
-    operator fun times(num: Double): Vec2D = Vec2D(x*num, y*num)
-    operator fun div(num: Double): Vec2D = Vec2D(x/num,y/num)
-    fun normalized(): Vec2D = Vec2D(x,y) /mag()
-    fun reflect(other: Vec2D): Vec2D {
-        val n = other.normalized().hat()
-        return this - n * (2*(this.dot(n)))
     }
 }
 

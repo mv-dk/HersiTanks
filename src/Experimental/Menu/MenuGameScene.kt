@@ -1,15 +1,12 @@
 package Experimental.Menu
 
-import Experimental.CollisionBalls.Pos2D
-import GameObject
-import GameObject2
-import GameScene
-import IGameObject
-import IGameScene
+import Engine.Pos2D
+import Engine.GameObject2
+import Engine.GameScene
+import Engine.IGameScene
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
-import java.awt.geom.Point2D
 
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
 
@@ -36,7 +33,7 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
 
 }
 
-class MenuPointGameObject(val text: String, parent: IGameScene, val position: Pos2D):GameObject2(parent, position) {
+class MenuPointGameObject(val text: String, parent: IGameScene, val position: Pos2D): GameObject2(parent, position) {
     var selected: Boolean = false
     val selectedColor = Color(200, 0, 180);
     var unselectedColor = Color(80,10,40);

@@ -1,8 +1,8 @@
 package Experimental.ManyBalls
 
-import GameObject
-import GameScene
-import IGameScene
+import Engine.GameObject
+import Engine.GameScene
+import Engine.IGameScene
 import translate
 import java.awt.Color
 import java.awt.Graphics2D
