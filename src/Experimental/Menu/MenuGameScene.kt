@@ -6,6 +6,7 @@ import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.event.KeyEvent
+import java.util.*
 
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
 
@@ -57,10 +58,16 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
                     textValue = textValue.substring(0, textValue.length - 1)
                 }
             }
-        } else {
+        } else if (e != null && ((e.keyChar in 'a'..'z') || (e.keyChar in 'A'..'Z') || e.keyChar == ' ')) {
             (selected as? TextInputMenuPoint)?.apply{
-                if (e != null) {
-                    textValue += KeyEvent.getKeyText(e.keyCode)
+                if (e.keyChar == ' ') {
+                    textValue += ' '
+                } else {
+                    if (e.isShiftDown) {
+                        textValue += KeyEvent.getKeyText(e.keyCode).uppercase(Locale.getDefault())
+                    } else {
+                        textValue += KeyEvent.getKeyText(e.keyCode).lowercase(Locale.getDefault())
+                    }
                 }
             }
         }
@@ -151,6 +158,6 @@ class TextInputMenuPoint(
             g.font = unselectedFont
         }
 
-        g.drawString("$text: $textValue", position.x.toFloat(), position.y.toFloat())
+        g.drawString("$text: $textValue${if (selected) "|" else ""}", position.x.toFloat(), position.y.toFloat())
     }
 }
