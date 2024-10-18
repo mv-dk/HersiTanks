@@ -1,4 +1,5 @@
 import Engine.GameWindow
+import Experimental.ManyBalls.BallGameScene
 import Experimental.Menu.MenuGameScene
 import java.awt.Color
 
@@ -8,9 +9,12 @@ fun nextId(): Int { return _id++ }
 fun main() {
     println("Hello World!")
     val gameScene = MenuGameScene(800, 600, Color.WHITE)
-    //val gameScene = BallGameScene(width, height)
+    //val gameScene = BallGameScene(800, 600)
     //val gameScene = CollisionBallsGameScene(Color.LIGHT_GRAY, width, height)
-    GameWindow(800, 600, "Hersi", gameScene).run()
+    val gameWindow = GameWindow(800, 600, "Hersi", gameScene)
+    val gameThread = Thread(gameWindow)
+    gameThread.start()
+    gameThread.join()
 }
 
 /*

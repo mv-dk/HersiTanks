@@ -16,7 +16,7 @@ import kotlin.time.times
  * Contains the game loop in the function run().
  * Contains currentGameScene, on which update() and draw() is called.
  */
-open class GameWindow(val width: Int, val height: Int, title: String, gameScene: IGameScene) {
+open class GameWindow(val width: Int, val height: Int, title: String, gameScene: IGameScene) : Runnable {
     val panel: JPanel = JPanel()
     val frame: JFrame = JFrame()
 
@@ -49,7 +49,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, gameScene:
 
     val fps: Double = 60.0
 
-    fun run(){
+    override fun run(){
         val period: Duration = (1 / fps).seconds
         var maxSkips: Int = 5
         var timeTaken: Duration
