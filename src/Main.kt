@@ -6,16 +6,18 @@ import java.awt.Color
 var _id: Int = 1
 fun nextId(): Int { return _id++ }
 
+var gameWindow: GameWindow? = null
+
 fun main() {
     println("Hello World!")
     val gameScene = MenuGameScene(800, 600, Color.WHITE)
     //val gameScene = BallGameScene(800, 600)
     //val gameScene = CollisionBallsGameScene(Color.LIGHT_GRAY, width, height)
-    val gameWindow = GameWindow(800, 600, "Hersi", gameScene)
+    gameWindow = GameWindow(800, 600, "Hersi", gameScene)
     val gameThread = Thread(gameWindow)
     gameThread.start()
     gameThread.join()
-    gameWindow.frame.dispose()
+    gameWindow?.frame?.dispose()
 }
 
 /*

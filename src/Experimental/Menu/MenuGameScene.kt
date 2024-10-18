@@ -1,12 +1,14 @@
 package Experimental.Menu
 
 import Engine.*
+import Experimental.CollisionBalls.CollisionBallsGameScene
+import gameWindow
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
-import java.awt.RenderingHints
 import java.awt.event.KeyEvent
 import java.util.*
+import kotlin.reflect.KFunction3
 
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
 
@@ -14,7 +16,9 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
         MenuPointGameObject("Settings", this, Pos2D(100.0, 100.0)),
         NumberSelectorMenuPoint("Players", this, Pos2D(100.0, 120.0), 2, 2, 10),
         TextInputMenuPoint("Name", this, Pos2D(100.0, 140.0), "", 10),
-        MenuPointGameObject("Go!", this, Pos2D(100.0, 160.0)),
+        ChangeSceneMenuPoint("Go!", this, Pos2D(100.0, 160.0), {
+            CollisionBallsGameScene(Color.BLUE, 800, 600)
+        }),
         ExitGameMenuPoint("Exit", this, Pos2D(100.0, 180.0))
     )
     val selected: MenuPointGameObject
@@ -74,6 +78,8 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
         } else if (e?.keyCode == KeyEvent.VK_ENTER){
             if ((selected as? ExitGameMenuPoint)?.selected == true) {
                 GameWindow.exitGame = true
+            } else if ((selected as? ChangeSceneMenuPoint)?.selected == true) {
+                gameWindow?.currentGameScene = (selected as ChangeSceneMenuPoint).nextScene()
             }
         }
     }
@@ -170,6 +176,11 @@ class ExitGameMenuPoint(
     text: String,
     parent: IGameScene,
     position: Pos2D
-): MenuPointGameObject(text, parent, position){
+): MenuPointGameObject(text, parent, position)
 
-}
+class ChangeSceneMenuPoint(
+    text: String,
+    parent: IGameScene,
+    position: Pos2D,
+    val nextScene: (()-> IGameScene)
+): MenuPointGameObject(text, parent, position)
