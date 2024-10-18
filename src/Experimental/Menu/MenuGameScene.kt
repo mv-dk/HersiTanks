@@ -4,6 +4,7 @@ import Engine.*
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
+import java.awt.RenderingHints
 import java.awt.event.KeyEvent
 
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
@@ -11,7 +12,8 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
     val menuPoints = mutableListOf(
         MenuPointGameObject("Settings", this, Pos2D(100.0, 100.0)),
         NumberSelectorMenuPoint("Players", this, Pos2D(100.0, 120.0), 2, 2, 10),
-        MenuPointGameObject("Go!", this, Pos2D(100.0, 140.0))
+        TextInputMenuPoint("Name", this, Pos2D(100.0, 140.0), "", 10),
+        MenuPointGameObject("Go!", this, Pos2D(100.0, 160.0))
     )
     val selected: MenuPointGameObject
         get() {
@@ -49,14 +51,26 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
             (selected as? NumberSelectorMenuPoint)?.decrease()
         } else if (e?.keyCode == KeyEvent.VK_RIGHT){
             (selected as? NumberSelectorMenuPoint)?.increase()
+        } else if (e?.keyCode == KeyEvent.VK_BACK_SPACE) {
+            (selected as? TextInputMenuPoint)?.apply{
+                if (textValue.length > 0) {
+                    textValue = textValue.substring(0, textValue.length - 1)
+                }
+            }
+        } else {
+            (selected as? TextInputMenuPoint)?.apply{
+                if (e != null) {
+                    textValue += KeyEvent.getKeyText(e.keyCode)
+                }
+            }
         }
+
     }
 
     override fun keyReleased(e: KeyEvent?) = Unit
 
     override fun unload() {
         println("MenuGameScene.unload")
-
     }
 
 }
@@ -78,7 +92,6 @@ open class MenuPointGameObject(var text: String, parent: IGameScene, val positio
             g.color = unselectedColor
             g.font = unselectedFont
         }
-
         g.drawString(text, position.x.toFloat(), position.y.toFloat())
     }
 }
@@ -93,8 +106,6 @@ class NumberSelectorMenuPoint(
     val step: Int = 1
 ):
     MenuPointGameObject(text, parent, position) {
-
-    override fun update() = Unit
 
     override fun draw(g: Graphics2D) {
         if (selected) {
@@ -114,5 +125,32 @@ class NumberSelectorMenuPoint(
 
     fun decrease() {
         if (numberValue > min) numberValue -= step
+    }
+}
+
+class TextInputMenuPoint(
+    text: String,
+    parent: IGameScene,
+    position: Pos2D,
+    textValue: String,
+    val maxLength: Int
+) : MenuPointGameObject(text, parent, position){
+
+    var textValue = textValue
+        set(value) {
+            if (value.length <= maxLength)
+                field = value
+        }
+
+    override fun draw(g: Graphics2D) {
+        if (selected) {
+            g.color = selectedColor
+            g.font = selectedFont
+        } else {
+            g.color = unselectedColor
+            g.font = unselectedFont
+        }
+
+        g.drawString("$text: $textValue", position.x.toFloat(), position.y.toFloat())
     }
 }

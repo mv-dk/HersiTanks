@@ -2,6 +2,7 @@ package Engine
 
 import java.awt.Dimension
 import java.awt.Graphics2D
+import java.awt.RenderingHints
 import java.awt.Toolkit
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
@@ -21,6 +22,8 @@ import kotlin.time.times
 open class GameWindow(val width: Int, val height: Int, title: String, gameScene: IGameScene) : Runnable {
     val panel: JPanel = JPanel()
     val frame: JFrame = JFrame()
+    val fps: Double = 60.0
+    val renderingHints = java.util.Map.of(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
 
     init {
         panel.preferredSize = Dimension(width, height)
@@ -40,6 +43,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, gameScene:
     var image: VolatileImage = panel.createVolatileImage(width, height).also {
         if (it == null) { throw Error("Could not create image") }
     }
+
     var currentGameScene: IGameScene = gameScene
         get() {
             return field
@@ -51,8 +55,6 @@ open class GameWindow(val width: Int, val height: Int, title: String, gameScene:
             field.load()
             frame.addKeyListener(field)
         }
-
-    val fps: Double = 60.0
 
     override fun run(){
         val period: Duration = (1 / fps).seconds
@@ -88,6 +90,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, gameScene:
             image = panel.createVolatileImage(width, height)
         }
         val g: Graphics2D = image.createGraphics()
+        g.setRenderingHints(renderingHints)
         currentGameScene.draw(g)
         g.dispose()
     }
