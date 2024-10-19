@@ -2,6 +2,10 @@ package Experimental.Menu
 
 import Engine.*
 import Experimental.CollisionBalls.CollisionBallsGameScene
+import Experimental.Menu.MenuPoints.ChangeSceneMenuPoint
+import Experimental.Menu.MenuPoints.ExitGameMenuPoint
+import Experimental.Menu.MenuPoints.NumberSelectorMenuPoint
+import Experimental.Menu.MenuPoints.TextInputMenuPoint
 import gameWindow
 import java.awt.Color
 import java.awt.Font
@@ -121,74 +125,3 @@ open class MenuPointGameObject(var text: String, parent: IGameScene, val positio
     }
 }
 
-class NumberSelectorMenuPoint(
-    text: String,
-    parent: IGameScene,
-    position: Pos2D,
-    var numberValue: Int,
-    val min: Int,
-    val max: Int,
-    val step: Int = 1
-):
-    MenuPointGameObject(text, parent, position) {
-
-    override fun draw(g: Graphics2D) {
-        if (selected) {
-            g.color = selectedColor
-            g.font = selectedFont
-            g.drawString("$text: < $numberValue >", position.x.toFloat(), position.y.toFloat())
-        } else {
-            g.color = unselectedColor
-            g.font = unselectedFont
-            g.drawString("$text: $numberValue", position.x.toFloat(), position.y.toFloat())
-        }
-    }
-
-    fun increase() {
-        if (numberValue < max) numberValue += step
-    }
-
-    fun decrease() {
-        if (numberValue > min) numberValue -= step
-    }
-}
-
-class TextInputMenuPoint(
-    text: String,
-    parent: IGameScene,
-    position: Pos2D,
-    textValue: String,
-    val maxLength: Int
-) : MenuPointGameObject(text, parent, position){
-
-    var textValue = textValue
-        set(value) {
-            if (value.length <= maxLength)
-                field = value
-        }
-
-    override fun draw(g: Graphics2D) {
-        if (selected) {
-            g.color = selectedColor
-            g.font = selectedFont
-        } else {
-            g.color = unselectedColor
-            g.font = unselectedFont
-        }
-
-        g.drawString("$text: $textValue${if (selected) "|" else ""}", position.x.toFloat(), position.y.toFloat())
-    }
-}
-
-class ExitGameMenuPoint(
-    text: String,
-    parent: IGameScene,
-    position: Pos2D
-): MenuPointGameObject(text, parent, position)
-
-class ChangeSceneMenuPoint(
-    text: String,
-    parent: IGameScene,
-    position: Pos2D,
-    val nextScene: (()-> IGameScene)
-): MenuPointGameObject(text, parent, position)
