@@ -58,7 +58,17 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
         println("MenuGameScene.load")
     }
 
-    override fun keyTyped(e: KeyEvent?) = Unit
+    override fun keyTyped(e: KeyEvent?) {
+        if (e != null) {
+            (selected as? TextInputMenuPoint)?.apply{
+                if (e.keyChar == '\b') {
+                    textValue = textValue.substring(0, textValue.length)
+                } else {
+                    textValue += e.keyChar
+                }
+            }
+        }
+    }
 
     override fun keyPressed(e: KeyEvent?) {
         if (e?.keyCode == KeyEvent.VK_DOWN) {
@@ -73,18 +83,6 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
             (selected as? TextInputMenuPoint)?.apply{
                 if (textValue.length > 0) {
                     textValue = textValue.substring(0, textValue.length - 1)
-                }
-            }
-        } else if (e != null && ((e.keyChar in 'a'..'z') || (e.keyChar in 'A'..'Z') || e.keyChar == ' ')) {
-            (selected as? TextInputMenuPoint)?.apply{
-                if (e.keyChar == ' ') {
-                    textValue += ' '
-                } else {
-                    if (e.isShiftDown) {
-                        textValue += KeyEvent.getKeyText(e.keyCode).uppercase(Locale.getDefault())
-                    } else {
-                        textValue += KeyEvent.getKeyText(e.keyCode).lowercase(Locale.getDefault())
-                    }
                 }
             }
         } else if (e?.keyCode == KeyEvent.VK_ENTER){
