@@ -12,6 +12,7 @@ class TextInputMenuPoint(
     textValue: String,
     val maxLength: Int
 ) : MenuPointGameObject(text, parent, position){
+    private var tick = 0
 
     var textValue = textValue
         set(value) {
@@ -27,7 +28,7 @@ class TextInputMenuPoint(
             g.color = unselectedColor
             g.font = unselectedFont
         }
-
-        g.drawString("$text: $textValue${if (selected) "|" else ""}", position.x.toFloat(), position.y.toFloat())
+        tick = (tick+1) % 60
+        g.drawString("$text: $textValue${if (selected && tick > 30) "|" else ""}", position.x.toFloat(), position.y.toFloat())
     }
 }
