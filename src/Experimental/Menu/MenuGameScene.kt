@@ -7,17 +7,48 @@ import Experimental.Menu.MenuPoints.ExitGameMenuPoint
 import Experimental.Menu.MenuPoints.NumberSelectorMenuPoint
 import Experimental.Menu.MenuPoints.TextInputMenuPoint
 import gameWindow
+import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.event.KeyEvent
+import java.awt.geom.Point2D
 import java.util.*
 
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
 
-    var x: Double = 200.0
+    val menuGameObject = MenuGameObject(this, Pos2D(100.0, 100.0), 300, 400)
+
+    init {
+        add(menuGameObject)
+    }
+
+    override fun load() {
+        println("MenuGameScene.load")
+    }
+
+    override fun keyTyped(e: KeyEvent?) {
+        menuGameObject.keyTyped(e)
+
+    }
+
+    override fun keyPressed(e: KeyEvent?) {
+        menuGameObject.keyPressed(e)
+    }
+
+    override fun keyReleased(e: KeyEvent?) = Unit
+
+    override fun unload() {
+        println("MenuGameScene.unload")
+    }
+
+}
+
+class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int, var height: Int) :GameObject2(parent, position) {
+    var x: Double = 120.0
     var y: Double = 100.0
     var ySpacing: Double = 40.0
+    override var drawOrder = -1
 
     fun nextMenuPointPos(): Pos2D{
         y += ySpacing
@@ -25,13 +56,13 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
     }
 
     val menuPoints = mutableListOf(
-        ChangeSceneMenuPoint("Go!", this, nextMenuPointPos(), {
+        ChangeSceneMenuPoint("Go!", parent, nextMenuPointPos(), {
             CollisionBallsGameScene(Color.LIGHT_GRAY, 800, 600)
         }),
-        NumberSelectorMenuPoint("Players", this, nextMenuPointPos(), 2, 2, 10),
-        MenuPointGameObject("Settings", this, nextMenuPointPos()),
-        TextInputMenuPoint("Name", this, nextMenuPointPos(), "", 10),
-        ExitGameMenuPoint("Exit", this, nextMenuPointPos())
+        NumberSelectorMenuPoint("Players", parent, nextMenuPointPos(), 2, 2, 10),
+        MenuPointGameObject("Settings", parent, nextMenuPointPos()),
+        TextInputMenuPoint("Name", parent, nextMenuPointPos(), "", 10),
+        ExitGameMenuPoint("Exit", parent, nextMenuPointPos())
     )
     val selected: MenuPointGameObject
         get() {
@@ -50,15 +81,11 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
         }
 
     init {
-        menuPoints.forEach { add(it) }
+        menuPoints.forEach { parent.add(it) }
         selectedIdx = 0
     }
 
-    override fun load() {
-        println("MenuGameScene.load")
-    }
-
-    override fun keyTyped(e: KeyEvent?) {
+    fun keyTyped(e: KeyEvent?){
         if (e != null) {
             (selected as? TextInputMenuPoint)?.apply{
                 if (e.keyChar == '\b') {
@@ -70,7 +97,7 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
         }
     }
 
-    override fun keyPressed(e: KeyEvent?) {
+    fun keyPressed(e: KeyEvent?){
         if (e?.keyCode == KeyEvent.VK_DOWN) {
             selectedIdx = (selectedIdx + 1) % menuPoints.size
         } else if (e?.keyCode == KeyEvent.VK_UP) {
@@ -94,12 +121,17 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
         }
     }
 
-    override fun keyReleased(e: KeyEvent?) = Unit
+    fun keyReleased(e: KeyEvent?) = Unit
 
-    override fun unload() {
-        println("MenuGameScene.unload")
+    override fun update() = Unit
+
+    override fun draw(g: Graphics2D) {
+        g.color = Color(80, 10, 40)
+        g.setStroke(BasicStroke(3f))
+        g.drawRect(position.x.toInt(), position.y.toInt(), width, height)
+        g.color = Color(200,200,200)
+        g.fillRect(position.x.toInt() + 2, position.y.toInt() + 2, width-3, height-3)
     }
-
 }
 
 open class MenuPointGameObject(var text: String, parent: IGameScene, val position: Pos2D): GameObject2(parent, position) {

@@ -39,9 +39,11 @@ abstract class GameScene(val color: Color, override val width: Int, override val
     override fun draw(g: Graphics2D) {
         g.color = color
         g.fillRect(0, 0, width, height)
-
-        gameObjects.forEach {
-            it.value.draw(g)
+        gameObjects.values.sortedBy { x -> x.drawOrder }.forEach {
+            it.draw(g)
         }
+//        gameObjects.forEach {
+//            it.value.draw(g)
+//        }
     }
 }
