@@ -8,18 +8,26 @@ import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.event.KeyEvent
 import java.util.*
-import kotlin.reflect.KFunction3
 
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
 
+    var x: Double = 200.0
+    var y: Double = 100.0
+    var ySpacing: Double = 40.0
+
+    fun nextMenuPointPos(): Pos2D{
+        y += ySpacing
+        return Pos2D(x, y)
+    }
+
     val menuPoints = mutableListOf(
-        ChangeSceneMenuPoint("Go!", this, Pos2D(100.0, 160.0), {
+        ChangeSceneMenuPoint("Go!", this, nextMenuPointPos(), {
             CollisionBallsGameScene(Color.LIGHT_GRAY, 800, 600)
         }),
-        NumberSelectorMenuPoint("Players", this, Pos2D(100.0, 120.0), 2, 2, 10),
-        MenuPointGameObject("Settings", this, Pos2D(100.0, 100.0)),
-        TextInputMenuPoint("Name", this, Pos2D(100.0, 140.0), "", 10),
-        ExitGameMenuPoint("Exit", this, Pos2D(100.0, 180.0))
+        NumberSelectorMenuPoint("Players", this, nextMenuPointPos(), 2, 2, 10),
+        MenuPointGameObject("Settings", this, nextMenuPointPos()),
+        TextInputMenuPoint("Name", this, nextMenuPointPos(), "", 10),
+        ExitGameMenuPoint("Exit", this, nextMenuPointPos())
     )
     val selected: MenuPointGameObject
         get() {
