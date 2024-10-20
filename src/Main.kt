@@ -27,7 +27,6 @@ TODO: Menu system
       3. A go-to-scene button (done)
       4. A show-dialog selector
       5. Number values and special chars in text input (done)
-TODO: Make a global signal when draw order of any game object changes, so that a sorted list can be reconstructed
 TODO: A globally accessible map of game objects by id. Or by name (string)?
 TODO: Sound effects. Music.
 TODO: Scrolling if GameScene is larger than GameWindow
