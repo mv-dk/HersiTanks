@@ -12,8 +12,6 @@ import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.event.KeyEvent
-import java.awt.geom.Point2D
-import java.util.*
 
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
 
