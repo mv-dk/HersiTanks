@@ -4,8 +4,6 @@ import java.awt.Dimension
 import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.Toolkit
-import java.awt.event.KeyEvent
-import java.awt.event.KeyListener
 import java.awt.image.VolatileImage
 import javax.swing.JFrame
 import javax.swing.JPanel
@@ -38,6 +36,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, gameScene:
         frame.isVisible = true
         gameScene.load()
         panel.addKeyListener(gameScene)
+        panel.addMouseListener(gameScene)
     }
 
     companion object {
@@ -55,9 +54,11 @@ open class GameWindow(val width: Int, val height: Int, title: String, gameScene:
         set(value) {
             currentGameScene.unload()
             frame.removeKeyListener(currentGameScene)
+            frame.removeMouseListener(currentGameScene)
             field = value
             field.load()
             frame.addKeyListener(field)
+            frame.addMouseListener(field)
         }
 
     override fun run(){

@@ -36,11 +36,6 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
     }
 
     override fun keyReleased(e: KeyEvent?) = Unit
-
-    override fun unload() {
-        println("MenuGameScene.unload")
-    }
-
 }
 
 class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int, var height: Int) :GameObject2(parent, position) {
@@ -56,8 +51,8 @@ class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int
 
     val menuPoints = mutableListOf(
         ChangeSceneMenuPoint("Go!", parent, nextMenuPointPos(), {
-            //CollisionBallsGameScene(Color.LIGHT_GRAY, 800, 600)
-            TerrainGameScene(parent, Color.LIGHT_GRAY, 800, 600)
+            CollisionBallsGameScene(Color.LIGHT_GRAY, 800, 600)
+            //TerrainGameScene(parent, Color.LIGHT_GRAY, 800, 600)
         }),
         NumberSelectorMenuPoint("Players", parent, nextMenuPointPos(), 2, 2, 10),
         MenuPointGameObject("Settings", parent, nextMenuPointPos()),

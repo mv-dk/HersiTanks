@@ -6,6 +6,7 @@ import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.Polygon
 import java.awt.event.KeyEvent
+import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
 import java.awt.image.BufferedImageOp
 import java.awt.image.ColorModel
@@ -30,6 +31,12 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     }
 
     override fun keyReleased(e: KeyEvent?) = Unit
+
+    override fun mousePressed(e: MouseEvent?) {
+        if (e?.button == MouseEvent.BUTTON1) {
+            rasterTerrain.mouseClicked(e.x, e.y)
+        }
+    }
 }
 
 class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, position){
@@ -87,6 +94,10 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
 
     override fun update() {
 
+    }
+
+    fun mouseClicked(x: Int, y: Int) {
+        println("Mouse was clicked at $x,$y")
     }
 
     override fun draw(g: Graphics2D) {

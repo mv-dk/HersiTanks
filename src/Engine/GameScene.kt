@@ -3,6 +3,7 @@ package Engine
 import nextId
 import java.awt.Color
 import java.awt.Graphics2D
+import java.awt.event.MouseEvent
 import java.util.PriorityQueue
 import java.util.SortedSet
 
@@ -35,7 +36,12 @@ abstract class GameScene(val color: Color, override val width: Int, override val
     }
 
     override fun forEachGameObject(act: (obj: IGameObject) -> Unit) = gameObjects.forEach { act(it.value) }
-    override fun unload() = forEachGameObject { it.unload() }
+    final override fun unload() = forEachGameObject { it.unload() }
+    override fun mouseExited(e: MouseEvent?) = Unit
+    override fun mouseClicked(e: MouseEvent?) = Unit
+    override fun mouseEntered(e: MouseEvent?) = Unit
+    override fun mousePressed(e: MouseEvent?) = Unit
+    override fun mouseReleased(e: MouseEvent?) = Unit
 
     override fun update(){
         gameObjects.forEach {
