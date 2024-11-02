@@ -42,9 +42,11 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
         val rand = Random(System.currentTimeMillis())
         val xs = mutableListOf<Int>()
         var ys = mutableListOf<Int>()
-        var steps = rand.nextInt(10, 100)
+        var less_bumpy = 10
+        var more_bumpy = 100
+        var steps = rand.nextInt(less_bumpy, more_bumpy)
         var xstep = rasterImage.width/steps;
-        var ystep = 0//100/steps
+        var ystep = rand.nextInt(-10, 10)
         var tmpx = 0
         var tmpy = rand.nextInt(60, rasterImage.height - 60)
         xs.add(tmpx)
