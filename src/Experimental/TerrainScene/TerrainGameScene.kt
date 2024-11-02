@@ -13,8 +13,12 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 class TerrainGameScene(private val parentScene: IGameScene, color: Color, width: Int, height: Int) : GameScene(color, width, height) {
+    lateinit var rasterTerrain: RasterTerrain
+
+
     override fun load() {
-        add(RasterTerrain(this, Pos2D(0.0, 0.0)))
+        rasterTerrain = RasterTerrain(this, Pos2D(0.0, 0.0))
+        add(rasterTerrain)
     }
 
     override fun keyTyped(e: KeyEvent?) = Unit
@@ -38,18 +42,27 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
         val rand = Random(System.currentTimeMillis())
         val xs = mutableListOf<Int>()
         var ys = mutableListOf<Int>()
-        var xstep = rasterImage.width/10;
-        var ystep = 10
+        var steps = rand.nextInt(10, 100)
+        var xstep = rasterImage.width/steps;
+        var ystep = 0//100/steps
         var tmpx = 0
-        var tmpy = rasterImage.height/2
+        var tmpy = rand.nextInt(60, rasterImage.height - 60)
         xs.add(tmpx)
         ys.add(tmpy)
 
         var i = 0
-        while (i < 10){
+        while (i < steps){
             tmpx += xstep
-            tmpy += if (rand.nextDouble() < 0.5) ystep else -ystep
-            ystep = (50.0 * rand.nextDouble()).toInt()
+
+            tmpy += ystep
+            if (tmpy < 60) {
+                ystep = 3
+            } else if (tmpy > rasterImage.height - 60) {
+                ystep = -3;
+            } else {
+                ystep += (-steps/10.0 + steps/5.0 * rand.nextDouble()).toInt()
+            }
+
             xs.add(tmpx)
             ys.add(tmpy)
             i += 1
