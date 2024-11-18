@@ -112,9 +112,9 @@ class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int
             }
         } else if (e?.keyCode == KeyEvent.VK_ENTER){
             if ((selected as? ExitGameMenuPoint)?.selected == true) {
-                GameWindow.exitGame = true
+                GameRunner.exitGame = true
             } else if ((selected as? ChangeSceneMenuPoint)?.selected == true) {
-                gameWindow?.currentGameScene = (selected as ChangeSceneMenuPoint).nextScene()
+                gameWindow?.gameRunner?.currentGameScene = (selected as ChangeSceneMenuPoint).nextScene()
             }
         }
     }
