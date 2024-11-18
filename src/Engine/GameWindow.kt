@@ -73,11 +73,11 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
     }
 
     override fun onGameSceneChanged(oldGameScene: IGameScene, newGameScene: IGameScene) {
-        frame.removeKeyListener(oldGameScene)
-        frame.removeMouseListener(oldGameScene)
+        panel.removeKeyListener(oldGameScene)
+        panel.removeMouseListener(oldGameScene)
 
-        frame.addKeyListener(newGameScene)
-        frame.addMouseListener(newGameScene)
+        panel.addKeyListener(newGameScene)
+        panel.addMouseListener(newGameScene)
     }
 
     override fun getGraphics2D(): Graphics2D {
@@ -102,7 +102,7 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene){
         }
         set(value) {
             currentGameScene.unload()
-            window.onGameSceneChanged(currentGameScene, field)
+            window.onGameSceneChanged(currentGameScene, value)
             field = value
             field.load()
         }

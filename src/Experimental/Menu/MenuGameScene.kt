@@ -28,7 +28,6 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
 
     override fun keyTyped(e: KeyEvent?) {
         menuGameObject.keyTyped(e)
-
     }
 
     override fun keyPressed(e: KeyEvent?) {
