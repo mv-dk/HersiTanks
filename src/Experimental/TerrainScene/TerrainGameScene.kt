@@ -26,7 +26,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 
     override fun keyPressed(e: KeyEvent?) {
         if (e?.keyCode == KeyEvent.VK_ESCAPE){
-            gameWindow?.currentGameScene = parentScene
+            gameWindow?.gameRunner?.currentGameScene = parentScene
         }
     }
 

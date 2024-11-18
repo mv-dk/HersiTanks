@@ -51,8 +51,8 @@ class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int
 
     val menuPoints = mutableListOf(
         ChangeSceneMenuPoint("Go!", parent, nextMenuPointPos(), {
-            CollisionBallsGameScene(Color.LIGHT_GRAY, 800, 600)
-            //TerrainGameScene(parent, Color.LIGHT_GRAY, 800, 600)
+            //CollisionBallsGameScene(Color.LIGHT_GRAY, 800, 600)
+            TerrainGameScene(parent, Color.LIGHT_GRAY, 800, 600)
         }),
         NumberSelectorMenuPoint("Players", parent, nextMenuPointPos(), 2, 2, 10),
         MenuPointGameObject("Settings", parent, nextMenuPointPos()),
