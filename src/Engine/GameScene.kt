@@ -44,10 +44,6 @@ abstract class GameScene(val color: Color, override val width: Int, override val
     override fun mouseReleased(e: MouseEvent?) = Unit
 
     override fun update(){
-        gameObjects.forEach {
-            it.value.update()
-        }
-
         gameObjectsToRemove.forEach {
             gameObjects[it]?.onBeforeRemoved()
             gameObjectsByDrawOrder.remove(gameObjects[it])
@@ -63,6 +59,10 @@ abstract class GameScene(val color: Color, override val width: Int, override val
         }
         gameObjectsToRemove.clear()
         gameObjectsToAdd.clear()
+
+        gameObjects.forEach {
+            it.value.update()
+        }
     }
 
     override fun draw(g: Graphics2D) {
