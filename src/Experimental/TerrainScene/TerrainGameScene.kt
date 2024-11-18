@@ -2,6 +2,7 @@ package Experimental.TerrainScene
 
 import Engine.*
 import gameWindow
+import java.awt.AlphaComposite
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.Polygon
@@ -40,7 +41,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 }
 
 class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, position){
-    var rasterImage: BufferedImage = BufferedImage(parent.width, parent.height, ColorModel.BITMASK)
+    var rasterImage: BufferedImage = BufferedImage(parent.width, parent.height, BufferedImage.BITMASK)
 
     init {
         val g = rasterImage.createGraphics()
@@ -98,6 +99,11 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
 
     fun mouseClicked(x: Int, y: Int) {
         println("Mouse was clicked at $x,$y")
+        val gg = rasterImage.createGraphics()
+        gg.color = Color(0, 0, 0, 0)
+        val size = 60
+        gg.composite = AlphaComposite.Clear
+        gg.fillOval(x - size/2, y - size/2 ,size, size)
     }
 
     override fun draw(g: Graphics2D) {
