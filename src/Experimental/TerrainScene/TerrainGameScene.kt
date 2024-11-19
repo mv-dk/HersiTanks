@@ -6,9 +6,6 @@ import java.awt.*
 import java.awt.event.KeyEvent
 import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
-import java.awt.image.BufferedImageOp
-import java.awt.image.ColorModel
-import kotlin.math.sin
 import kotlin.random.Random
 
 val random = Random(1)
@@ -104,12 +101,22 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
     override fun update() {
         if (crumble){
             var crumbleCounter = 0
-            for (y in 1..rasterImage.height - 1) {
+            for (yFromTop in 1..rasterImage.height - 1) {
+                val y = rasterImage.height - yFromTop
                 for (x in 0..rasterImage.width-1) {
-                    if (rasterImage.getRGB(x, rasterImage.height-y) == 0 && rasterImage.getRGB(x, rasterImage.height-y-1) != 0){
-                        rasterImage.setRGB(x,rasterImage.height-y, rasterImage.getRGB(x, rasterImage.height-y-1))
-                        rasterImage.setRGB(x,rasterImage.height-y-1, 0)
+                    if (rasterImage.getRGB(x, y) == 0 && rasterImage.getRGB(x, y-1) != 0){
+                        rasterImage.setRGB(x,y, rasterImage.getRGB(x, y-1))
+                        rasterImage.setRGB(x,y-1, 0)
                         crumbleCounter += 1
+                    } else if (x > 0 && x < rasterImage.width-1){
+                        // Remove columns of 1 px width
+                        if (y < rasterImage.height-1 && y > 0 &&
+                            rasterImage.getRGB(x, y) != 0 && rasterImage.getRGB(x, y+1) != 0 &&
+                            rasterImage.getRGB(x-1, y) == 0 && rasterImage.getRGB(x+1, y) == 0 &&
+                            rasterImage.getRGB(x-1, y+1) == 0 && rasterImage.getRGB(x+1, y+1) == 0) {
+                            rasterImage.setRGB(x, y, 0)
+                            crumbleCounter += 1
+                        }
                     }
                 }
             }
@@ -119,7 +126,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
             if (!didUpdateTerrain) {
                 earthquake?.remove()
                 earthquake = null
-                startCrumble()
+                maybeStartCrumble()
             }
         }
     }
@@ -128,7 +135,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
         println("Mouse was clicked at $x,$y")
         if (mode == 1) {
             pokeHole(x,y);
-            startCrumble()
+            maybeStartCrumble()
         } else if (mode == 2){
             startCrumble();
         } else if (mode == 3){
@@ -149,6 +156,10 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
         gg.composite = AlphaComposite.Clear
         gg.stroke = BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
         gg.drawLine(x1, y1, x2, y2)
+    }
+
+    private fun maybeStartCrumble(){
+        if (random.nextDouble() <= 0.5) startCrumble()
     }
 
     private fun startCrumble(){
