@@ -14,6 +14,8 @@ import java.awt.image.ColorModel
 import kotlin.math.sin
 import kotlin.random.Random
 
+val random = Random(1)
+
 class TerrainGameScene(private val parentScene: IGameScene, color: Color, width: Int, height: Int) : GameScene(color, width, height) {
     lateinit var rasterTerrain: RasterTerrain
 
@@ -28,6 +30,10 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     override fun keyPressed(e: KeyEvent?) {
         if (e?.keyCode == KeyEvent.VK_ESCAPE){
             gameWindow?.gameRunner?.currentGameScene = parentScene
+        } else if (e?.keyCode == KeyEvent.VK_1) {
+            rasterTerrain.mode = 1
+        } else if (e?.keyCode == KeyEvent.VK_2){
+            rasterTerrain.mode = 2
         }
     }
 
@@ -42,6 +48,8 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 
 class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, position){
     var rasterImage: BufferedImage = BufferedImage(parent.width, parent.height, BufferedImage.BITMASK)
+    var mode: Int = 1
+    var crumble: Boolean = false
 
     init {
         val g = rasterImage.createGraphics()
@@ -94,16 +102,40 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
     }
 
     override fun update() {
-
+        if (crumble){
+            var crumbleCounter = 0
+            for (y in 1..rasterImage.height - 1) {
+                for (x in 0..rasterImage.width-1) {
+                    if (rasterImage.getRGB(x, rasterImage.height-y) == 0 && rasterImage.getRGB(x, rasterImage.height-y-1) != 0){
+                        rasterImage.setRGB(x,rasterImage.height-y, rasterImage.getRGB(x, rasterImage.height-y-1))
+                        rasterImage.setRGB(x,rasterImage.height-y-1, 0)
+                        crumbleCounter += 1
+                    }
+                }
+            }
+            if (crumbleCounter == 0) crumble = false
+        }
     }
 
     fun mouseClicked(x: Int, y: Int) {
         println("Mouse was clicked at $x,$y")
+        if (mode == 1) {
+            pokeHole(x,y);
+        } else if (mode == 2){
+            startCrumble();
+        }
+    }
+
+    private fun pokeHole(x: Int, y: Int){
         val gg = rasterImage.createGraphics()
         gg.color = Color(0, 0, 0, 0)
         val size = 60
         gg.composite = AlphaComposite.Clear
-        gg.fillOval(x - size/2, y - size/2 ,size, size)
+        gg.fillOval(x - size / 2, y - size / 2, size, size)
+    }
+
+    private fun startCrumble(){
+        crumble = true
     }
 
     override fun draw(g: Graphics2D) {
