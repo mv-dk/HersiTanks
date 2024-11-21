@@ -5,12 +5,19 @@ import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.Toolkit
 import java.awt.image.VolatileImage
+import java.io.File
+import java.io.InputStream
+import java.net.URL
+import java.util.concurrent.locks.ReentrantLock
+import javax.sound.sampled.*
 import javax.swing.JFrame
 import javax.swing.JPanel
+import kotlin.concurrent.withLock
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
 import kotlin.time.times
+
 
 interface IGameWindow {
     fun onGameSceneChanged(oldGameScene: IGameScene, newGameScene: IGameScene)
@@ -159,5 +166,88 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene){
 
     private fun renderScreen() {
         window.render()
+    }
+}
+
+object AudioHelper {
+    private val clipPlayer = AudioClipPlayer()
+    private val _lock = ReentrantLock()
+
+    fun load(path: String, name: String){
+        _lock.withLock {
+            clipPlayer.loadSound(path, name)
+        }
+    }
+
+    fun play(name: String) {
+        _lock.withLock {
+            clipPlayer.playSound(name)
+        }
+    }
+
+    fun stop(name: String){
+        _lock.withLock {
+            clipPlayer.stopSound(name)
+        }
+    }
+
+    fun loop(name: String, times: Int = -1){
+        _lock.withLock {
+            clipPlayer.loopSound(name, times)
+        }
+    }
+
+    fun unload(){
+        _lock.withLock {
+            clipPlayer.unload()
+        }
+    }
+}
+
+class AudioClipPlayer {
+    private var audioInputStreamMap = mutableMapOf<String, AudioInputStream>()
+    private var clipMap = mutableMapOf<String, Clip>()
+
+    fun loadSound(path: String, name: String) {
+        if (clipMap.containsKey(name)) return
+
+        val audioStream = AudioSystem.getAudioInputStream(File(path))
+        val audioClip = AudioSystem.getClip()
+        audioClip.open(audioStream)
+        audioInputStreamMap[name] = audioStream
+        clipMap[name] = audioClip
+    }
+
+    fun playSound(name: String) {
+        if (!clipMap.containsKey(name)) throw Exception("clip $name was not preloaded!")
+        val clip = clipMap[name]!!
+        println("active: ${clip.isActive}, running: ${clip.isRunning}, framePosition: ${clip.framePosition}")
+
+        if (clip.isActive || clip.isRunning) {
+            clip.stop()
+        }
+        if (clip.framePosition > 0) {
+            clip.framePosition = 0
+        }
+        clip.start()
+    }
+
+    fun stopSound(name: String) {
+        if (!clipMap.containsKey(name)) throw Exception("clip $name was not preloaded!")
+        val clip = clipMap[name]!!
+        clip.stop()
+    }
+
+    fun loopSound(name: String, times: Int = -1){
+        clipMap[name]!!.loop(times)
+    }
+
+    fun unload(){
+        for (clip in clipMap){
+            clip.value.close()
+        }
+        for (audioStream in audioInputStreamMap){
+            audioStream.value.close()
+        }
     }
 }

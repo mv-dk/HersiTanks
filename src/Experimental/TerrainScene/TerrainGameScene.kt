@@ -38,6 +38,8 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     override fun mousePressed(e: MouseEvent?) {
         if (e?.button == MouseEvent.BUTTON1) {
             rasterTerrain.mouseClicked(e.x, e.y)
+        } else if (e?.button == MouseEvent.BUTTON3){
+            AudioHelper.play("big-boom")
         }
     }
 }
@@ -126,6 +128,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
             if (!didUpdateTerrain) {
                 earthquake?.remove()
                 earthquake = null
+                AudioHelper.stop("earthquake")
                 maybeStartCrumble()
             }
         }
@@ -148,6 +151,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
         gg.color = Color(0, 0, 0, 0)
         gg.composite = AlphaComposite.Clear
         gg.fillOval(x - size / 2, y - size / 2, size, size)
+        AudioHelper.play("small-boom")
     }
 
     fun pokeLine(x1: Int, y1: Int, x2: Int, y2: Int, width: Float){
@@ -164,10 +168,13 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
 
     private fun startCrumble(){
         crumble = true
+
     }
 
     private fun startEarthquake(x: Int, y:Int){
         earthquake = Earthquake(x,y, 5, 100, 1.0)
+
+        AudioHelper.loop("earthquake", -1)
     }
 
     override fun draw(g: Graphics2D) {
