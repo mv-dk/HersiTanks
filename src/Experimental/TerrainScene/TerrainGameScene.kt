@@ -98,15 +98,45 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
         ys.add(rasterImage.height/2)
 
         g.fillPolygon(xs.toIntArray(), ys.toIntArray(), xs.size)
+
+        addColoredTopLayer(rasterImage, 10, Color(0, 220, 0))
+        addColoredTopLayer(rasterImage, 8, Color(0, 200, 0))
+        addColoredTopLayer(rasterImage, 6, Color(0, 180, 0))
+        addColoredTopLayer(rasterImage, 4, Color(0, 160, 0))
+        addColoredTopLayer(rasterImage, 2, Color(0, 140, 0))
+    }
+
+    fun addColoredTopLayer(rasterImage: BufferedImage, depth: Int, color: Color){
+        for (y in depth .. rasterImage.height - 1) {
+            for (x in 0 .. rasterImage.width - 1) {
+                if (rasterImage.getRGB(x,y) != 0){
+                    if (rasterImage.getRGB(x, y-depth) == 0){
+                        rasterImage.setRGB(x,y ,color.rgb)
+                    }
+                }
+            }
+        }
     }
 
     override fun update() {
         if (crumble){
             var crumbleCounter = 0
-            for (yFromTop in 1..rasterImage.height - 1) {
+            for (yFromTop in 1..rasterImage.height - 10) {
                 val y = rasterImage.height - yFromTop
                 for (x in 0..rasterImage.width-1) {
-                    if (rasterImage.getRGB(x, y) == 0 && rasterImage.getRGB(x, y-1) != 0){
+                    if (rasterImage.getRGB(x, y) == 0 && rasterImage.getRGB(x, y-10) != 0){
+                        rasterImage.setRGB(x,y, rasterImage.getRGB(x, y-10))
+                        rasterImage.setRGB(x,y-10, 0)
+                        crumbleCounter += 1
+                    } else if (rasterImage.getRGB(x, y) == 0 && rasterImage.getRGB(x, y-5) != 0){
+                        rasterImage.setRGB(x,y, rasterImage.getRGB(x, y-5))
+                        rasterImage.setRGB(x,y-5, 0)
+                        crumbleCounter += 1
+                    } else if (rasterImage.getRGB(x, y) == 0 && rasterImage.getRGB(x, y-2) != 0){
+                        rasterImage.setRGB(x,y, rasterImage.getRGB(x, y-2))
+                        rasterImage.setRGB(x,y-2, 0)
+                        crumbleCounter += 1
+                    } else if (rasterImage.getRGB(x, y) == 0 && rasterImage.getRGB(x, y-1) != 0){
                         rasterImage.setRGB(x,y, rasterImage.getRGB(x, y-1))
                         rasterImage.setRGB(x,y-1, 0)
                         crumbleCounter += 1
