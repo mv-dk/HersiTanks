@@ -36,11 +36,19 @@ class Projectile(val parent: IGameScene, var position: Pos2D, var velocity: Vec2
     }
 
     fun explode() {
-        terrain.pokeHole(position.x.toInt(), position.y.toInt())
-        //terrain.startEarthquake(position.x.toInt(), position.y.toInt())
-        parent.remove(this)
-        terrain.crumble = true
-        aProjectileIsFlying = false
+        if (random.nextDouble()< 0.5){
+            terrain.startEarthquake(position.x.toInt(), position.y.toInt())
+            parent.remove(this)
+        } else {
+            val holeSize = random.nextInt(30, 200)
+            terrain.pokeHole(position.x.toInt(), position.y.toInt(), holeSize)
+            parent.remove(this)
+            val exp = Explosion(parent, position, holeSize, holeSize / 3, {
+                terrain.crumble = true
+                aProjectileIsFlying = false
+            })
+            parent.add(exp)
+        }
     }
 
     override fun draw(g: Graphics2D) {
