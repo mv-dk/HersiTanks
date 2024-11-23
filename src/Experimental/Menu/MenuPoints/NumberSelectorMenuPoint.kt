@@ -3,6 +3,7 @@ package Experimental.Menu.MenuPoints
 import Engine.IGameScene
 import Engine.Pos2D
 import Experimental.Menu.MenuPointGameObject
+import Game.GameController
 import java.awt.Graphics2D
 
 class NumberSelectorMenuPoint(
@@ -30,9 +31,11 @@ class NumberSelectorMenuPoint(
 
     fun increase() {
         if (numberValue < max) numberValue += step
+        GameController.settings[text] = numberValue
     }
 
     fun decrease() {
         if (numberValue > min) numberValue -= step
+        GameController.settings[text] = numberValue
     }
 }

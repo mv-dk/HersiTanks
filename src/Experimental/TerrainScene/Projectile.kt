@@ -13,6 +13,14 @@ class Projectile(val parent: IGameScene, var position: Pos2D, var velocity: Vec2
     var size = 3
     var terrain = (parent as TerrainGameScene).rasterTerrain
 
+    companion object {
+        var aProjectileIsFlying = false
+    }
+
+    init {
+        aProjectileIsFlying = true
+    }
+
     override fun update() {
         position.x += velocity.x
         position.y += velocity.y
@@ -32,6 +40,7 @@ class Projectile(val parent: IGameScene, var position: Pos2D, var velocity: Vec2
         //terrain.startEarthquake(position.x.toInt(), position.y.toInt())
         parent.remove(this)
         terrain.crumble = true
+        aProjectileIsFlying = false
     }
 
     override fun draw(g: Graphics2D) {

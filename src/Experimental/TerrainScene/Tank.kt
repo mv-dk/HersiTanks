@@ -13,6 +13,7 @@ class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var positio
     var angle = 45.0
     val stroke = BasicStroke(3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
     var falling: Boolean = false
+    var alive = true
 
     var canonX = (position.x + size * Math.cos(Math.PI*angle/180.0)).toInt()
     var canonY = (position.y - size * Math.sin(Math.PI*angle/180.0)).toInt()
