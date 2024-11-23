@@ -39,9 +39,8 @@ class Projectile(val parent: IGameScene, var position: Pos2D, var velocity: Vec2
 
         g.color = Color.LIGHT_GRAY
         g.stroke = stroke
-        g.drawLine((position.x - size).toInt(),
-            (position.y - size).toInt(),
-            (position.x + size).toInt(),
-            (position.y + size).toInt())
+        val p0 = position.plus(velocity)
+        val p1 = position.plus(velocity.times(-1.0))
+        g.drawLine(p0.x.toInt(), p0.y.toInt(), p1.x.toInt(), p1.y.toInt())
     }
 }

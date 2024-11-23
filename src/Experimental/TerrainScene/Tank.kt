@@ -9,7 +9,7 @@ import java.awt.Graphics2D
 
 class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var position: Pos2D, val color: Color) : GameObject2(parent, position) {
     var size = 20
-    var power = 10
+    var power = 100
     var angle = 45.0
     val stroke = BasicStroke(3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
     var falling: Boolean = false
