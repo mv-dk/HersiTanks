@@ -39,6 +39,15 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             tank.increaseAngle(1)
         } else if (e?.keyCode == KeyEvent.VK_RIGHT){
             tank.increaseAngle(-1)
+        } else if (e?.keyCode == KeyEvent.VK_DOWN) {
+            tank.increasePower(-1)
+        } else if (e?.keyCode == KeyEvent.VK_UP) {
+            tank.increasePower(1)
+        }else if (e?.keyCode == KeyEvent.VK_ENTER){
+            AudioHelper.play("fire")
+            val projectile = Projectile(this, tank.position.copy(),
+                Vec2D(tank.position.copy(), Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())).times(tank.power/100.0))
+            add(projectile)
         }
     }
 
@@ -214,7 +223,7 @@ class RasterTerrain(val parent: IGameScene, position: Pos2D) : GameObject2(paren
 
     }
 
-    private fun startEarthquake(x: Int, y:Int){
+    fun startEarthquake(x: Int, y:Int){
         earthquake = Earthquake(x,y, 5, 100, 1.0)
 
         AudioHelper.loop("earthquake", -1)

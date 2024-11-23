@@ -27,6 +27,7 @@ fun preloadSounds(){
     AudioHelper.load("./resources/earthquake3.wav","earthquake")
     AudioHelper.load("./resources/boom3.wav", "small-boom")
     AudioHelper.load("./resources/boom2.wav", "big-boom")
+    AudioHelper.load("./resources/vhup.wav", "fire")
 }
 
 /*

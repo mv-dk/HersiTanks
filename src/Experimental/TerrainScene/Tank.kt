@@ -9,7 +9,7 @@ import java.awt.Graphics2D
 
 class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var position: Pos2D, val color: Color) : GameObject2(parent, position) {
     var size = 20
-    var power = 100
+    var power = 10
     var angle = 45.0
     val stroke = BasicStroke(3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
     var falling: Boolean = false
@@ -63,6 +63,11 @@ class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var positio
 
     fun onAngleChanged(){
         updateCanonXY()
+        println("angle: $angle")
+    }
+
+    fun onPowerChanged(){
+        println("power: $power")
     }
 
     // Call this every time the tank has moved, or the angle has changed
@@ -84,5 +89,7 @@ class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var positio
         power += p
         if (power < 0) power = 0
         else if (power > 1000) power = 1000
+
+        onPowerChanged()
     }
 }
