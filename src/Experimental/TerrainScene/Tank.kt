@@ -19,13 +19,13 @@ class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var positio
 
     override fun update() {
         if (falling){
-            if (position.y.toInt() < rasterTerrain.rasterImage.height) {
+            if (position.y.toInt() < rasterTerrain.rasterImage.height-2) {
                 if (rasterTerrain.rasterImage.getRGB(position.x.toInt(), position.y.toInt() + 2) == 0 ||
                     rasterTerrain.rasterImage.getRGB(position.x.toInt() - size/4, position.y.toInt() + 2) == 0 ||
                     rasterTerrain.rasterImage.getRGB(position.x.toInt() + size/4, position.y.toInt() + 2) == 0) {
                     position.y += 2
                     rasterTerrain.rasterImage.graphics.color = Color(0,0,0,0)
-                    rasterTerrain.pokeLine((position.x-size/2).toInt(), position.y.toInt()-3, (position.x+size/2).toInt(), position.y.toInt()-3, 3f)
+                    rasterTerrain.pokeLine((position.x-size/2).toInt(), position.y.toInt()-5, (position.x+size/2).toInt(), position.y.toInt()-5, 3f)
 
                     onTankMoved()
                 } else {
@@ -47,7 +47,7 @@ class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var positio
 
         g.color = color
         g.drawLine(position.x.toInt(), position.y.toInt(), canonX, canonY)
-        g.fillArc((position.x - size/2).toInt(), (position.y - size/2).toInt(), size, size, 0, 180)
+        g.fillArc((position.x - size/2).toInt(), (position.y - size/2).toInt()+2, size, size, 0, 180)
 
         drawCenter(g)
     }
