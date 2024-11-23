@@ -12,11 +12,16 @@ val random = Random(1)
 
 class TerrainGameScene(private val parentScene: IGameScene, color: Color, width: Int, height: Int) : GameScene(color, width, height) {
     lateinit var rasterTerrain: RasterTerrain
-
+    lateinit var tank: Tank
 
     override fun load() {
         rasterTerrain = RasterTerrain(this, Pos2D(0.0, 0.0))
         add(rasterTerrain)
+
+
+        tank = Tank(this, rasterTerrain, Pos2D(250.0, 30.0), Color.RED)
+        tank.falling = true
+        add(tank)
     }
 
     override fun keyTyped(e: KeyEvent?) = Unit
@@ -30,6 +35,10 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             rasterTerrain.mode = 2
         } else if (e?.keyCode == KeyEvent.VK_3){
             rasterTerrain.mode = 3
+        } else if (e?.keyCode == KeyEvent.VK_LEFT) {
+            tank.increaseAngle(1)
+        } else if (e?.keyCode == KeyEvent.VK_RIGHT){
+            tank.increaseAngle(-1)
         }
     }
 
@@ -44,7 +53,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     }
 }
 
-class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, position){
+class RasterTerrain(val parent: IGameScene, position: Pos2D) : GameObject2(parent, position){
     var rasterImage: BufferedImage = BufferedImage(parent.width, parent.height, BufferedImage.BITMASK)
     var mode: Int = 1
     var crumble: Boolean = false
@@ -104,6 +113,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
         addColoredTopLayer(rasterImage, 6, Color(0, 180, 0))
         addColoredTopLayer(rasterImage, 4, Color(0, 160, 0))
         addColoredTopLayer(rasterImage, 2, Color(0, 140, 0))
+
     }
 
     fun addColoredTopLayer(rasterImage: BufferedImage, depth: Int, color: Color){
@@ -152,7 +162,10 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
                     }
                 }
             }
-            if (crumbleCounter == 0) crumble = false
+            if (crumbleCounter == 0) {
+                crumble = false
+                (parent as TerrainGameScene).tank.falling = true
+            }
         } else if (earthquake != null){
             val didUpdateTerrain: Boolean = earthquake?.update(this) == true
             if (!didUpdateTerrain) {
