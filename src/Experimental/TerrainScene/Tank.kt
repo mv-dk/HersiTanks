@@ -7,6 +7,16 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
 
+val WEAPON_BOMB = 1
+val WEAPON_EARTHQUAKE = 2
+val WEAPON_BIGGER_BOMB = 3
+val WEAPON_BIGGEST_BOMB = 4
+val WEAPON_TINY_BOMB = 5
+val WEAPON_DIRT_BOMB = 6
+val WEAPON_MIRV = 7
+val WEAPON_NAPALM = 8
+val WEAPON_LASER = 9
+
 class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var position: Pos2D, val color: Color) : GameObject2(parent, position) {
     var size = 20
     var power = 100
@@ -14,7 +24,11 @@ class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var positio
     val stroke = BasicStroke(3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
     var falling: Boolean = false
     var alive = true
-
+    var activeWeapon = WEAPON_BOMB
+        set(value) {
+            if (value < 1 || value > 9) throw Exception("Weapon must be between 1 and 9 (inclusive)")
+            field = value
+        }
     var canonX = (position.x + size * Math.cos(Math.PI*angle/180.0)).toInt()
     var canonY = (position.y - size * Math.sin(Math.PI*angle/180.0)).toInt()
 

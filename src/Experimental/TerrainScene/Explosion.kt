@@ -3,6 +3,7 @@ package Experimental.TerrainScene
 import Engine.GameObject2
 import Engine.IGameScene
 import Engine.Pos2D
+import Game.GameController
 import java.awt.Color
 import java.awt.Graphics2D
 
@@ -11,9 +12,13 @@ class Explosion(val parent: IGameScene, val position: Pos2D, var size: Int, val 
 
     override fun update() {
         tick += 1
+        if (tick ==1) {
+            GameController.explosionsActive += 1
+        }
         if (duration - tick < 10) size = (size * 0.8).toInt()
         if (tick >= duration) {
             parent.remove(this)
+            GameController.explosionsActive -= 1
             onDone()
         }
     }

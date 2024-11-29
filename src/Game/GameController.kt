@@ -19,6 +19,8 @@ object GameController {
     var tanks: MutableList<Tank> = mutableListOf()
     var settings: MutableMap<String, Any> = mutableMapOf()
 
+    var projectilesFlying = 0
+    var explosionsActive = 0
 
     fun onGoingToMenu(){
         teams.clear()

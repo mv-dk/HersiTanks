@@ -4,6 +4,7 @@ import Engine.GameObject2
 import Engine.IGameScene
 import Engine.Pos2D
 import Engine.Vec2D
+import Game.GameController
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
@@ -13,12 +14,8 @@ class Projectile(val parent: IGameScene, var position: Pos2D, var velocity: Vec2
     var size = 3
     var terrain = (parent as TerrainGameScene).rasterTerrain
 
-    companion object {
-        var aProjectileIsFlying = false
-    }
-
     init {
-        aProjectileIsFlying = true
+        GameController.projectilesFlying += 1
     }
 
     override fun update() {
@@ -36,19 +33,27 @@ class Projectile(val parent: IGameScene, var position: Pos2D, var velocity: Vec2
     }
 
     fun explode() {
-        if (random.nextDouble()< 0.5){
-            terrain.startEarthquake(position.x.toInt(), position.y.toInt())
-            parent.remove(this)
-            aProjectileIsFlying = false;
-        } else {
-            val holeSize = random.nextInt(30, 200)
-            terrain.pokeHole(position.x.toInt(), position.y.toInt(), holeSize)
-            parent.remove(this)
-            val exp = Explosion(parent, position, holeSize, holeSize / 3, {
-                terrain.crumble = true
-                aProjectileIsFlying = false
-            })
-            parent.add(exp)
+        when (GameController.getCurrentTank().activeWeapon) {
+            WEAPON_BOMB -> {
+                val holeSize = random.nextInt(30, 200)
+                terrain.pokeHole(position.x.toInt(), position.y.toInt(), holeSize)
+                parent.remove(this)
+                val exp = Explosion(parent, position, holeSize, holeSize / 3, {
+                    terrain.crumble = true
+                })
+                GameController.projectilesFlying -= 1
+                parent.add(exp)
+            }
+            WEAPON_EARTHQUAKE -> {
+                terrain.startEarthquake(position.x.toInt(), position.y.toInt())
+                parent.remove(this)
+                GameController.projectilesFlying -= 1
+            }
+            else -> {
+                parent.remove(this)
+                GameController.projectilesFlying -= 1
+                println("MEH")
+            }
         }
     }
 

@@ -42,18 +42,22 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     fun acceptInput(): Boolean{
         if (rasterTerrain.crumble || rasterTerrain.earthquake != null) return false
         if (GameController.tanks.any {it.alive && it.falling}) return false
-        if (Projectile.aProjectileIsFlying) return false
+        if (GameController.projectilesFlying > 0) return false
+        if (GameController.explosionsActive > 0) return false
         return true
     }
 
     override fun keyTyped(e: KeyEvent?) = Unit
 
     override fun keyPressed(e: KeyEvent?) {
-        if (!acceptInput()) return
         if (e?.keyCode == KeyEvent.VK_ESCAPE){
             GameController.onGoingToMenu()
             gameWindow?.gameRunner?.currentGameScene = parentScene
-        } else if (e?.keyCode == KeyEvent.VK_1) {
+        }
+
+        if (!acceptInput()) return
+
+        if (e?.keyCode == KeyEvent.VK_1) {
             rasterTerrain.mode = 1
         } else if (e?.keyCode == KeyEvent.VK_2){
             rasterTerrain.mode = 2
