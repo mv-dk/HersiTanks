@@ -51,6 +51,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     override fun keyPressed(e: KeyEvent?) {
         if (!acceptInput()) return
         if (e?.keyCode == KeyEvent.VK_ESCAPE){
+            GameController.onGoingToMenu()
             gameWindow?.gameRunner?.currentGameScene = parentScene
         } else if (e?.keyCode == KeyEvent.VK_1) {
             rasterTerrain.mode = 1

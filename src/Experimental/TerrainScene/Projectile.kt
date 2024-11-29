@@ -39,6 +39,7 @@ class Projectile(val parent: IGameScene, var position: Pos2D, var velocity: Vec2
         if (random.nextDouble()< 0.5){
             terrain.startEarthquake(position.x.toInt(), position.y.toInt())
             parent.remove(this)
+            aProjectileIsFlying = false;
         } else {
             val holeSize = random.nextInt(30, 200)
             terrain.pokeHole(position.x.toInt(), position.y.toInt(), holeSize)

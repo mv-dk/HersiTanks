@@ -20,6 +20,11 @@ object GameController {
     var settings: MutableMap<String, Any> = mutableMapOf()
 
 
+    fun onGoingToMenu(){
+        teams.clear()
+        tanks.clear()
+    }
+
     fun addTeam(t: Team){
         teams.add(t)
         tanks.addAll(t.tanks)
