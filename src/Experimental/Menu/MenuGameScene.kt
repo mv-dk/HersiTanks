@@ -26,15 +26,15 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
         println("MenuGameScene.load")
     }
 
-    override fun keyTyped(e: KeyEvent?) {
+    override fun keyTyped(e: KeyEvent) {
         menuGameObject.keyTyped(e)
     }
 
-    override fun keyPressed(e: KeyEvent?) {
+    override fun keyPressed(e: KeyEvent) {
         menuGameObject.keyPressed(e)
     }
 
-    override fun keyReleased(e: KeyEvent?) = Unit
+    override fun keyReleased(e: KeyEvent) = Unit
 }
 
 class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int, var height: Int) :GameObject2(parent, position) {

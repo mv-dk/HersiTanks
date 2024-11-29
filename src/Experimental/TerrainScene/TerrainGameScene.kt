@@ -47,9 +47,9 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         return true
     }
 
-    override fun keyTyped(e: KeyEvent?) = Unit
+    override fun keyTyped(e: KeyEvent) = Unit
 
-    override fun keyPressed(e: KeyEvent?) {
+    override fun keyPressed(e: KeyEvent) {
         if (e?.keyCode == KeyEvent.VK_ESCAPE){
             GameController.onGoingToMenu()
             gameWindow?.gameRunner?.currentGameScene = parentScene
@@ -57,21 +57,21 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 
         if (!acceptInput()) return
 
-        if (e?.keyCode == KeyEvent.VK_1) {
+        if (e.keyCode == KeyEvent.VK_1) {
             rasterTerrain.mode = 1
-        } else if (e?.keyCode == KeyEvent.VK_2){
+        } else if (e.keyCode == KeyEvent.VK_2){
             rasterTerrain.mode = 2
-        } else if (e?.keyCode == KeyEvent.VK_3){
+        } else if (e.keyCode == KeyEvent.VK_3){
             rasterTerrain.mode = 3
-        } else if (e?.keyCode == KeyEvent.VK_LEFT) {
+        } else if (e.keyCode == KeyEvent.VK_LEFT) {
             GameController.getCurrentTank().increaseAngle(1)
-        } else if (e?.keyCode == KeyEvent.VK_RIGHT){
+        } else if (e.keyCode == KeyEvent.VK_RIGHT){
             GameController.getCurrentTank().increaseAngle(-1)
-        } else if (e?.keyCode == KeyEvent.VK_DOWN) {
+        } else if (e.keyCode == KeyEvent.VK_DOWN) {
             GameController.getCurrentTank().increasePower(-1)
-        } else if (e?.keyCode == KeyEvent.VK_UP) {
+        } else if (e.keyCode == KeyEvent.VK_UP) {
             GameController.getCurrentTank().increasePower(1)
-        }else if (e?.keyCode == KeyEvent.VK_ENTER){
+        }else if (e.keyCode == KeyEvent.VK_ENTER){
             AudioHelper.play("fire")
             val tank = GameController.getCurrentTank()
             val projectile = Projectile(this, tank.position.copy(),
@@ -81,7 +81,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         }
     }
 
-    override fun keyReleased(e: KeyEvent?) = Unit
+    override fun keyReleased(e: KeyEvent) = Unit
 
     override fun mousePressed(e: MouseEvent?) {
         if (!acceptInput()) return

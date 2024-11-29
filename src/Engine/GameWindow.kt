@@ -4,10 +4,13 @@ import java.awt.Dimension
 import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.Toolkit
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
 import java.awt.image.VolatileImage
 import java.io.File
 import java.io.InputStream
 import java.net.URL
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.locks.ReentrantLock
 import javax.sound.sampled.*
 import javax.swing.JFrame
@@ -38,6 +41,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
 
     var gameRunner: GameRunner = GameRunner(this, gameScene)
 
+
     init {
         panel.preferredSize = Dimension(width, height)
         panel.size = Dimension(width, height)
@@ -49,9 +53,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
         frame.pack()
         frame.setLocationRelativeTo(null)
         frame.isVisible = true
-
-        panel.addKeyListener(gameScene)
-        panel.addMouseListener(gameScene)
+        panel.addKeyListener(gameRunner)
     }
 
     var image: VolatileImage = panel.createVolatileImage(width, height)
@@ -80,11 +82,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
     }
 
     override fun onGameSceneChanged(oldGameScene: IGameScene, newGameScene: IGameScene) {
-        panel.removeKeyListener(oldGameScene)
-        panel.removeMouseListener(oldGameScene)
 
-        panel.addKeyListener(newGameScene)
-        panel.addMouseListener(newGameScene)
     }
 
     override fun getGraphics2D(): Graphics2D {
@@ -96,7 +94,9 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
     }
 }
 
-class GameRunner(val window: IGameWindow, val gameScene: IGameScene){
+class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListener {
+    private val keyEventQueue: ConcurrentLinkedQueue<KeyEvent> = ConcurrentLinkedQueue()
+
     val fps: Double = 60.0
 
     companion object {
@@ -113,6 +113,18 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene){
             field = value
             field.load()
         }
+
+    override fun keyTyped(e: KeyEvent?) {
+        keyEventQueue.add(e)
+    }
+
+    override fun keyPressed(e: KeyEvent?) {
+        keyEventQueue.add(e)
+    }
+
+    override fun keyReleased(e: KeyEvent?) {
+        keyEventQueue.add(e)
+    }
 
     /**
      * This is used for testing purposes
@@ -139,6 +151,7 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene){
             while (updatesPerDraw < maxSkips){
                 timeTaken += measureTime {
                     update()
+                    handleKeyEvents()
                     if (updatesPerDraw == 1) {
                         renderBuffer()
                         renderScreen()
@@ -152,6 +165,19 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene){
                 updatesPerDraw += 1
             }
         }
+    }
+
+    fun handleKeyEvents(){
+        var keyEvent = keyEventQueue.poll()
+        while (keyEvent != null) {
+            when (keyEvent.id) {
+                KeyEvent.KEY_PRESSED -> currentGameScene.keyPressed(keyEvent)
+                KeyEvent.KEY_TYPED -> currentGameScene.keyTyped(keyEvent)
+                KeyEvent.KEY_RELEASED -> currentGameScene.keyReleased(keyEvent)
+            }
+            keyEvent = keyEventQueue.poll()
+        }
+        keyEventQueue.clear()
     }
 
     fun update(){

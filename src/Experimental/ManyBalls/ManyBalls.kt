@@ -28,9 +28,9 @@ class BallGameScene(windowWidth: Int, windowHeight: Int) : GameScene(Color.LIGHT
     }
 
     override fun load() = Unit
-    override fun keyTyped(e: KeyEvent?) = Unit
-    override fun keyPressed(e: KeyEvent?) = Unit
-    override fun keyReleased(e: KeyEvent?) = Unit
+    override fun keyTyped(e: KeyEvent) = Unit
+    override fun keyPressed(e: KeyEvent) = Unit
+    override fun keyReleased(e: KeyEvent) = Unit
 }
 
 class BallGameObject(

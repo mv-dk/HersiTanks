@@ -36,11 +36,9 @@ class CollisionBallsGameScene(color: Color, width: Int, height: Int) : GameScene
     }
 
     override fun load() = Unit
-    override fun keyTyped(e: KeyEvent?) = Unit
-    override fun keyPressed(e: KeyEvent?) {
-        println("Key pressed!")
-    }
-    override fun keyReleased(e: KeyEvent?) = Unit
+    override fun keyPressed(e: KeyEvent) = Unit
+    override fun keyReleased(e: KeyEvent) = Unit
+    override fun keyTyped(e: KeyEvent) = Unit
 
     override fun add(gameObject: IGameObject) {
         super.add(gameObject)

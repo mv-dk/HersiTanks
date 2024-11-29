@@ -3,9 +3,13 @@ package Engine
 import nextId
 import java.awt.Color
 import java.awt.Graphics2D
+import java.awt.event.KeyEvent
+import java.awt.event.KeyListener
 import java.awt.event.MouseEvent
+import java.awt.event.MouseListener
 import java.util.PriorityQueue
 import java.util.SortedSet
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class GameObjectDrawOrderComparator: Comparator<IGameObject> {
     override fun compare(o1: IGameObject?, o2: IGameObject?): Int {
@@ -19,12 +23,15 @@ class GameObjectDrawOrderComparator: Comparator<IGameObject> {
     }
 }
 
-abstract class GameScene(val color: Color, override val width: Int, override val height:Int) : IGameScene {
+abstract class GameScene(val color: Color, override val width: Int, override val height:Int) : IGameScene, KeyListener,
+    MouseListener {
     val id = nextId()
     private val gameObjects: MutableMap<Int, IGameObject> = mutableMapOf()
     private val gameObjectsByDrawOrder: SortedSet<IGameObject> = sortedSetOf(GameObjectDrawOrderComparator())
     private val gameObjectsToAdd: MutableMap<Int, IGameObject> = mutableMapOf()
     private val gameObjectsToRemove: MutableSet<Int> = mutableSetOf()
+
+
 
     override fun add(gameObject: IGameObject) {
         gameObjectsToAdd.put(gameObject.id, gameObject)
@@ -42,6 +49,7 @@ abstract class GameScene(val color: Color, override val width: Int, override val
     override fun mouseEntered(e: MouseEvent?) = Unit
     override fun mousePressed(e: MouseEvent?) = Unit
     override fun mouseReleased(e: MouseEvent?) = Unit
+
 
     override fun update(){
         gameObjectsToRemove.forEach {
@@ -63,6 +71,8 @@ abstract class GameScene(val color: Color, override val width: Int, override val
         gameObjects.forEach {
             it.value.update()
         }
+
+
     }
 
     override fun draw(g: Graphics2D) {
