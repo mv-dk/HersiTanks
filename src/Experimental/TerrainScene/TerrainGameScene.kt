@@ -47,10 +47,8 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         return true
     }
 
-    override fun keyTyped(e: KeyEvent) = Unit
-
     override fun keyPressed(e: KeyEvent) {
-        if (e?.keyCode == KeyEvent.VK_ESCAPE){
+        if (e.keyCode == KeyEvent.VK_ESCAPE){
             GameController.onGoingToMenu()
             gameWindow?.gameRunner?.currentGameScene = parentScene
         }
@@ -81,13 +79,11 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         }
     }
 
-    override fun keyReleased(e: KeyEvent) = Unit
-
-    override fun mousePressed(e: MouseEvent?) {
+    override fun mousePressed(e: MouseEvent) {
         if (!acceptInput()) return
-        if (e?.button == MouseEvent.BUTTON1) {
+        if (e.button == MouseEvent.BUTTON1) {
             rasterTerrain.mouseClicked(e.x, e.y)
-        } else if (e?.button == MouseEvent.BUTTON3){
+        } else if (e.button == MouseEvent.BUTTON3){
             AudioHelper.play("big-boom")
         }
     }

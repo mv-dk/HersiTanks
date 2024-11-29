@@ -6,6 +6,8 @@ import java.awt.RenderingHints
 import java.awt.Toolkit
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
+import java.awt.event.MouseEvent
+import java.awt.event.MouseListener
 import java.awt.image.VolatileImage
 import java.io.File
 import java.io.InputStream
@@ -54,6 +56,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
         frame.setLocationRelativeTo(null)
         frame.isVisible = true
         panel.addKeyListener(gameRunner)
+        panel.addMouseListener(gameRunner)
     }
 
     var image: VolatileImage = panel.createVolatileImage(width, height)
@@ -94,8 +97,9 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
     }
 }
 
-class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListener {
+class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListener, MouseListener {
     private val keyEventQueue: ConcurrentLinkedQueue<KeyEvent> = ConcurrentLinkedQueue()
+    private val mouseEventQueue: ConcurrentLinkedQueue<MouseEvent> = ConcurrentLinkedQueue()
 
     val fps: Double = 60.0
 
@@ -126,6 +130,26 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListen
         keyEventQueue.add(e)
     }
 
+    override fun mouseClicked(e: MouseEvent?) {
+        mouseEventQueue.add(e)
+    }
+
+    override fun mousePressed(e: MouseEvent?) {
+        mouseEventQueue.add(e)
+    }
+
+    override fun mouseReleased(e: MouseEvent?) {
+        mouseEventQueue.add(e)
+    }
+
+    override fun mouseEntered(e: MouseEvent?) {
+        mouseEventQueue.add(e)
+    }
+
+    override fun mouseExited(e: MouseEvent?) {
+        mouseEventQueue.add(e)
+    }
+
     /**
      * This is used for testing purposes
      * @param numberOfIterations - The number of calls to update(), renderBuffer() and renderScreen() to run
@@ -152,6 +176,7 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListen
                 timeTaken += measureTime {
                     update()
                     handleKeyEvents()
+                    handleMouseEvents()
                     if (updatesPerDraw == 1) {
                         renderBuffer()
                         renderScreen()
@@ -177,7 +202,22 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListen
             }
             keyEvent = keyEventQueue.poll()
         }
-        keyEventQueue.clear()
+    }
+
+    fun handleMouseEvents(){
+        var mouseEvent = mouseEventQueue.poll()
+        while (mouseEvent != null) {
+            when (mouseEvent.id) {
+                MouseEvent.MOUSE_PRESSED -> currentGameScene.mousePressed(mouseEvent)
+                MouseEvent.MOUSE_MOVED -> currentGameScene.mouseMoved(mouseEvent)
+                MouseEvent.MOUSE_CLICKED -> currentGameScene.mouseClicked(mouseEvent)
+                MouseEvent.MOUSE_RELEASED -> currentGameScene.mouseReleased(mouseEvent)
+                MouseEvent.MOUSE_ENTERED -> currentGameScene.mouseEntered(mouseEvent)
+                MouseEvent.MOUSE_EXITED -> currentGameScene.mouseExited(mouseEvent)
+                MouseEvent.MOUSE_WHEEL -> currentGameScene.mouseWheel(mouseEvent)
+            }
+            mouseEvent = mouseEventQueue.poll()
+        }
     }
 
     fun update(){

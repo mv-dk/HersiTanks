@@ -23,8 +23,7 @@ class GameObjectDrawOrderComparator: Comparator<IGameObject> {
     }
 }
 
-abstract class GameScene(val color: Color, override val width: Int, override val height:Int) : IGameScene, KeyListener,
-    MouseListener {
+abstract class GameScene(val color: Color, override val width: Int, override val height:Int) : IGameScene {
     val id = nextId()
     private val gameObjects: MutableMap<Int, IGameObject> = mutableMapOf()
     private val gameObjectsByDrawOrder: SortedSet<IGameObject> = sortedSetOf(GameObjectDrawOrderComparator())
@@ -44,12 +43,6 @@ abstract class GameScene(val color: Color, override val width: Int, override val
 
     override fun forEachGameObject(act: (obj: IGameObject) -> Unit) = gameObjects.forEach { act(it.value) }
     final override fun unload() = forEachGameObject { it.unload() }
-    override fun mouseExited(e: MouseEvent?) = Unit
-    override fun mouseClicked(e: MouseEvent?) = Unit
-    override fun mouseEntered(e: MouseEvent?) = Unit
-    override fun mousePressed(e: MouseEvent?) = Unit
-    override fun mouseReleased(e: MouseEvent?) = Unit
-
 
     override fun update(){
         gameObjectsToRemove.forEach {
