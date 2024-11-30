@@ -57,6 +57,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
         frame.isVisible = true
         panel.addKeyListener(gameRunner)
         panel.addMouseListener(gameRunner)
+        panel.setFocusTraversalKeysEnabled(false)
     }
 
     var image: VolatileImage = panel.createVolatileImage(width, height)

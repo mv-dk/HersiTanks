@@ -7,11 +7,12 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
 
-val WEAPON_BOMB = 1
-val WEAPON_EARTHQUAKE = 2
+val WEAPON_QUACK = 0
+val WEAPON_TINY_BOMB = 1
+val WEAPON_BOMB = 2
 val WEAPON_BIGGER_BOMB = 3
 val WEAPON_BIGGEST_BOMB = 4
-val WEAPON_TINY_BOMB = 5
+val WEAPON_EARTHQUAKE = 5
 val WEAPON_DIRT_BOMB = 6
 val WEAPON_MIRV = 7
 val WEAPON_NAPALM = 8
@@ -26,7 +27,7 @@ class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var positio
     var alive = true
     var activeWeapon = WEAPON_BOMB
         set(value) {
-            if (value < 1 || value > 9) throw Exception("Weapon must be between 1 and 9 (inclusive)")
+            if (value < 0 || value > 9) throw Exception("Weapon must be between 0 and 9 (inclusive)")
             field = value
         }
     var canonX = (position.x + size * Math.cos(Math.PI*angle/180.0)).toInt()

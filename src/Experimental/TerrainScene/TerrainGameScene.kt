@@ -15,12 +15,14 @@ val random = Random(1)
 
 class TerrainGameScene(private val parentScene: IGameScene, color: Color, width: Int, height: Int) : GameScene(color, width, height) {
     lateinit var rasterTerrain: RasterTerrain
-    var updatePlayersTurnOnNextUpdate = false
+    var updatePlayersTurnOnNextPossibleOccasion = false
+    var weaponBar = WeaponBar(this, Pos2D(0.0, 32.0))
 
     override fun load() {
         GameController.state = BattleState()
         rasterTerrain = RasterTerrain(this, Pos2D(0.0, 0.0))
         add(rasterTerrain)
+        add(weaponBar)
 
         val margin = 40.0
         var numPlayers = 2
@@ -69,13 +71,16 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             GameController.getCurrentTank().increasePower(-1)
         } else if (e.keyCode == KeyEvent.VK_UP) {
             GameController.getCurrentTank().increasePower(1)
-        }else if (e.keyCode == KeyEvent.VK_ENTER){
+        } else if (e.keyCode == KeyEvent.VK_ENTER){
             AudioHelper.play("fire")
             val tank = GameController.getCurrentTank()
             val projectile = Projectile(this, tank.position.copy(),
                 Vec2D(tank.position.copy(), Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())).times(tank.power/100.0))
             add(projectile)
-            updatePlayersTurnOnNextUpdate = true
+            updatePlayersTurnOnNextPossibleOccasion = true
+        } else if (e.keyCode == KeyEvent.VK_TAB) {
+            val tank = GameController.getCurrentTank()
+            tank.activeWeapon = (tank.activeWeapon + 1) % 10
         }
     }
 
@@ -89,8 +94,8 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     }
 
     override fun update() {
-        if (updatePlayersTurnOnNextUpdate){
-            updatePlayersTurnOnNextUpdate = false
+        if (updatePlayersTurnOnNextPossibleOccasion && acceptInput()){
+            updatePlayersTurnOnNextPossibleOccasion = false
             GameController.nextPlayersTurn()
         }
         super.update()
