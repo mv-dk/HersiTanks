@@ -3,24 +3,48 @@ import Engine.GameWindow
 import Experimental.ManyBalls.BallGameScene
 import Experimental.Menu.MenuGameScene
 import java.awt.Color
+import java.awt.GraphicsEnvironment
+import kotlin.math.min
 
 var _id: Int = 1
 fun nextId(): Int { return _id++ }
 
 var gameWindow: GameWindow? = null
 
+/**
+ * Global game resolution.
+ * It is best to create the scenes in this size.
+ * Even if the window is bigger, the rendering will be this size (it is scaled to fit the window).
+ */
+var gameResX = 640
+var gameResY = 360
+
 fun main() {
     println("Hello World!")
     preloadSounds()
-    val gameScene = MenuGameScene(800, 600, Color.WHITE)
+    val gameScene = MenuGameScene(gameResX, gameResY, Color(77, 83, 128))
     //val gameScene = BallGameScene(800, 600)
     //val gameScene = CollisionBallsGameScene(Color.LIGHT_GRAY, width, height)
-    gameWindow = GameWindow(800, 600, "Hersi", gameScene)
+
+    val scale = getBestScale()
+
+    gameWindow = GameWindow(gameResX * scale, gameResY * scale, "Hersi", gameScene, false)
     val gameThread = Thread(gameWindow)
     gameThread.start()
     gameThread.join()
     AudioHelper.unload()
     gameWindow?.frame?.dispose()
+}
+
+/**
+ * Returns the max integer scale factor for the window, for it to be fully contained
+ * in the default screen device
+ */
+fun getBestScale() : Int{
+    val scaleX = (GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice.displayMode.width / gameResX)
+    val scaleY = (GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice.displayMode.height / gameResY);
+    val scale = min(scaleX, scaleY)
+    return scale
 }
 
 fun preloadSounds(){

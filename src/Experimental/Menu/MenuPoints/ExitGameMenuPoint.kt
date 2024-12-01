@@ -9,3 +9,4 @@ class ExitGameMenuPoint(
     parent: IGameScene,
     position: Pos2D
 ): MenuPointGameObject(text, parent, position)
+

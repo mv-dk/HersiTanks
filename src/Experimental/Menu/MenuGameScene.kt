@@ -2,10 +2,7 @@ package Experimental.Menu
 
 import Engine.*
 import Experimental.CollisionBalls.CollisionBallsGameScene
-import Experimental.Menu.MenuPoints.ChangeSceneMenuPoint
-import Experimental.Menu.MenuPoints.ExitGameMenuPoint
-import Experimental.Menu.MenuPoints.NumberSelectorMenuPoint
-import Experimental.Menu.MenuPoints.TextInputMenuPoint
+import Experimental.Menu.MenuPoints.*
 import Experimental.TerrainScene.TerrainGameScene
 import gameWindow
 import java.awt.BasicStroke
@@ -16,7 +13,7 @@ import java.awt.event.KeyEvent
 
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
 
-    val menuGameObject = MenuGameObject(this, Pos2D(100.0, 100.0), 300, 400)
+    val menuGameObject = MenuGameObject(this, Pos2D(100.0, 20.0), 300, 400)
 
     init {
         add(menuGameObject)
@@ -38,9 +35,9 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
 }
 
 class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int, var height: Int) :GameObject2(parent, position) {
-    var x: Double = 120.0
-    var y: Double = 100.0
     var ySpacing: Double = 40.0
+    var x: Double = 120.0
+    var y: Double = position.y
     override var drawOrder = -1
 
     fun nextMenuPointPos(): Pos2D{
@@ -51,10 +48,11 @@ class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int
     val menuPoints = mutableListOf(
         ChangeSceneMenuPoint("Go!", parent, nextMenuPointPos(), {
             //CollisionBallsGameScene(Color.LIGHT_GRAY, 800, 600)
-            TerrainGameScene(parent, Color(113,136, 248), 800, 600)
+            TerrainGameScene(parent, Color(113,136, 248), 640, 360)
         }),
         NumberSelectorMenuPoint("Players", parent, nextMenuPointPos(), 2, 2, 10),
         MenuPointGameObject("Settings", parent, nextMenuPointPos()),
+        ToggleFullScreenMenuPoint(parent, nextMenuPointPos()),
         TextInputMenuPoint("Name", parent, nextMenuPointPos(), "", 10),
         ExitGameMenuPoint("Exit", parent, nextMenuPointPos())
     )
@@ -77,6 +75,7 @@ class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int
     init {
         menuPoints.forEach { parent.add(it) }
         selectedIdx = 0
+        height = ((menuPoints.size+1) * ySpacing).toInt()
     }
 
     fun keyTyped(e: KeyEvent?){
@@ -111,6 +110,8 @@ class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int
                 GameRunner.exitGame = true
             } else if ((selected as? ChangeSceneMenuPoint)?.selected == true) {
                 gameWindow?.gameRunner?.currentGameScene = (selected as ChangeSceneMenuPoint).nextScene()
+            } else if ((selected as? ToggleFullScreenMenuPoint)?.selected == true) {
+                gameWindow?.toggleFullScreen()
             }
         }
     }

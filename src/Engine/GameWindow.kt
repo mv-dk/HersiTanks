@@ -1,9 +1,9 @@
 package Engine
 
-import java.awt.Dimension
-import java.awt.Graphics2D
-import java.awt.RenderingHints
-import java.awt.Toolkit
+import gameResX
+import gameResY
+import gameWindow
+import java.awt.*
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.awt.event.MouseEvent
@@ -27,30 +27,49 @@ import kotlin.time.times
 interface IGameWindow {
     fun onGameSceneChanged(oldGameScene: IGameScene, newGameScene: IGameScene)
     fun getGraphics2D(): Graphics2D
-    fun render()
+    fun render(width: Int, height: Int)
 }
-
+var screenWidth = gameResX.toDouble()
+var screenHeight = gameResY.toDouble()
 /**
  * Creates a JFrame and a JPanel.
  * Contains the game loop in the function run().
  * Contains currentGameScene, on which update() and draw() is called.
  */
-open class GameWindow(val width: Int, val height: Int, title: String, val gameScene: IGameScene) : Runnable, IGameWindow {
-    val panel: JPanel = JPanel()
-    val frame: JFrame = JFrame()
+open class GameWindow(val width: Int, val height: Int, title: String, val gameScene: IGameScene, var fullScreen: Boolean) : Runnable, IGameWindow {
+    var panel = JPanel()
+    var frame: JFrame = JFrame()
 
     val renderingHints = java.util.Map.of(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
 
     var gameRunner: GameRunner = GameRunner(this, gameScene)
 
-
     init {
+        initFrameAndPanel(fullScreen)
+    }
+
+    fun initFrameAndPanel(fullScreen: Boolean){
         panel.preferredSize = Dimension(width, height)
         panel.size = Dimension(width, height)
         panel.isFocusable = true
         panel.requestFocusInWindow()
 
         frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
+
+        if (fullScreen) {
+            frame.isUndecorated = true
+            val graphicsEnv = GraphicsEnvironment.getLocalGraphicsEnvironment()
+            val device = graphicsEnv.defaultScreenDevice
+            if (device.isFullScreenSupported) {
+                device.fullScreenWindow = frame
+                screenWidth = device.fullScreenWindow.width.toDouble()
+                screenHeight = device.fullScreenWindow.height.toDouble()
+            }
+        } else {
+            screenWidth = width.toDouble()
+            screenHeight = height.toDouble()
+        }
+
         frame.add(panel)
         frame.pack()
         frame.setLocationRelativeTo(null)
@@ -60,14 +79,35 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
         panel.setFocusTraversalKeysEnabled(false)
     }
 
-    var image: VolatileImage = panel.createVolatileImage(width, height)
+    var image: VolatileImage = panel.createVolatileImage(screenWidth.toInt(), screenHeight.toInt())
+
+    fun toggleFullScreen(){
+        frame.dispose()
+        frame = JFrame()
+        panel = JPanel()
+
+        if (fullScreen) {
+            fullScreen = false
+            GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice.fullScreenWindow = null
+            initFrameAndPanel(false)
+            image = panel.createVolatileImage(width, height)
+        } else {
+            fullScreen = true
+            initFrameAndPanel(true)
+            image = panel.createVolatileImage(screenWidth.toInt(), screenHeight.toInt())
+        }
+    }
 
     private fun isImageValid(): Boolean {
         return image.validate(panel.graphicsConfiguration) == VolatileImage.IMAGE_INCOMPATIBLE;
     }
 
-    private fun createNewImage() {
-        image = panel.createVolatileImage(width, height)
+    private fun createNewImage(isFullScreen: Boolean) {
+        if (isFullScreen) {
+            image = panel.createVolatileImage(screenWidth.toInt(), screenHeight.toInt())
+        } else {
+            image = panel.createVolatileImage(width, height)
+        }
     }
 
     private fun createGraphics():Graphics2D {
@@ -76,8 +116,16 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
         return g;
     }
 
-    override fun render(){
-        panel.graphics.drawImage(image, 0, 0, null)
+    override fun render(gameSceneWidth: Int, gameSceneHeight: Int){
+        if (panel.graphics == null) return
+        val g2d = panel.graphics as Graphics2D
+        val scaleX = screenWidth / gameSceneWidth
+        val scaleY = screenHeight / gameSceneHeight
+        val scale = Math.min(scaleX, scaleY)
+        g2d.scale(scale, scale)
+        g2d.translate((screenWidth / scale - gameSceneWidth) / 2, (screenHeight / scale - gameSceneHeight) / 2)
+
+        g2d.drawImage(image, 0, 0, null)
         Toolkit.getDefaultToolkit().sync()
     }
 
@@ -91,7 +139,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
 
     override fun getGraphics2D(): Graphics2D {
         if (isImageValid()) {
-            createNewImage()
+            createNewImage(true)
         }
         val g = createGraphics()
         return g
@@ -129,6 +177,9 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListen
 
     override fun keyReleased(e: KeyEvent?) {
         keyEventQueue.add(e)
+        if (e?.keyCode == KeyEvent.VK_F){
+            gameWindow?.toggleFullScreen()
+        }
     }
 
     override fun mouseClicked(e: MouseEvent?) {
@@ -232,7 +283,7 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListen
     }
 
     private fun renderScreen() {
-        window.render()
+        window.render(currentGameScene.width, currentGameScene.height)
     }
 }
 
