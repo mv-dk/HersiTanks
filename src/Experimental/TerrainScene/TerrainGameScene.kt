@@ -64,12 +64,16 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         } else if (e.keyCode == KeyEvent.VK_3){
             rasterTerrain.mode = 3
         } else if (e.keyCode == KeyEvent.VK_LEFT) {
+            AudioHelper.loop("change-angle", -1)
             GameController.getCurrentTank().increaseAngle(1)
         } else if (e.keyCode == KeyEvent.VK_RIGHT){
+            AudioHelper.loop("change-angle", -1)
             GameController.getCurrentTank().increaseAngle(-1)
         } else if (e.keyCode == KeyEvent.VK_DOWN) {
+            AudioHelper.loop("decrease-power", -1)
             GameController.getCurrentTank().increasePower(-1)
         } else if (e.keyCode == KeyEvent.VK_UP) {
+            AudioHelper.loop("increase-power", -1)
             GameController.getCurrentTank().increasePower(1)
         } else if (e.keyCode == KeyEvent.VK_ENTER){
             AudioHelper.play("fire")
@@ -81,6 +85,16 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         } else if (e.keyCode == KeyEvent.VK_TAB) {
             val tank = GameController.getCurrentTank()
             tank.activeWeapon = (tank.activeWeapon + 1) % 10
+        }
+    }
+
+    override fun keyReleased(e: KeyEvent) {
+        if (e.keyCode == KeyEvent.VK_LEFT || e.keyCode == KeyEvent.VK_RIGHT) {
+            AudioHelper.stop("change-angle")
+        } else if (e.keyCode == KeyEvent.VK_UP) {
+            AudioHelper.stop("increase-power")
+        } else if (e.keyCode == KeyEvent.VK_DOWN) {
+            AudioHelper.stop("decrease-power")
         }
     }
 

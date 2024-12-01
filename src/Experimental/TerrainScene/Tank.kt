@@ -1,5 +1,6 @@
 package Experimental.TerrainScene
 
+import Engine.AudioHelper
 import Engine.GameObject2
 import Engine.IGameScene
 import Engine.Pos2D
