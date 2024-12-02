@@ -199,19 +199,7 @@ class RasterTerrain(val parent: IGameScene, position: Pos2D) : GameObject2(paren
             for (yFromTop in 1..rasterImage.height - 10) {
                 val y = rasterImage.height - yFromTop
                 for (x in 0..rasterImage.width-1) {
-                    if (rasterImage.getRGB(x, y) == 0 && rasterImage.getRGB(x, y-10) != 0){
-                        rasterImage.setRGB(x,y, rasterImage.getRGB(x, y-10))
-                        rasterImage.setRGB(x,y-10, 0)
-                        crumbleCounter += 1
-                    } else if (rasterImage.getRGB(x, y) == 0 && rasterImage.getRGB(x, y-5) != 0){
-                        rasterImage.setRGB(x,y, rasterImage.getRGB(x, y-5))
-                        rasterImage.setRGB(x,y-5, 0)
-                        crumbleCounter += 1
-                    } else if (rasterImage.getRGB(x, y) == 0 && rasterImage.getRGB(x, y-2) != 0){
-                        rasterImage.setRGB(x,y, rasterImage.getRGB(x, y-2))
-                        rasterImage.setRGB(x,y-2, 0)
-                        crumbleCounter += 1
-                    } else if (rasterImage.getRGB(x, y) == 0 && rasterImage.getRGB(x, y-1) != 0){
+                    if (rasterImage.getRGB(x, y) == 0 && rasterImage.getRGB(x, y-1) != 0){
                         rasterImage.setRGB(x,y, rasterImage.getRGB(x, y-1))
                         rasterImage.setRGB(x,y-1, 0)
                         crumbleCounter += 1
