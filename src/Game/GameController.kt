@@ -1,7 +1,6 @@
 package Game
 
 import Experimental.TerrainScene.Tank
-import java.awt.Color
 
 /*
     state (potential next states):
@@ -60,7 +59,7 @@ class BattleState(): IState{
         val oldIndex = turnIndex
         while (true) {
             turnIndex = (turnIndex + 1).mod(tanks.size)
-            if (tanks[turnIndex].alive) break
+            if (tanks[turnIndex].playing) break
             if (turnIndex == oldIndex) break
         }
     }
@@ -72,7 +71,7 @@ class BattleState(): IState{
     fun isBattleOver(): Boolean{
         var numTeamsWithAliveTanks = 0
         for (t in GameController.teams){
-            if (t.tanks.any { it.alive }) {
+            if (t.tanks.any { it.playing }) {
                 numTeamsWithAliveTanks += 1
                 if (numTeamsWithAliveTanks > 1) return true
             }

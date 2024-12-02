@@ -42,9 +42,9 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         }
     }
 
-    fun acceptInput(): Boolean{
+    fun busy(): Boolean{
         if (rasterTerrain.crumble || rasterTerrain.earthquake != null) return false
-        if (GameController.tanks.any {it.alive && it.falling}) return false
+        if (GameController.tanks.any {it.playing && it.falling}) return false
         if (GameController.projectilesFlying > 0) return false
         if (GameController.explosionsActive > 0) return false
         return true
@@ -56,7 +56,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             gameWindow?.gameRunner?.currentGameScene = parentScene
         }
 
-        if (!acceptInput()) return
+        if (!busy()) return
 
         if (e.keyCode == KeyEvent.VK_1) {
             rasterTerrain.mode = 1
@@ -100,7 +100,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     }
 
     override fun mousePressed(e: MouseEvent) {
-        if (!acceptInput()) return
+        if (!busy()) return
         if (e.button == MouseEvent.BUTTON1) {
             rasterTerrain.mouseClicked(e.x, e.y)
         } else if (e.button == MouseEvent.BUTTON3){
@@ -109,10 +109,27 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     }
 
     override fun update() {
-        if (updatePlayersTurnOnNextPossibleOccasion && acceptInput()){
-            updatePlayersTurnOnNextPossibleOccasion = false
-            GameController.nextPlayersTurn()
+        if (busy()){
+            if (GameController.tanks.count { it.playing } == 1) {
+                // Winner!
+                // Go to purchase screen
+                
+            } else {
+                val deadTank = GameController.tanks.firstOrNull() { it.playing && it.energy == 0 }
+                if (deadTank != null) {
+                    remove(deadTank)
+                    deadTank.playing = false
+                    add(Explosion(this, deadTank.position, 100, 40, {
+                        updatePlayersTurnOnNextPossibleOccasion = true
+                    }))
+                    AudioHelper.play("big-boom")
+                } else if (updatePlayersTurnOnNextPossibleOccasion) {
+                    updatePlayersTurnOnNextPossibleOccasion = false
+                    GameController.nextPlayersTurn()
+                }
+            }
         }
+
         super.update()
     }
 }

@@ -1,6 +1,5 @@
 package Experimental.TerrainScene
 
-import Engine.AudioHelper
 import Engine.GameObject2
 import Engine.IGameScene
 import Engine.Pos2D
@@ -26,7 +25,7 @@ class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var positio
     var energy = 100
     val stroke = BasicStroke(3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
     var falling: Boolean = false
-    var alive = true
+    var playing = true
     var activeWeapon = WEAPON_BOMB
         set(value) {
             if (value < 0 || value > 9) throw Exception("Weapon must be between 0 and 9 (inclusive)")
