@@ -23,6 +23,7 @@ class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var positio
     var size = 20
     var power = 100
     var angle = 45.0
+    var energy = 100
     val stroke = BasicStroke(3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
     var falling: Boolean = false
     var alive = true

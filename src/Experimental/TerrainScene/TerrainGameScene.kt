@@ -16,12 +16,14 @@ val random = Random(1)
 class TerrainGameScene(private val parentScene: IGameScene, color: Color, width: Int, height: Int) : GameScene(color, width, height) {
     lateinit var rasterTerrain: RasterTerrain
     var updatePlayersTurnOnNextPossibleOccasion = false
+    var tankInfoBar = TankInfoBar(this, Pos2D(0.0, 0.0))
     var weaponBar = WeaponBar(this, Pos2D(0.0, 32.0))
 
     override fun load() {
         GameController.state = BattleState()
         rasterTerrain = RasterTerrain(this, Pos2D(0.0, 0.0))
         add(rasterTerrain)
+        add(tankInfoBar)
         add(weaponBar)
 
         val margin = 40.0
