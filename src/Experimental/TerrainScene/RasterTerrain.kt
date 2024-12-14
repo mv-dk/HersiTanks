@@ -111,8 +111,8 @@ class RasterTerrain(val parent: IGameScene, position: Pos2D) : GameObject2(paren
             }
             if (crumbleCounter == 0) {
                 crumble = false
-                for (t in GameController.tanks.filter { it.playing }) {
-                    t.falling = true
+                for (t in GameController.players.filter { it.playing }) {
+                    t.tank?.falling = true
                 }
             }
         } else if (earthquake != null){

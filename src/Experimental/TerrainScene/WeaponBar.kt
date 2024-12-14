@@ -35,7 +35,7 @@ class WeaponBar(val parent: IGameScene, val position: Pos2D) : GameObject2(paren
     }
 
     fun drawWeapon(g: Graphics2D, n: Int, x: Int){
-        val activeWeapon = GameController.getCurrentTank().activeWeapon
+        val activeWeapon = GameController.getCurrentPlayersTank()?.activeWeapon
         g.color = if (activeWeapon == n) Color.RED else darkPurple
         g.drawRect(x, position.y.toInt(), 32, 32)
         when(n) {

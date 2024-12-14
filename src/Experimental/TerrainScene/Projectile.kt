@@ -33,10 +33,9 @@ class Projectile(val parent: IGameScene, var position: Pos2D, var velocity: Vec2
     }
 
     fun explode() {
-        when (GameController.getCurrentTank().activeWeapon) {
+        when (GameController.getCurrentPlayersTank()?.activeWeapon) {
             WEAPON_BOMB -> {
                 val holeSize = random.nextInt(30, 200)
-                terrain.pokeHole(position.x.toInt(), position.y.toInt(), holeSize)
                 parent.remove(this)
                 val exp = Explosion(parent, position, holeSize, holeSize / 3, {
                     terrain.crumble = true

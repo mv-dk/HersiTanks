@@ -3,6 +3,7 @@ package Experimental.TerrainScene
 import Engine.*
 import Game.BattleState
 import Game.GameController
+import Game.Player
 import Game.Team
 import gameWindow
 import java.awt.Color
@@ -36,18 +37,20 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         for (i in 1 .. numPlayers){
             val tank = Tank(this, rasterTerrain, Pos2D(x, 30.0), colors[i-1])
             tank.falling = true
-            GameController.addTeam(Team("Tank$i", mutableListOf(tank)))
+            val player = Player("Player $i")
+            player.tank = tank
+            GameController.addTeam(Team("Tank$i", mutableListOf(player)))
             add(tank)
             x += spaceBetweenTanks
         }
     }
 
     fun busy(): Boolean{
-        if (rasterTerrain.crumble || rasterTerrain.earthquake != null) return false
-        if (GameController.tanks.any {it.playing && it.falling}) return false
-        if (GameController.projectilesFlying > 0) return false
-        if (GameController.explosionsActive > 0) return false
-        return true
+        if (rasterTerrain.crumble || rasterTerrain.earthquake != null) return true
+        if (GameController.players.any {it.playing && (it.tank?.falling == true)}) return true
+        if (GameController.projectilesFlying > 0) return true
+        if (GameController.explosionsActive > 0) return true
+        return false
     }
 
     override fun keyPressed(e: KeyEvent) {
@@ -56,7 +59,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             gameWindow?.gameRunner?.currentGameScene = parentScene
         }
 
-        if (!busy()) return
+        if (busy()) return
 
         if (e.keyCode == KeyEvent.VK_1) {
             rasterTerrain.mode = 1
@@ -66,26 +69,35 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             rasterTerrain.mode = 3
         } else if (e.keyCode == KeyEvent.VK_LEFT) {
             AudioHelper.loop("change-angle", -1)
-            GameController.getCurrentTank().increaseAngle(1)
+            GameController.getCurrentPlayersTank()?.increaseAngle(1)
         } else if (e.keyCode == KeyEvent.VK_RIGHT){
             AudioHelper.loop("change-angle", -1)
-            GameController.getCurrentTank().increaseAngle(-1)
+            GameController.getCurrentPlayersTank()?.increaseAngle(-1)
         } else if (e.keyCode == KeyEvent.VK_DOWN) {
             AudioHelper.loop("decrease-power", -1)
-            GameController.getCurrentTank().increasePower(-1)
+            GameController.getCurrentPlayersTank()?.increasePower(-1)
         } else if (e.keyCode == KeyEvent.VK_UP) {
             AudioHelper.loop("increase-power", -1)
-            GameController.getCurrentTank().increasePower(1)
+            GameController.getCurrentPlayersTank()?.increasePower(1)
         } else if (e.keyCode == KeyEvent.VK_ENTER){
             AudioHelper.play("fire")
-            val tank = GameController.getCurrentTank()
-            val projectile = Projectile(this, tank.position.copy(),
-                Vec2D(tank.position.copy(), Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())).times(tank.power/100.0))
-            add(projectile)
+            val tank = GameController.getCurrentPlayersTank()
+            if (tank != null) {
+                val projectile = Projectile(
+                    this, tank.position.copy(),
+                    Vec2D(
+                        tank.position.copy(),
+                        Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())
+                    ).times(tank.power / 100.0)
+                )
+                add(projectile)
+            }
             updatePlayersTurnOnNextPossibleOccasion = true
         } else if (e.keyCode == KeyEvent.VK_TAB) {
-            val tank = GameController.getCurrentTank()
-            tank.activeWeapon = (tank.activeWeapon + 1) % 10
+            val tank = GameController.getCurrentPlayersTank()
+            if (tank != null) {
+                tank.activeWeapon = (tank.activeWeapon + 1) % 10
+            }
         }
     }
 
@@ -109,24 +121,18 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     }
 
     override fun update() {
-        if (busy()){
-            if (GameController.tanks.count { it.playing } == 1) {
-                // Winner!
-                // Go to purchase screen
-                
-            } else {
-                val deadTank = GameController.tanks.firstOrNull() { it.playing && it.energy == 0 }
-                if (deadTank != null) {
-                    remove(deadTank)
-                    deadTank.playing = false
-                    add(Explosion(this, deadTank.position, 100, 40, {
-                        updatePlayersTurnOnNextPossibleOccasion = true
-                    }))
-                    AudioHelper.play("big-boom")
-                } else if (updatePlayersTurnOnNextPossibleOccasion) {
-                    updatePlayersTurnOnNextPossibleOccasion = false
-                    GameController.nextPlayersTurn()
-                }
+        if (!busy() && updatePlayersTurnOnNextPossibleOccasion) {
+            val deadPlayer = GameController.players.firstOrNull(){it.playing && it.tank?.energy == 0}
+            val deadTank = deadPlayer?.tank
+            if (deadPlayer != null && deadTank != null){
+                remove(deadTank)
+                deadTank.playing = false
+                deadPlayer.playing = false
+                add(Explosion(this, deadTank.position, 100, 40, { }))
+            }
+            if (!busy()) {
+                updatePlayersTurnOnNextPossibleOccasion = false
+                GameController.nextPlayersTurn()
             }
         }
 

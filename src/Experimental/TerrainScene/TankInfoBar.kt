@@ -27,9 +27,24 @@ class TankInfoBar(val parent: IGameScene, val position: Pos2D) : GameObject2(par
         g.stroke = stroke
         g.color = Color.YELLOW
         g.font = font
-        g.drawString("Power: ${GameController.getCurrentTank().power}", position.x.toInt() + 16, position.y.toInt() + 22)
-        g.drawString("Angle: ${GameController.getCurrentTank().angle.toInt()}", position.x.toInt() + 286, position.y.toInt() + 22)
-        g.drawString("Energy: ${GameController.getCurrentTank().energy}", position.x.toInt() + 516, position.y.toInt() + 22)
+        val currentTank = GameController.getCurrentPlayersTank()
+        if (currentTank != null) {
+            g.drawString(
+                "Power: ${currentTank.power}",
+                position.x.toInt() + 16,
+                position.y.toInt() + 22
+            )
+            g.drawString(
+                "Angle: ${currentTank.angle.toInt()}",
+                position.x.toInt() + 286,
+                position.y.toInt() + 22
+            )
+            g.drawString(
+                "Energy: ${currentTank.energy}",
+                position.x.toInt() + 516,
+                position.y.toInt() + 22
+            )
+        }
     }
 
 }

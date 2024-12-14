@@ -15,7 +15,7 @@ import Experimental.TerrainScene.Tank
 object GameController {
     var state: IState = MenuState()
     var teams: MutableList<Team> = mutableListOf()
-    var tanks: MutableList<Tank> = mutableListOf()
+    var players: MutableList<Player> = mutableListOf()
     var settings: MutableMap<String, Any> = mutableMapOf()
 
     var projectilesFlying = 0
@@ -23,27 +23,33 @@ object GameController {
 
     fun onGoingToMenu(){
         teams.clear()
-        tanks.clear()
+        players.clear()
     }
 
     fun addTeam(t: Team){
         teams.add(t)
-        tanks.addAll(t.tanks)
+        players.addAll(t.players)
     }
 
-    fun getCurrentTank(): Tank{
+    fun getCurrentPlayersTank(): Tank?{
         val battleState = state as BattleState
-        return battleState.currentTank(tanks)
+        val currentPlayer = battleState.currentPlayer(players)
+        return currentPlayer.tank
     }
 
     fun nextPlayersTurn() {
         (state as BattleState).let {
-            it.nextTurn(tanks)
+            it.nextTurn(players)
         }
     }
 }
 
-class Team(val name: String, val tanks: List<Tank>) {
+class Player(val name: String) {
+    var tank: Tank? = null
+    var playing: Boolean = true
+}
+
+class Team(val name: String, val players: List<Player>) {
     var victories = 0
 }
 
@@ -55,23 +61,23 @@ class CreatePlayersState: IState{}
 class BattleState(): IState{
     var turnIndex = 0
 
-    fun nextTurn(tanks: List<Tank>){
+    fun nextTurn(players: List<Player>){
         val oldIndex = turnIndex
         while (true) {
-            turnIndex = (turnIndex + 1).mod(tanks.size)
-            if (tanks[turnIndex].playing) break
+            turnIndex = (turnIndex + 1).mod(players.size)
+            if (players[turnIndex].playing) break
             if (turnIndex == oldIndex) break
         }
     }
 
-    fun currentTank(tanks: List<Tank>): Tank{
-        return tanks[turnIndex]
+    fun currentPlayer(players: List<Player>): Player{
+        return players[turnIndex]
     }
 
     fun isBattleOver(): Boolean{
         var numTeamsWithAliveTanks = 0
         for (t in GameController.teams){
-            if (t.tanks.any { it.playing }) {
+            if (t.players.any { it.playing }) {
                 numTeamsWithAliveTanks += 1
                 if (numTeamsWithAliveTanks > 1) return true
             }
