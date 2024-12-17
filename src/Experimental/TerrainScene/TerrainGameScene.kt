@@ -98,6 +98,20 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             if (tank != null) {
                 tank.activeWeapon = (tank.activeWeapon + 1) % 10
             }
+        } else if (e.keyCode == KeyEvent.VK_0) {
+            val tank = GameController.getCurrentPlayersTank()
+            if (tank != null) {
+                tank.size += 1
+                tank.updateCanonXY()
+                println("Tank size: ${tank.size}")
+            }
+        } else if (e.keyCode == KeyEvent.VK_9){
+            val tank = GameController.getCurrentPlayersTank()
+            if (tank != null) {
+                tank.size -= 1
+                tank.updateCanonXY()
+                println("Tank size: ${tank.size}")
+            }
         }
     }
 

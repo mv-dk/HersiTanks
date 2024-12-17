@@ -20,10 +20,14 @@ val WEAPON_LASER = 9
 
 class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var position: Pos2D, val color: Color) : GameObject2(parent, position) {
     var size = 20
+        set(value) {
+            field = value
+            stroke = BasicStroke(value/7f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
+        }
     var power = 100
     var angle = 45.0
     var energy = 100
-    val stroke = BasicStroke(3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
+    var stroke = BasicStroke(size/7f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
     var falling: Boolean = false
     var playing = true
     var activeWeapon = WEAPON_BOMB
