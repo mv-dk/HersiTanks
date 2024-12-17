@@ -41,8 +41,8 @@ fun main() {
  * in the default screen device
  */
 fun getBestScale() : Int{
-    val scaleX = (GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice.displayMode.width / gameResX)
-    val scaleY = (GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice.displayMode.height / gameResY);
+    val scaleX = ((GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice.displayMode.width-1) / gameResX)
+    val scaleY = ((GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice.displayMode.height-1) / gameResY);
     val scale = min(scaleX, scaleY)
     return scale
 }
