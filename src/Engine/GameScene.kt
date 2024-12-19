@@ -42,7 +42,14 @@ abstract class GameScene(val color: Color, override val width: Int, override val
     }
 
     override fun forEachGameObject(act: (obj: IGameObject) -> Unit) = gameObjects.forEach { act(it.value) }
-    final override fun unload() = forEachGameObject { it.unload() }
+    final override fun unload() {
+        forEachGameObject {
+            it.unload()
+        }
+        if (gameObjectsToRemove.size < gameObjects.size) {
+            println("GameScene is unloaded, but its ${gameObjects.size} objects are not removed.")
+        }
+    }
 
     override fun update(){
         gameObjectsToRemove.forEach {

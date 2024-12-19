@@ -13,7 +13,8 @@ class NumberSelectorMenuPoint(
     var numberValue: Int,
     val min: Int,
     val max: Int,
-    val step: Int = 1
+    val step: Int = 1,
+    val onChange: (old: Int, new: Int) -> Unit
 ):
     MenuPointGameObject(text, parent, position) {
 
@@ -30,12 +31,14 @@ class NumberSelectorMenuPoint(
     }
 
     fun increase() {
+        val oldValue = numberValue
         if (numberValue < max) numberValue += step
-        GameController.settings[text] = numberValue
+        onChange(oldValue, numberValue)
     }
 
     fun decrease() {
+        val oldValue = numberValue
         if (numberValue > min) numberValue -= step
-        GameController.settings[text] = numberValue
+        onChange(oldValue, numberValue)
     }
 }

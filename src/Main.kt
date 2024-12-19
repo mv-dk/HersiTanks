@@ -19,16 +19,17 @@ var gameWindow: GameWindow? = null
 var gameResX = 640
 var gameResY = 360
 
+var menuGameScene = MenuGameScene(gameResX, gameResY, Color(77, 83, 128))
+
 fun main() {
     println("Hello World!")
     preloadSounds()
-    val gameScene = MenuGameScene(gameResX, gameResY, Color(77, 83, 128))
     //val gameScene = BallGameScene(800, 600)
     //val gameScene = CollisionBallsGameScene(Color.LIGHT_GRAY, width, height)
 
     val scale = getBestScale()
 
-    gameWindow = GameWindow(gameResX * scale, gameResY * scale, "Hersi", gameScene, false)
+    gameWindow = GameWindow(gameResX * scale, gameResY * scale, "Hersi", menuGameScene, false)
     val gameThread = Thread(gameWindow)
     gameThread.start()
     gameThread.join()

@@ -1,10 +1,10 @@
 package Experimental.TerrainScene
 
 import Engine.*
+import Experimental.Status.StatusLine
+import Experimental.Status.StatusScreen
 import Game.BattleState
 import Game.GameController
-import Game.Player
-import Game.Team
 import gameWindow
 import java.awt.Color
 import java.awt.event.KeyEvent
@@ -27,19 +27,15 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         add(weaponBar)
 
         val margin = 40.0
-        var numPlayers = 2
-        try {
-            numPlayers = GameController.settings["Players"] as Int
-        } catch (e: Exception) { }
-        val colors = listOf(Color.RED, Color.BLUE, Color.CYAN, Color.YELLOW, Color.BLACK, Color.WHITE, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.LIGHT_GRAY)
+        var numPlayers = GameController.players.size
         val spaceBetweenTanks = if (numPlayers == 1) (width-margin)/2.0 else ((width-2.0*margin) / (numPlayers-1))
         var x = margin
         for (i in 1 .. numPlayers){
-            val tank = Tank(this, rasterTerrain, Pos2D(x, 30.0), colors[i-1])
+            val p = GameController.players[i-1]
+            val tank = Tank(this, rasterTerrain, Pos2D(x, 30.0), p.color)
             tank.falling = true
-            val player = Player("Player $i")
-            player.tank = tank
-            GameController.addTeam(Team("Tank$i", mutableListOf(player)))
+            p.tank = tank
+            p.playing = true
             add(tank)
             x += spaceBetweenTanks
         }
@@ -136,7 +132,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 
     override fun update() {
         if (!busy() && updatePlayersTurnOnNextPossibleOccasion) {
-            val deadPlayer = GameController.players.firstOrNull(){it.playing && it.tank?.energy == 0}
+            val deadPlayer = GameController.players.firstOrNull{it.playing && it.tank?.energy == 0}
             val deadTank = deadPlayer?.tank
             if (deadPlayer != null && deadTank != null){
                 remove(deadTank)
@@ -147,6 +143,17 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             if (!busy()) {
                 updatePlayersTurnOnNextPossibleOccasion = false
                 GameController.nextPlayersTurn()
+                if ((GameController.state as BattleState).isBattleOver()) {
+                    val team = GameController.getCurrentPlayersTeam()
+                    team.victories += 1
+                    GameController.gamesPlayed += 1
+                    val statusLines = GameController.players.map {
+                        StatusLine(it.name, it.victories(), it.money, it.color)
+                    }
+
+                    unload()
+                    gameWindow?.gameRunner?.currentGameScene = StatusScreen(statusLines)
+                }
             }
         }
 

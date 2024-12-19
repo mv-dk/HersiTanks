@@ -4,6 +4,11 @@ import Engine.*
 import Experimental.CollisionBalls.CollisionBallsGameScene
 import Experimental.Menu.MenuPoints.*
 import Experimental.TerrainScene.TerrainGameScene
+import Game.GameController
+import Game.Player
+import Game.Team
+import gameResX
+import gameResY
 import gameWindow
 import java.awt.BasicStroke
 import java.awt.Color
@@ -38,6 +43,8 @@ class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int
     var ySpacing: Double = 40.0
     var x: Double = 120.0
     var y: Double = position.y
+    var numPlayersSelected = 2
+    var numGamesSelected = 10
     override var drawOrder = -1
 
     fun nextMenuPointPos(): Pos2D{
@@ -48,12 +55,17 @@ class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int
     val menuPoints = mutableListOf(
         ChangeSceneMenuPoint("Go!", parent, nextMenuPointPos(), {
             //CollisionBallsGameScene(Color.LIGHT_GRAY, 800, 600)
-            TerrainGameScene(parent, Color(113,136, 248), 640, 360)
+            TerrainGameScene(parent, Color(113,136, 248), gameResX, gameResY)
         }),
-        NumberSelectorMenuPoint("Players", parent, nextMenuPointPos(), 2, 2, 10),
-        MenuPointGameObject("Settings", parent, nextMenuPointPos()),
+        NumberSelectorMenuPoint("Players", parent, nextMenuPointPos(), 2, 2, 10, onChange = {_,new ->
+            numPlayersSelected = new
+        }),
+        NumberSelectorMenuPoint("Rounds", parent, nextMenuPointPos(), 10, 1, 99, onChange = {_,new ->
+            numGamesSelected = new
+        }),
+        //MenuPointGameObject("Settings", parent, nextMenuPointPos()),
         ToggleFullScreenMenuPoint(parent, nextMenuPointPos()),
-        TextInputMenuPoint("Name", parent, nextMenuPointPos(), "", 10),
+        //TextInputMenuPoint("Name", parent, nextMenuPointPos(), "", 10),
         ExitGameMenuPoint("Exit", parent, nextMenuPointPos())
     )
     val selected: MenuPointGameObject
@@ -109,6 +121,17 @@ class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int
             if ((selected as? ExitGameMenuPoint)?.selected == true) {
                 GameRunner.exitGame = true
             } else if ((selected as? ChangeSceneMenuPoint)?.selected == true) {
+                GameController.teams.clear()
+                GameController.players.clear()
+                GameController.gamesToPlay = numGamesSelected
+                GameController.gamesPlayed = 0
+                val colors = listOf(Color.RED, Color.BLUE, Color.CYAN, Color.YELLOW, Color.BLACK, Color.WHITE, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.LIGHT_GRAY)
+                for (i in 1 .. numPlayersSelected) {
+                    val newPlayer = Player("Player $i")
+                    newPlayer.color = colors[i-1]
+                    GameController.teams.add(Team("Team $i", listOf(newPlayer)))
+                    GameController.players.add(newPlayer)
+                }
                 gameWindow?.gameRunner?.currentGameScene = (selected as ChangeSceneMenuPoint).nextScene()
             } else if ((selected as? ToggleFullScreenMenuPoint)?.selected == true) {
                 gameWindow?.toggleFullScreen()
