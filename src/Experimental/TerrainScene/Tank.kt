@@ -16,6 +16,7 @@ val WEAPON_DIRT_BOMB = 6
 val WEAPON_MIRV = 7
 val WEAPON_NAPALM = 8
 val WEAPON_LASER = 9
+val WEAPON_FROG_BOMB = 10
 
 class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D, val color: Color) : GameObject2(parent, position) {
     var size = 20
