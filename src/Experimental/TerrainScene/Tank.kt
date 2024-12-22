@@ -1,9 +1,6 @@
 package Experimental.TerrainScene
 
-import Engine.GameObject2
-import Engine.IGameScene
-import Engine.Pos2D
-import Engine.lighter
+import Engine.*
 import Game.GameController
 import java.awt.BasicStroke
 import java.awt.Color
@@ -65,7 +62,7 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
     }
 
     override fun draw(g: Graphics2D) {
-        g.color = if (GameController.glowUp > 0) color.lighter(GameController.glowUp*10) else color
+        g.color = if (GameController.glowUp > 0) color.lighter(GameController.glowUp*10) else color.mult(energy/100.0)
         g.stroke = stroke
 
         g.drawLine(position.x.toInt(), position.y.toInt(), canonX, canonY)

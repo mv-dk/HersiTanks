@@ -45,3 +45,7 @@ fun Color.lighter(degree: Int): Color {
 fun Color.darker(degree: Int): Color {
     return Color(Math.max(this.red-degree, 0), Math.max(this.green-degree, 0), Math.max(this.blue-degree, 0))
 }
+
+fun Color.mult(factor: Double): Color {
+    return Color((this.red*factor).toInt(), (this.green*factor).toInt(), (this.blue*factor).toInt())
+}
