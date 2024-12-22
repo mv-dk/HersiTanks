@@ -1,9 +1,6 @@
 package Experimental.TerrainScene
 
-import Engine.AudioHelper
-import Engine.GameObject2
-import Engine.IGameScene
-import Engine.Pos2D
+import Engine.*
 import Game.GameController
 import java.awt.AlphaComposite
 import java.awt.BasicStroke
@@ -20,7 +17,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
 
     init {
         val g = rasterImage.createGraphics()
-        g.color = Color.GREEN;
+        g.color = Color.GREEN.darker(40);
 
         val rand = Random(System.currentTimeMillis())
         val xs = mutableListOf<Int>()

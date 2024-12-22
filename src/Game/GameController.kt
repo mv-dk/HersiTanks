@@ -23,6 +23,7 @@ object GameController {
 
     var projectilesFlying = 0
     var explosionsActive = 0
+    var glowUp = 0 // whether everything should glow up
 
     fun onGoingToMenu(){
         teams.clear()

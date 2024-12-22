@@ -157,6 +157,9 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
                 }
             }
         }
+        if (GameController.glowUp > 0) {
+            GameController.glowUp -= 1
+        }
 
         super.update()
     }

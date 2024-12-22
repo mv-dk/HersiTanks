@@ -3,6 +3,8 @@ package Experimental.TerrainScene
 import Engine.GameObject2
 import Engine.IGameScene
 import Engine.Pos2D
+import Engine.lighter
+import Game.GameController
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
@@ -63,10 +65,9 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
     }
 
     override fun draw(g: Graphics2D) {
-        g.color = color
+        g.color = if (GameController.glowUp > 0) color.lighter(GameController.glowUp*10) else color
         g.stroke = stroke
 
-        g.color = color
         g.drawLine(position.x.toInt(), position.y.toInt(), canonX, canonY)
         g.fillArc((position.x - size/2).toInt(), (position.y - size/2).toInt()+2, size, size, 0, 180)
 

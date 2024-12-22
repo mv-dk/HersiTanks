@@ -10,6 +10,7 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
 
     init {
         GameController.explosionsActive += 1
+        GameController.glowUp = 10
         val terrain = (parent as TerrainGameScene).rasterTerrain
         terrain.pokeHole(position.x.toInt(), position.y.toInt(), size)
         if (size > 100){

@@ -37,3 +37,11 @@ fun Random.nextPos2D(width: Double, height: Double): Pos2D {
 fun Random.nextColor(): Color {
     return Color(this.nextInt(255), this.nextInt(255), this.nextInt(255))
 }
+
+fun Color.lighter(degree: Int): Color {
+    return Color(Math.min(this.red+degree, 255), Math.min(this.green+degree, 255), Math.min(this.blue+degree, 255))
+}
+
+fun Color.darker(degree: Int): Color {
+    return Color(Math.max(this.red-degree, 0), Math.max(this.green-degree, 0), Math.max(this.blue-degree, 0))
+}
