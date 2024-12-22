@@ -28,6 +28,7 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
     var energy = 100
     var stroke = BasicStroke(size/7f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
     var falling: Boolean = false
+    var firstFall = true
     var playing = true
     var activeWeapon = WEAPON_BOMB
         set(value) {
@@ -47,18 +48,19 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
                     rasterTerrain.rasterImage.graphics.color = Color(0,0,0,0)
                     rasterTerrain.pokeLine((position.x-size/2).toInt(), position.y.toInt()-5, (position.x+size/2).toInt(), position.y.toInt()-5, 3f)
 
+                    if (!firstFall && energy > 0)
+                        energy -= 1
+
                     onTankMoved()
                 } else {
                     falling = false
+                    firstFall = false
                 }
             } else {
                 falling = false
+                firstFall = false
             }
         }
-    }
-
-    fun setFall(fall: Boolean) {
-        this.falling = fall
     }
 
     override fun draw(g: Graphics2D) {
