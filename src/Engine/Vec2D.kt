@@ -20,6 +20,6 @@ data class Vec2D(var x: Double, var y: Double) {
     fun normalized(): Vec2D = Vec2D(x, y) /mag()
     fun reflect(other: Vec2D): Vec2D {
         val n = other.normalized().hat()
-        return this - n * (2*(this.dot(n)))
+        return this - n * (2 * (this.dot(n)))
     }
 }

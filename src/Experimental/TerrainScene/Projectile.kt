@@ -19,8 +19,12 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D) 
     }
 
     override fun update() {
+        val oldPos = position.copy()
         position.x += velocity.x
         position.y += velocity.y
+        val newSmokes = oldPos.stepsTo(position, 10)
+        newSmokes.forEach { parent.add(ProjectileTrail(parent, it)) }
+
         velocity.y += 1
 
         if (position.y > parent.height) {

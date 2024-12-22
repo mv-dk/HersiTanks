@@ -6,6 +6,7 @@ import Experimental.Status.StatusScreen
 import Game.BattleState
 import Game.GameController
 import gameWindow
+import menuGameScene
 import java.awt.Color
 import java.awt.event.KeyEvent
 import java.awt.event.MouseEvent
@@ -52,7 +53,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     override fun keyPressed(e: KeyEvent) {
         if (e.keyCode == KeyEvent.VK_ESCAPE){
             GameController.onGoingToMenu()
-            gameWindow?.gameRunner?.currentGameScene = parentScene
+            gameWindow?.gameRunner?.currentGameScene = menuGameScene
         }
 
         if (busy()) return
@@ -80,7 +81,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             val tank = GameController.getCurrentPlayersTank()
             if (tank != null) {
                 val projectile = Projectile(
-                    this, tank.position.copy(),
+                    this, Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble()),
                     Vec2D(
                         tank.position.copy(),
                         Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())

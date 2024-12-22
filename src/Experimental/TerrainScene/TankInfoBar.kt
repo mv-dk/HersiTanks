@@ -1,10 +1,12 @@
 package Experimental.TerrainScene
 
 import Engine.GameObject2
+import Engine.GameRunner
 import Engine.IGameScene
 import Engine.Pos2D
 import Game.GameController
 import gameResX
+import gameResY
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Font
@@ -13,9 +15,13 @@ import java.awt.Graphics2D
 class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, position) {
     val stroke = BasicStroke(3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
     val font = Font("Helvetica", Font.PLAIN, 18)
+    val debugFont = Font("Helvetica", Font.PLAIN, 10)
     val purple = Color(30, 30, 80)
     val darkPurple = Color(20, 20, 40)
 
+    init {
+        drawOrder = 100
+    }
 
     override fun update() {
 
@@ -54,6 +60,11 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
 
             g.color = player.color
             g.drawString(player.name, gameResX / 2 - nameWidth/2, position.y.toInt() + 22)
+
+            if (GameRunner.debug) {
+                g.font = debugFont
+                g.drawString("GameObjects: ${parent.gameObjectsCount()}", 0, gameResY - 10)
+            }
         }
     }
 }

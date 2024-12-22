@@ -151,8 +151,9 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListen
     private val mouseEventQueue: ConcurrentLinkedQueue<MouseEvent> = ConcurrentLinkedQueue()
 
     companion object {
-        var exitGame: Boolean = false
-        var fps: Double = 60.0
+        val debug = true
+        var exitGame = false
+        var fps = 60.0
     }
 
     var currentGameScene: IGameScene = gameScene

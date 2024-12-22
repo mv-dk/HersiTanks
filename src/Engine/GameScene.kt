@@ -52,6 +52,10 @@ abstract class GameScene(val color: Color, override val width: Int, override val
         }
     }
 
+    override fun gameObjectsCount(): Int {
+        return gameObjects.size
+    }
+
     override fun update(){
         gameObjectsToRemove.forEach {
             gameObjects[it]?.onBeforeRemoved()

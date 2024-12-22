@@ -22,7 +22,7 @@ interface IGameScene {
     fun mouseExited(e: MouseEvent) { }
     fun mousePressed(e: MouseEvent) { }
     fun mouseWheel(e: MouseEvent) { }
-
+    fun gameObjectsCount() :Int
     val width: Int
     val height: Int
 }
