@@ -58,7 +58,7 @@ object GameController {
     }
 }
 
-class Player(val name: String) {
+class Player(var name: String) {
     var tank: Tank? = null
     var playing: Boolean = true
     var money = 0.0

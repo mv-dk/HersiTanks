@@ -8,7 +8,7 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
 
-class WeaponBar(val parent: IGameScene, val position: Pos2D) : GameObject2(parent, position) {
+class WeaponBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, position) {
     val stroke = BasicStroke(3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
     val purple = Color(30, 30, 80)
     val darkPurple = Color(20, 20, 40)

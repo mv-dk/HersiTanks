@@ -12,7 +12,7 @@ import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 import kotlin.random.Random
 
-class RasterTerrain(val parent: IGameScene, position: Pos2D) : GameObject2(parent, position){
+class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, position){
     var rasterImage: BufferedImage = BufferedImage(parent.width, parent.height, BufferedImage.BITMASK)
     var mode: Int = 1
     var crumble: Boolean = false

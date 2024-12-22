@@ -5,7 +5,7 @@ import Game.GameController
 import java.awt.Color
 import java.awt.Graphics2D
 
-class Explosion(val parent: IGameScene, val position: Pos2D, var size: Int, val duration: Int, val onDone: () -> Unit) : GameObject2(parent, position) {
+class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration: Int, val onDone: () -> Unit) : GameObject2(parent, position) {
     var tick: Int = 0
 
     init {

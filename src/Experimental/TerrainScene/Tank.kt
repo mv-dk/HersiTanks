@@ -18,7 +18,7 @@ val WEAPON_MIRV = 7
 val WEAPON_NAPALM = 8
 val WEAPON_LASER = 9
 
-class Tank(val parent: IGameScene, var rasterTerrain: RasterTerrain, var position: Pos2D, val color: Color) : GameObject2(parent, position) {
+class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D, val color: Color) : GameObject2(parent, position) {
     var size = 20
         set(value) {
             field = value

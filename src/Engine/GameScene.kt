@@ -29,6 +29,7 @@ abstract class GameScene(val color: Color, override val width: Int, override val
     private val gameObjectsByDrawOrder: SortedSet<IGameObject> = sortedSetOf(GameObjectDrawOrderComparator())
     private val gameObjectsToAdd: MutableMap<Int, IGameObject> = mutableMapOf()
     private val gameObjectsToRemove: MutableSet<Int> = mutableSetOf()
+    var i = 0
 
 
 
@@ -71,8 +72,7 @@ abstract class GameScene(val color: Color, override val width: Int, override val
         gameObjects.forEach {
             it.value.update()
         }
-
-
+        i += 1
     }
 
     override fun draw(g: Graphics2D) {

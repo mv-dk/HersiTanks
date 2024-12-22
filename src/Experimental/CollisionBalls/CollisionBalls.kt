@@ -53,7 +53,7 @@ class CollisionBallsGameScene(color: Color, width: Int, height: Int) : GameScene
     }
 }
 
-class CollisionBallsGameObject(val parent: IGameScene, val position: Pos2D, var velocity: Vec2D, val size: Double, val color: Color)
+class CollisionBallsGameObject(parent: IGameScene, position: Pos2D, var velocity: Vec2D, val size: Double, val color: Color)
     : GameObject2(parent, position) {
 
     override fun update() {

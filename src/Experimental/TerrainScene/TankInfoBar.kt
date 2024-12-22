@@ -9,7 +9,7 @@ import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
 
-class TankInfoBar(val parent: IGameScene, val position: Pos2D) : GameObject2(parent, position) {
+class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, position) {
     val stroke = BasicStroke(3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
     val font = Font("Helvetica", Font.PLAIN, 18)
     val purple = Color(30, 30, 80)

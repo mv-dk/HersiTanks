@@ -9,7 +9,7 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
 
-open class Projectile(val parent: IGameScene, var position: Pos2D, var velocity: Vec2D) : GameObject2(parent, position) {
+open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D) : GameObject2(parent, position) {
     private val stroke = BasicStroke(2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
     var size = 3
     var terrain = (parent as TerrainGameScene).rasterTerrain

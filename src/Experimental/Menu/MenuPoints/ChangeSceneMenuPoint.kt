@@ -7,6 +7,5 @@ import Experimental.Menu.MenuPointGameObject
 class ChangeSceneMenuPoint(
     text: String,
     parent: IGameScene,
-    position: Pos2D,
     val nextScene: (()-> IGameScene)
-): MenuPointGameObject(text, parent, position)
+): MenuPointGameObject(text, parent)

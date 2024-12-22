@@ -6,7 +6,6 @@ import Experimental.Menu.MenuPointGameObject
 
 class ExitGameMenuPoint(
     text: String,
-    parent: IGameScene,
-    position: Pos2D
-): MenuPointGameObject(text, parent, position)
+    parent: IGameScene
+): MenuPointGameObject(text, parent)
 

@@ -1,34 +1,43 @@
 package Experimental.Menu.MenuPoints
 
+import Engine.GameRunner
+import Engine.GameWindow
 import Engine.IGameScene
 import Engine.Pos2D
 import Experimental.Menu.MenuPointGameObject
+import java.awt.Color
 import java.awt.Graphics2D
 
 class TextInputMenuPoint(
-    text: String,
+    val label: String,
     parent: IGameScene,
-    position: Pos2D,
-    textValue: String,
-    val maxLength: Int
-) : MenuPointGameObject(text, parent, position){
-    private var tick = 0
-
-    var textValue = textValue
+    override var position: Pos2D,
+    initialTextValue: String,
+    val maxLength: Int,
+    val coloredBorder: Color? = null,
+    initialFontSize : Int = 24
+) : MenuPointGameObject(label, parent, cursor = true, fontSize = initialFontSize){
+    var lighterColoredBorder = if (coloredBorder == null) null else Color(
+        Math.min(coloredBorder?.red?.plus(100) ?: 255, 255),
+        Math.min(coloredBorder?.green?.plus(100) ?: 255, 255),
+        Math.min(coloredBorder?.blue?.plus(100) ?: 255, 255))
+    var textValue = initialTextValue
         set(value) {
-            if (value.length <= maxLength)
-                field = value
+            text = "$label: $value"
+            field = value
         }
+
+    init {
+        textValue = initialTextValue
+    }
 
     override fun draw(g: Graphics2D) {
-        if (selected) {
-            g.color = selectedColor
-            g.font = selectedFont
-        } else {
-            g.color = unselectedColor
-            g.font = unselectedFont
+        if (coloredBorder != null) {
+            g.color = if (selected) lighterColoredBorder else coloredBorder
+            g.font = getFont()
+            val width = g.fontMetrics.stringWidth(text)
+            g.fillRect(position.x.toInt() - 3, (position.y - 3).toInt(), width, 6)
         }
-        tick = (tick+1) % 60
-        g.drawString("$text: $textValue${if (selected && tick > 30) "|" else ""}", position.x.toFloat(), position.y.toFloat())
+        super.draw(g)
     }
 }

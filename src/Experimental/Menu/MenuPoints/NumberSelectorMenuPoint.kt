@@ -7,38 +7,39 @@ import Game.GameController
 import java.awt.Graphics2D
 
 class NumberSelectorMenuPoint(
-    text: String,
+    val label: String,
     parent: IGameScene,
-    position: Pos2D,
     var numberValue: Int,
     val min: Int,
     val max: Int,
     val step: Int = 1,
     val onChange: (old: Int, new: Int) -> Unit
 ):
-    MenuPointGameObject(text, parent, position) {
+    MenuPointGameObject("$label: $numberValue", parent) {
 
-    override fun draw(g: Graphics2D) {
-        if (selected) {
-            g.color = selectedColor
-            g.font = selectedFont
-            g.drawString("$text: < $numberValue >", position.x.toFloat(), position.y.toFloat())
-        } else {
-            g.color = unselectedColor
-            g.font = unselectedFont
-            g.drawString("$text: $numberValue", position.x.toFloat(), position.y.toFloat())
-        }
+    init {
+        super.text = "$label: $numberValue"
+    }
+
+    override fun onSelected() {
+        super.text = "$label: <$numberValue>"
+    }
+
+    override fun onDeselected() {
+        super.text = "$label: $numberValue"
     }
 
     fun increase() {
         val oldValue = numberValue
         if (numberValue < max) numberValue += step
+        super.text = "$label: <$numberValue>"
         onChange(oldValue, numberValue)
     }
 
     fun decrease() {
         val oldValue = numberValue
         if (numberValue > min) numberValue -= step
+        super.text = "$label: <$numberValue>"
         onChange(oldValue, numberValue)
     }
 }

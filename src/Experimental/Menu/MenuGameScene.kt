@@ -2,6 +2,7 @@ package Experimental.Menu
 
 import Engine.*
 import Experimental.CollisionBalls.CollisionBallsGameScene
+import Experimental.EditPlayers.EditPlayers
 import Experimental.Menu.MenuPoints.*
 import Experimental.TerrainScene.TerrainGameScene
 import Game.GameController
@@ -17,8 +18,38 @@ import java.awt.Graphics2D
 import java.awt.event.KeyEvent
 
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
+    var numPlayersSelected = 2
+    var numGamesSelected = 10
 
-    val menuGameObject = MenuGameObject(this, Pos2D(100.0, 20.0), 300, 400)
+    val menuPoints = mutableListOf(
+        ChangeSceneMenuPoint("Go!", this, {
+            //CollisionBallsGameScene(Color.LIGHT_GRAY, 800, 600)
+            //TerrainGameScene(parent, Color(113,136, 248), gameResX, gameResY)
+            GameController.teams.clear()
+            GameController.players.clear()
+            GameController.gamesToPlay = numGamesSelected
+            GameController.gamesPlayed = 0
+            val colors = listOf(Color.RED, Color.BLUE, Color.CYAN, Color.YELLOW, Color.BLACK, Color.WHITE, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.LIGHT_GRAY)
+            for (i in 1 .. numPlayersSelected) {
+                val newPlayer = Player("Player $i")
+                newPlayer.color = colors[i-1]
+                GameController.teams.add(Team("Team $i", listOf(newPlayer)))
+                GameController.players.add(newPlayer)
+            }
+            EditPlayers()
+        }),
+        NumberSelectorMenuPoint("Players", this, 2, 2, 10, onChange = {_,new ->
+            numPlayersSelected = new
+        }),
+        NumberSelectorMenuPoint("Rounds", this, 10, 1, 99, onChange = {_,new ->
+            numGamesSelected = new
+        }),
+        //MenuPointGameObject("Settings", parent, nextMenuPointPos()),
+        ToggleFullScreenMenuPoint(this),
+        //TextInputMenuPoint("Name", parent, nextMenuPointPos(), "", 10),
+        ExitGameMenuPoint("Exit", this)
+    )
+    val menuGameObject = MenuGameObject(this, Pos2D(100.0, 20.0), 300, 400, 40.0, menuPoints)
 
     init {
         add(menuGameObject)
@@ -39,12 +70,9 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
     override fun keyReleased(e: KeyEvent) = Unit
 }
 
-class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int, var height: Int) :GameObject2(parent, position) {
-    var ySpacing: Double = 40.0
+class MenuGameObject(parent: IGameScene, position: Pos2D, var width: Int, var height: Int, var ySpacing : Double = 40.0, var menuPoints: MutableList<MenuPointGameObject>) :GameObject2(parent, position) {
     var x: Double = 120.0
     var y: Double = position.y
-    var numPlayersSelected = 2
-    var numGamesSelected = 10
     override var drawOrder = -1
 
     fun nextMenuPointPos(): Pos2D{
@@ -52,22 +80,12 @@ class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int
         return Pos2D(x, y)
     }
 
-    val menuPoints = mutableListOf(
-        ChangeSceneMenuPoint("Go!", parent, nextMenuPointPos(), {
-            //CollisionBallsGameScene(Color.LIGHT_GRAY, 800, 600)
-            TerrainGameScene(parent, Color(113,136, 248), gameResX, gameResY)
-        }),
-        NumberSelectorMenuPoint("Players", parent, nextMenuPointPos(), 2, 2, 10, onChange = {_,new ->
-            numPlayersSelected = new
-        }),
-        NumberSelectorMenuPoint("Rounds", parent, nextMenuPointPos(), 10, 1, 99, onChange = {_,new ->
-            numGamesSelected = new
-        }),
-        //MenuPointGameObject("Settings", parent, nextMenuPointPos()),
-        ToggleFullScreenMenuPoint(parent, nextMenuPointPos()),
-        //TextInputMenuPoint("Name", parent, nextMenuPointPos(), "", 10),
-        ExitGameMenuPoint("Exit", parent, nextMenuPointPos())
-    )
+    init {
+        menuPoints.forEach {
+            it.position = nextMenuPointPos()
+        }
+    }
+
     val selected: MenuPointGameObject
         get() {
             return menuPoints[selectedIdx]
@@ -121,21 +139,13 @@ class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int
             if ((selected as? ExitGameMenuPoint)?.selected == true) {
                 GameRunner.exitGame = true
             } else if ((selected as? ChangeSceneMenuPoint)?.selected == true) {
-                GameController.teams.clear()
-                GameController.players.clear()
-                GameController.gamesToPlay = numGamesSelected
-                GameController.gamesPlayed = 0
-                val colors = listOf(Color.RED, Color.BLUE, Color.CYAN, Color.YELLOW, Color.BLACK, Color.WHITE, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.LIGHT_GRAY)
-                for (i in 1 .. numPlayersSelected) {
-                    val newPlayer = Player("Player $i")
-                    newPlayer.color = colors[i-1]
-                    GameController.teams.add(Team("Team $i", listOf(newPlayer)))
-                    GameController.players.add(newPlayer)
-                }
+
                 gameWindow?.gameRunner?.currentGameScene = (selected as ChangeSceneMenuPoint).nextScene()
             } else if ((selected as? ToggleFullScreenMenuPoint)?.selected == true) {
                 gameWindow?.toggleFullScreen()
             }
+        } else if (e?.keyCode == KeyEvent.VK_ESCAPE) {
+            GameRunner.exitGame = true
         }
     }
 
@@ -152,24 +162,51 @@ class MenuGameObject(val parent: IGameScene, val position: Pos2D, var width: Int
     }
 }
 
-open class MenuPointGameObject(var text: String, parent: IGameScene, val position: Pos2D): GameObject2(parent, position) {
+open class MenuPointGameObject(
+    var text: String,
+    parent: IGameScene,
+    var shadow: Boolean = true,
+    var cursor: Boolean = false,
+    open var fontSize: Int = 24
+): GameObject2(parent, Pos2D(0.0, 0.0)) {
     var selected: Boolean = false
-    val selectedColor = Color(200, 0, 180);
+        set(value) {
+            field = value
+            if (value) onSelected()
+            else onDeselected()
+        }
+    var selectedColor = Color(200, 0, 180);
     var unselectedColor = Color(80,10,40);
-    val selectedFont = Font("Helvetica", Font.BOLD, 24)
-    val unselectedFont = Font("Helvetica", Font.PLAIN, 24)
+    var shadowColor = Color(48, 48, 48)
+    var selectedFont = Font("Helvetica", Font.BOLD, fontSize)
+    var unselectedFont = Font("Helvetica", Font.PLAIN, fontSize)
+    private var tick = 0
 
-    override fun update() = Unit
+    open fun onSelected() = Unit
+    open fun onDeselected() = Unit
+
+    override fun update() {
+        tick = (tick + 1) % GameRunner.fps.toInt()
+    }
+
+    fun getFont() : Font {
+        return if (selected) selectedFont else unselectedFont
+    }
 
     override fun draw(g: Graphics2D) {
+        g.font = getFont()
+
+        if (shadow) {
+            g.color = shadowColor
+            g.drawString(text, position.x.toFloat()+1f, position.y.toFloat()+1f)
+        }
+
         if (selected){
             g.color = selectedColor
-            g.font = selectedFont
         } else {
             g.color = unselectedColor
-            g.font = unselectedFont
         }
-        g.drawString(text, position.x.toFloat(), position.y.toFloat())
+        g.drawString(text + if (selected && cursor && tick < GameRunner.fps/2) "|" else "", position.x.toFloat(), position.y.toFloat())
     }
 }
 
