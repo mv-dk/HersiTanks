@@ -4,6 +4,7 @@ import Engine.GameObject2
 import Engine.IGameScene
 import Engine.Pos2D
 import Game.GameController
+import gameResX
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Font
@@ -25,7 +26,7 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
         g.fillRect(position.x.toInt(), position.y.toInt(), parent.width, 32)
 
         g.stroke = stroke
-        g.color = Color.YELLOW
+        g.color = Color.WHITE
         g.font = font
         val currentTank = GameController.getCurrentPlayersTank()
         if (currentTank != null) {
@@ -36,7 +37,7 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
             )
             g.drawString(
                 "Angle: ${currentTank.angle.toInt()}",
-                position.x.toInt() + 286,
+                position.x.toInt() + 120,
                 position.y.toInt() + 22
             )
             g.drawString(
@@ -44,7 +45,15 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
                 position.x.toInt() + 516,
                 position.y.toInt() + 22
             )
+            val player = GameController.getCurrentPlayer()
+
+            val nameWidth = g.fontMetrics.stringWidth(player.name)
+            // shadow
+            g.color = Color.BLACK
+            g.drawString(player.name, (gameResX / 2 - nameWidth/2) + 1, position.y.toInt() + 22 + 1)
+
+            g.color = player.color
+            g.drawString(player.name, gameResX / 2 - nameWidth/2, position.y.toInt() + 22)
         }
     }
-
 }
