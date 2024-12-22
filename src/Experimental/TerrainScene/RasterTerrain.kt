@@ -40,7 +40,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
             tmpx += xstep
 
             tmpy += ystep
-            if (tmpy < 60) {
+            if (tmpy < 120) {
                 ystep = 3
             } else if (tmpy > rasterImage.height - 60) {
                 ystep = -3;
