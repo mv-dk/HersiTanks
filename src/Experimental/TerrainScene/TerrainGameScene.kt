@@ -1,10 +1,7 @@
 package Experimental.TerrainScene
 
 import Engine.*
-import Experimental.Menu.OPTION_WIND_LIGHT
-import Experimental.Menu.OPTION_WIND_MEDIUM
-import Experimental.Menu.OPTION_WIND_NONE
-import Experimental.Menu.OPTION_WIND_STRONG
+import Experimental.Menu.*
 import Experimental.Status.StatusLine
 import Experimental.Status.StatusScreen
 import Game.BattleState
@@ -12,8 +9,10 @@ import Game.GameController
 import gameWindow
 import menuGameScene
 import java.awt.Color
+import java.awt.Graphics2D
 import java.awt.event.KeyEvent
 import java.awt.event.MouseEvent
+import java.awt.image.BufferedImage
 import kotlin.random.Random
 
 val random = Random(1)
@@ -23,6 +22,41 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     var updatePlayersTurnOnNextPossibleOccasion = false
     var tankInfoBar = TankInfoBar(this, Pos2D(0.0, 0.0))
     var weaponBar = WeaponBar(this, Pos2D(0.0, 32.0))
+    var skyImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+
+    init {
+        when (GameController.skyOption) {
+            OPTION_SKY_BLUE -> {
+                skyImage.graphics.color = color
+                skyImage.graphics.fillRect(0, 0, width, height)
+            }
+            OPTION_SKY_STARRY -> {
+                var g = skyImage.createGraphics()
+                g.color = Color(0, 0, 50)
+                g.fillRect(0, 0, width, height)
+                g.color = Color(128,128,255)
+                for (i in 1 .. 100) {
+                    val size = Random.nextInt(2,4)
+                    g.fillArc(
+                        Random.nextInt(0, width),
+                        Random.nextInt(0, height),
+                        size, size, 0, 360)
+                }
+            }
+            OPTION_SKY_EVENING -> {
+                var g = skyImage.createGraphics()
+                var c = Color(255, 155, 0)
+                g.color = c
+                g.fillRect(0, 0, width, height)
+                var bands = 60
+                for (i in 1 .. bands) {
+                    c = c.darker(200/bands)
+                    g.color = c
+                    g.fillRect(0, i*height/bands, width, height/bands)
+                }
+            }
+        }
+    }
 
     override fun load() {
         GameController.state = BattleState()
@@ -180,6 +214,11 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             OPTION_WIND_STRONG -> -8.0 + Math.random()*16.0
             else -> 0.0
         }
+    }
+
+    override fun draw(g: Graphics2D) {
+        g.drawImage(skyImage, null, 0, 0)
+        gameObjectsByDrawOrder.forEach { it.draw(g) }
     }
 }
 

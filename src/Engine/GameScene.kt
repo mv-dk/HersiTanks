@@ -26,7 +26,7 @@ class GameObjectDrawOrderComparator: Comparator<IGameObject> {
 abstract class GameScene(val color: Color, override val width: Int, override val height:Int) : IGameScene {
     val id = nextId()
     private val gameObjects: MutableMap<Int, IGameObject> = mutableMapOf()
-    private val gameObjectsByDrawOrder: SortedSet<IGameObject> = sortedSetOf(GameObjectDrawOrderComparator())
+    internal val gameObjectsByDrawOrder: SortedSet<IGameObject> = sortedSetOf(GameObjectDrawOrderComparator())
     private val gameObjectsToAdd: MutableMap<Int, IGameObject> = mutableMapOf()
     private val gameObjectsToRemove: MutableSet<Int> = mutableSetOf()
     var i = 0
