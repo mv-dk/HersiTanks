@@ -199,7 +199,6 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
         gg.color = Color(0, 0, 0, 0)
         gg.composite = AlphaComposite.Clear
         gg.fillOval(x - size / 2, y - size / 2, size, size)
-        AudioHelper.play("small-boom")
     }
 
     fun pokeLine(x1: Int, y1: Int, x2: Int, y2: Int, width: Float){
