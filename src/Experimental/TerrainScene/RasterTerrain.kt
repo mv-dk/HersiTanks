@@ -19,7 +19,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
 
     init {
         val g = rasterImage.createGraphics()
-        g.color = when (GameController.groundType) {
+        g.color = when (GameController.groundOption) {
             OPTION_GROUND_GRASS -> {
                 Color.GREEN.darker(40);
             }
@@ -75,7 +75,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
 
         g.fillPolygon(xs.toIntArray(), ys.toIntArray(), xs.size)
 
-        when (GameController.groundType) {
+        when (GameController.groundOption) {
             OPTION_GROUND_GRASS -> {
                 addColoredTopLayer(rasterImage, 10, g.color.darker(20))
                 addColoredTopLayer(rasterImage, 8, g.color.darker(40))

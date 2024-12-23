@@ -63,7 +63,7 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
 
             if (GameRunner.debug) {
                 g.font = debugFont
-                g.drawString("GameObjects: ${parent.gameObjectsCount()}", 0, gameResY - 10)
+                g.drawString("GameObjects: ${parent.gameObjectsCount()}, wind: ${GameController.wind}", 0, gameResY - 10)
             }
         }
     }

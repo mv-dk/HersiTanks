@@ -1,6 +1,10 @@
 package Experimental.TerrainScene
 
 import Engine.*
+import Experimental.Menu.OPTION_WIND_LIGHT
+import Experimental.Menu.OPTION_WIND_MEDIUM
+import Experimental.Menu.OPTION_WIND_NONE
+import Experimental.Menu.OPTION_WIND_STRONG
 import Experimental.Status.StatusLine
 import Experimental.Status.StatusScreen
 import Game.BattleState
@@ -40,6 +44,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             add(tank)
             x += spaceBetweenTanks
         }
+        updateWind()
     }
 
     fun busy(): Boolean{
@@ -155,6 +160,8 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 
                     unload()
                     gameWindow?.gameRunner?.currentGameScene = StatusScreen(statusLines)
+                } else {
+                    updateWind()
                 }
             }
         }
@@ -163,6 +170,16 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         }
 
         super.update()
+    }
+
+    fun updateWind() {
+        GameController.wind = when (GameController.windOption) {
+            OPTION_WIND_NONE -> 0.0
+            OPTION_WIND_LIGHT -> -1.0 + Math.random()*2.0
+            OPTION_WIND_MEDIUM -> -2.0 + Math.random()*4.0
+            OPTION_WIND_STRONG -> -8.0 + Math.random()*16.0
+            else -> 0.0
+        }
     }
 }
 

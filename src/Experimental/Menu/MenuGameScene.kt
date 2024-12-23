@@ -1,15 +1,11 @@
 package Experimental.Menu
 
 import Engine.*
-import Experimental.CollisionBalls.CollisionBallsGameScene
 import Experimental.EditPlayers.EditPlayers
 import Experimental.Menu.MenuPoints.*
-import Experimental.TerrainScene.TerrainGameScene
 import Game.GameController
 import Game.Player
 import Game.Team
-import gameResX
-import gameResY
 import gameWindow
 import java.awt.BasicStroke
 import java.awt.Color
@@ -17,12 +13,17 @@ import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.event.KeyEvent
 
-val OPTION_GROUND_GRASS = 1
-val OPTION_GROUND_SNOW = 2
+val OPTION_GROUND_GRASS = 0
+val OPTION_GROUND_SNOW = 1
 
-val OPTION_SKY_BLUE = 1
-val OPTION_SKY_STARRY = 2
-val OPTION_SKY_EVENING = 3
+val OPTION_SKY_BLUE = 0
+val OPTION_SKY_STARRY = 1
+val OPTION_SKY_EVENING = 2
+
+val OPTION_WIND_NONE = 0
+val OPTION_WIND_LIGHT = 1
+val OPTION_WIND_MEDIUM = 2
+val OPTION_WIND_STRONG = 3
 
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
     var numPlayersSelected = 2
@@ -56,17 +57,27 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
                 OptionValue(OPTION_SKY_BLUE, "Blue sky"),
                 OptionValue(OPTION_SKY_STARRY, "Starry sky"),
                 OptionValue(OPTION_SKY_EVENING, "Evening")
-            ), 0,
+            ), OPTION_SKY_BLUE,
             { old,new ->
-                GameController.skyType = new.id
+                GameController.skyOption = new.id
             }),
         OptionSelectorMenuPoint("Ground", this,
             listOf(
                 OptionValue(OPTION_GROUND_GRASS, "Grass"),
                 OptionValue(OPTION_GROUND_SNOW, "Snow")
-            ), 0,
+            ), OPTION_GROUND_GRASS,
             {old,new ->
-                GameController.groundType = new.id
+                GameController.groundOption = new.id
+            }),
+        OptionSelectorMenuPoint("Wind", this,
+            listOf(
+                OptionValue(OPTION_WIND_NONE, "None"),
+                OptionValue(OPTION_WIND_LIGHT, "Breeze"),
+                OptionValue(OPTION_WIND_MEDIUM, "Medium"),
+                OptionValue(OPTION_WIND_STRONG, "Stormy")
+            ), OPTION_WIND_MEDIUM,
+            { old, new ->
+                GameController.windOption = new.id
             }),
         //MenuPointGameObject("Settings", parent, nextMenuPointPos()),
         ToggleFullScreenMenuPoint(this),
