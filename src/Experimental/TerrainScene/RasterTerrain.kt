@@ -112,7 +112,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
     fun addSnowman(g: Graphics2D, x: Int, y: Int, size: Double) {
         addSnowball(g, x, y, size)
         addSnowball(g, x, (y-size*0.7).toInt(), size*0.75)
-        addCarrot(g, (x-size*0.1).toInt(), (y-size*1.2).toInt(), size*0.5)
+        addCarrot(g, (x-size*0.1).toInt(), (y-size*1.2).toInt(), size*0.25)
     }
 
     fun addSnowball(g: Graphics2D, x: Int, y: Int, size: Double) {
@@ -155,13 +155,13 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
                         crumbleCounter += 1
                     } else if (x > 0 && x < rasterImage.width-1){
                         // Remove columns of 1 px width
-//                        if (y < rasterImage.height-1 && y > 0 &&
-//                            rasterImage.getRGB(x, y) != 0 && rasterImage.getRGB(x, y+1) != 0 &&
-//                            rasterImage.getRGB(x-1, y) == 0 && rasterImage.getRGB(x+1, y) == 0 &&
-//                            rasterImage.getRGB(x-1, y+1) == 0 && rasterImage.getRGB(x+1, y+1) == 0) {
-//                            rasterImage.setRGB(x, y, 0)
-//                            crumbleCounter += 1
-//                        }
+                        if (y < rasterImage.height-1 && y > 0 &&
+                            rasterImage.getRGB(x, y) != 0 && rasterImage.getRGB(x, y+1) != 0 &&
+                            rasterImage.getRGB(x-1, y) == 0 && rasterImage.getRGB(x+1, y) == 0 &&
+                            rasterImage.getRGB(x-1, y+1) == 0 && rasterImage.getRGB(x+1, y+1) == 0) {
+                            rasterImage.setRGB(x, y, 0)
+                            crumbleCounter += 1
+                        }
                     }
                 }
             }
