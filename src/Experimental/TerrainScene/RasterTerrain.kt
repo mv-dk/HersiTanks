@@ -105,7 +105,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
                 y += 1
             }
 
-            addSnowman(rasterImage.graphics as Graphics2D, x, y, 10.0)
+            addSnowman(rasterImage.graphics as Graphics2D, x, y, Random.nextDouble(8.0, 14.0))
         }
     }
 
