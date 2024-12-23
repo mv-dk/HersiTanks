@@ -1,5 +1,6 @@
 package Game
 
+import Experimental.Menu.OPTION_DECO_NONE
 import Experimental.Menu.OPTION_GROUND_GRASS
 import Experimental.Menu.OPTION_SKY_BLUE
 import Experimental.Menu.OPTION_WIND_MEDIUM
@@ -18,6 +19,7 @@ import java.awt.Color
     Purchase (Purchase, Battle)
 */
 object GameController {
+    var decorationOption: Int = OPTION_DECO_NONE
     var wind: Double = 0.0
     var windOption: Int = OPTION_WIND_MEDIUM
     var groundOption: Int = OPTION_GROUND_GRASS

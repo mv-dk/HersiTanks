@@ -25,6 +25,9 @@ val OPTION_WIND_LIGHT = 1
 val OPTION_WIND_MEDIUM = 2
 val OPTION_WIND_STRONG = 3
 
+val OPTION_DECO_NONE = 0
+val OPTION_DECO_CHRISTMAS = 1
+
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
     var numPlayersSelected = 2
     var numGamesSelected = 10
@@ -78,6 +81,14 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
             ), OPTION_WIND_MEDIUM,
             { old, new ->
                 GameController.windOption = new.id
+            }),
+        OptionSelectorMenuPoint("Decoration", this,
+            listOf(
+                OptionValue(OPTION_DECO_NONE, "None"),
+                OptionValue(OPTION_DECO_CHRISTMAS, "Christmas hats"),
+            ), OPTION_DECO_NONE,
+            { old, new ->
+                GameController.decorationOption = new.id
             }),
         //MenuPointGameObject("Settings", parent, nextMenuPointPos()),
         ToggleFullScreenMenuPoint(this),

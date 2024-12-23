@@ -1,10 +1,12 @@
 package Experimental.TerrainScene
 
 import Engine.*
+import Experimental.Menu.OPTION_DECO_CHRISTMAS
 import Game.GameController
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
+import java.awt.Polygon
 
 class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D, val color: Color) : GameObject2(parent, position) {
     var size = 20
@@ -60,6 +62,33 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
         g.fillArc((position.x - size/2).toInt(), (position.y - size/2).toInt()+2, size, size, 0, 180)
 
         drawCenter(g)
+
+        if (GameController.decorationOption == OPTION_DECO_CHRISTMAS) {
+            drawChristmasHat(g)
+        }
+    }
+
+    fun drawChristmasHat(g: Graphics2D) {
+        val dir = if (angle <= 90) 1.0 else -1.0
+        g.color = Color.RED
+        val polygon = Polygon(
+            arrayOf(
+                (position.x - dir * size/2).toInt(),
+                position.x.toInt(),
+                (position.x - dir * size/2).toInt()).toIntArray(),
+            arrayOf(
+                (position.y - size*3/4).toInt(),
+                (position.y - size/2.0).toInt(),
+                (position.y - size/7.0).toInt()).toIntArray(),
+            3
+            )
+        g.fillPolygon(polygon)
+        g.color = Color.WHITE
+        g.fillOval((position.x - dir * size*14.0/20.0).toInt(), (position.y - size).toInt(), (size/4.0).toInt(), (size/4.0).toInt())
+        g.stroke = BasicStroke(size/7.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
+        g.drawLine(
+            (position.x - dir *  size*0.55).toInt(), (position.y - size*0.1).toInt(),
+            (position.x + dir * size*0.1).toInt(), (position.y - size*0.55).toInt())
     }
 
     fun drawCenter(g: Graphics2D){
