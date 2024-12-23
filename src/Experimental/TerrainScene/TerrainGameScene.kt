@@ -28,8 +28,9 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     init {
         when (GameController.skyOption) {
             OPTION_SKY_BLUE -> {
-                skyImage.graphics.color = color
-                skyImage.graphics.fillRect(0, 0, width, height)
+                val g = skyImage.createGraphics()
+                g.color = color
+                g.fillRect(0, 0, width, height)
             }
             OPTION_SKY_STARRY -> {
                 var g = skyImage.createGraphics()
@@ -54,6 +55,14 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
                     c = c.darker(200/bands)
                     g.color = c
                     g.fillRect(0, i*height/bands, width, height/bands)
+                }
+            }
+        }
+
+        when (GameController.groundOption) {
+            OPTION_GROUND_SNOW -> {
+                for (i in 1..100) {
+                    add(Snowflake(this, Random.nextPos2D(width.toDouble(), height.toDouble())))
                 }
             }
         }
