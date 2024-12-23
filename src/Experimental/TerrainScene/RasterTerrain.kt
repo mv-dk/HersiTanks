@@ -89,8 +89,46 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
                 addColoredTopLayer(rasterImage, 6, Color(190, 210, 255))
                 addColoredTopLayer(rasterImage, 4, Color(170, 200, 255))
                 addColoredTopLayer(rasterImage, 2, Color(150, 190, 255))
+                addSnowmen(rasterImage, 5)
             }
         }
+    }
+
+    fun addSnowmen(rasterImage: BufferedImage, amount: Int) {
+        var x = ((rasterImage.width / amount) + 20 * Math.random()*10).toInt()
+        for (i in 1 .. amount) {
+            x = ((x + (rasterImage.width / amount) + 20 * Math.random()*10) % rasterImage.width).toInt()
+
+
+            var y = 0
+            while (rasterImage.getRGB(x,y) == 0 && y < rasterImage.height) {
+                y += 1
+            }
+
+            addSnowman(rasterImage.graphics as Graphics2D, x, y, 10.0)
+        }
+    }
+
+    fun addSnowman(g: Graphics2D, x: Int, y: Int, size: Double) {
+        addSnowball(g, x, y, size)
+        addSnowball(g, x, (y-size*0.7).toInt(), size*0.75)
+        addCarrot(g, (x-size*0.1).toInt(), (y-size*1.2).toInt(), size*0.5)
+    }
+
+    fun addSnowball(g: Graphics2D, x: Int, y: Int, size: Double) {
+        var tx = x
+        var ty = y
+        g.color = Color(180, 180, 255)
+        g.fillOval((tx - size/2.0).toInt(), (ty - size).toInt(), size.toInt(), size.toInt())
+        g.color = Color(220, 220, 255)
+        g.fillOval((tx - size/2.0).toInt(), (ty - size).toInt(), (size*.8).toInt(), (size*.8).toInt())
+    }
+
+    fun addCarrot(g: Graphics2D, x: Int, y: Int, size: Double) {
+        g.color = Color(230, 130, 0)
+        g.stroke = BasicStroke((size/5.0).toFloat(), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
+        g.drawLine(x, y, (x-size).toInt(), (y+size/10.0).toInt())
+        g.drawLine(x, (y+size/5.0).toInt(), (x-size).toInt(), (y+size/10.0).toInt())
     }
 
     fun addColoredTopLayer(rasterImage: BufferedImage, depth: Int, color: Color){
@@ -117,13 +155,13 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
                         crumbleCounter += 1
                     } else if (x > 0 && x < rasterImage.width-1){
                         // Remove columns of 1 px width
-                        if (y < rasterImage.height-1 && y > 0 &&
-                            rasterImage.getRGB(x, y) != 0 && rasterImage.getRGB(x, y+1) != 0 &&
-                            rasterImage.getRGB(x-1, y) == 0 && rasterImage.getRGB(x+1, y) == 0 &&
-                            rasterImage.getRGB(x-1, y+1) == 0 && rasterImage.getRGB(x+1, y+1) == 0) {
-                            rasterImage.setRGB(x, y, 0)
-                            crumbleCounter += 1
-                        }
+//                        if (y < rasterImage.height-1 && y > 0 &&
+//                            rasterImage.getRGB(x, y) != 0 && rasterImage.getRGB(x, y+1) != 0 &&
+//                            rasterImage.getRGB(x-1, y) == 0 && rasterImage.getRGB(x+1, y) == 0 &&
+//                            rasterImage.getRGB(x-1, y+1) == 0 && rasterImage.getRGB(x+1, y+1) == 0) {
+//                            rasterImage.setRGB(x, y, 0)
+//                            crumbleCounter += 1
+//                        }
                     }
                 }
             }
