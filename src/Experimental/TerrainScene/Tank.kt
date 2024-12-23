@@ -70,6 +70,8 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
 
     fun drawChristmasHat(g: Graphics2D) {
         val dir = if (angle <= 90) 1.0 else -1.0
+
+        // Hat triangle
         g.color = Color.RED
         val polygon = Polygon(
             arrayOf(
@@ -83,8 +85,28 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
             3
             )
         g.fillPolygon(polygon)
+
+        // Hat shadow
+        g.color = Color.RED.darker(30)
+        val shadowPolygon = Polygon(
+            arrayOf(
+                (position.x - dir * size/2).toInt(),
+                (position.x - dir * size*2.0/20.0).toInt(),
+                (position.x - dir * size*7.0/20.0).toInt()).toIntArray(),
+            arrayOf(
+                (position.y - size * 15.0/20.0).toInt(),
+                (position.y - size * 11.0/20.0).toInt(),
+                (position.y - size * 9.0/20.0).toInt()
+                ).toIntArray(),
+            3
+        )
+        g.fillPolygon(shadowPolygon)
+
+        // Hat circle
         g.color = Color.WHITE
         g.fillOval((position.x - dir * size*14.0/20.0).toInt(), (position.y - size).toInt(), (size/4.0).toInt(), (size/4.0).toInt())
+
+        // Hat white rim
         g.stroke = BasicStroke(size/7.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
         g.drawLine(
             (position.x - dir *  size*0.55).toInt(), (position.y - size*0.1).toInt(),
