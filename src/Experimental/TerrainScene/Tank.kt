@@ -104,7 +104,7 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
 
         // Hat circle
         g.color = Color.WHITE
-        g.fillOval((position.x - dir * size*14.0/20.0).toInt(), (position.y - size).toInt(), (size/4.0).toInt(), (size/4.0).toInt())
+        g.fillOval((position.x - dir * size*11.0/20.0 - size/8.0).toInt(), (position.y - size).toInt(), (size/4.0).toInt(), (size/4.0).toInt())
 
         // Hat white rim
         g.stroke = BasicStroke(size/7.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
