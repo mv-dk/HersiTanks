@@ -6,18 +6,6 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
 
-val WEAPON_QUACK = 0
-val WEAPON_TINY_BOMB = 1
-val WEAPON_BOMB = 2
-val WEAPON_BIGGER_BOMB = 3
-val WEAPON_BIGGEST_BOMB = 4
-val WEAPON_EARTHQUAKE = 5
-val WEAPON_DIRT_BOMB = 6
-val WEAPON_MIRV = 7
-val WEAPON_NAPALM = 8
-val WEAPON_LASER = 9
-val WEAPON_FROG_BOMB = 10
-
 class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D, val color: Color) : GameObject2(parent, position) {
     var size = 20
         set(value) {
@@ -31,9 +19,9 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
     var falling: Boolean = false
     var firstFall = true
     var playing = true
-    var activeWeapon = WEAPON_BOMB
+    var activeWeaponIdx = 0
         set(value) {
-            if (value < 0 || value > 9) throw Exception("Weapon must be between 0 and 9 (inclusive)")
+            if (value < 0 || value > Weapon.allWeapons.size-1) throw Exception("Weapon must be between 0 and ${Weapon.allWeapons.size-1} (inclusive)")
             field = value
         }
     var canonX = (position.x + size * Math.cos(Math.PI*angle/180.0)).toInt()

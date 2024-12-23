@@ -76,7 +76,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         } else if (e.keyCode == KeyEvent.VK_UP) {
             AudioHelper.loop("increase-power", -1)
             GameController.getCurrentPlayersTank()?.increasePower(1)
-        } else if (e.keyCode == KeyEvent.VK_ENTER){
+         } else if (e.keyCode == KeyEvent.VK_ENTER || e.keyCode == KeyEvent.VK_SPACE){
             AudioHelper.play("fire")
             val tank = GameController.getCurrentPlayersTank()
             if (tank != null) {
@@ -93,7 +93,8 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         } else if (e.keyCode == KeyEvent.VK_TAB) {
             val tank = GameController.getCurrentPlayersTank()
             if (tank != null) {
-                tank.activeWeapon = (tank.activeWeapon + 1) % 10
+                tank.activeWeaponIdx = (tank.activeWeaponIdx + 1) % Weapon.allWeapons.size
+                println("ActiveWeaponIdx: ${tank.activeWeaponIdx}")
             }
         } else if (e.keyCode == KeyEvent.VK_0) {
             val tank = GameController.getCurrentPlayersTank()

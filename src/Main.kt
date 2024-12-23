@@ -50,10 +50,10 @@ fun getBestScale() : Int{
 
 fun preloadSounds(){
     AudioHelper.load("./resources/earthquake3.wav","earthquake")
-    AudioHelper.load("./resources/boom3.wav", "small-boom")
+    AudioHelper.load("./resources/hersi-eksplosion-01.wav", "small-boom")
     AudioHelper.load("./resources/boom2.wav", "big-boom")
     AudioHelper.load("./resources/vhup.wav", "fire")
-    AudioHelper.load("./resources/change_angle.wav", "change-angle")
+    AudioHelper.load("./resources/hersi-vinkel.wav", "change-angle")
     AudioHelper.load("./resources/increase_power.wav", "increase-power")
     AudioHelper.load("./resources/decrease_power.wav", "decrease-power")
 }

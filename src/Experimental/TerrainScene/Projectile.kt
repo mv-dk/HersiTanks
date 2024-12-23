@@ -36,40 +36,10 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D) 
         }
     }
 
-    private fun bombExplosion(holeSize: Int) {
-        parent.remove(this)
-        val exp = Explosion(parent, position, holeSize, holeSize / 2, {
-            terrain.crumble = true
-        })
-        GameController.projectilesFlying -= 1
-        parent.add(exp)
-    }
-
     fun explode() {
-        when (GameController.getCurrentPlayersTank()?.activeWeapon) {
-            WEAPON_TINY_BOMB -> {
-                bombExplosion(10)
-            }
-            WEAPON_BOMB -> {
-                bombExplosion(20)
-            }
-            WEAPON_BIGGER_BOMB -> {
-                bombExplosion(40)
-            }
-            WEAPON_BIGGEST_BOMB -> {
-                bombExplosion(80)
-            }
-            WEAPON_EARTHQUAKE -> {
-                terrain.startEarthquake(position.x.toInt(), position.y.toInt())
-                parent.remove(this)
-                GameController.projectilesFlying -= 1
-            }
-            else -> {
-                parent.remove(this)
-                GameController.projectilesFlying -= 1
-                println("MEH")
-            }
-        }
+        val activeWeapon = GameController.getCurrentPlayersTank()?.activeWeaponIdx
+        if (activeWeapon == null) return
+        Weapon.allWeapons[activeWeapon].onExplode(terrain, parent, this)
     }
 
     override fun draw(g: Graphics2D) {

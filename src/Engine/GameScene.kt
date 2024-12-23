@@ -31,8 +31,6 @@ abstract class GameScene(val color: Color, override val width: Int, override val
     private val gameObjectsToRemove: MutableSet<Int> = mutableSetOf()
     var i = 0
 
-
-
     override fun add(gameObject: IGameObject) {
         gameObjectsToAdd.put(gameObject.id, gameObject)
         gameObjectsByDrawOrder.add(gameObject)
@@ -66,9 +64,6 @@ abstract class GameScene(val color: Color, override val width: Int, override val
         gameObjectsByDrawOrder.addAll(gameObjectsToAdd.values)
         gameObjectsToAdd.forEach {
             it.value.onAdded()
-        }
-        if (gameObjectsToAdd.size > 0 || gameObjectsToRemove.size > 0){
-            println("GameObjects: ${gameObjects.size}")
         }
         gameObjectsToRemove.clear()
         gameObjectsToAdd.clear()
