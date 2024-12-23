@@ -1,6 +1,8 @@
 package Experimental.TerrainScene
 
 import Engine.*
+import Experimental.Menu.OPTION_GROUND_GRASS
+import Experimental.Menu.OPTION_GROUND_SNOW
 import Game.GameController
 import java.awt.AlphaComposite
 import java.awt.BasicStroke
@@ -17,7 +19,16 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
 
     init {
         val g = rasterImage.createGraphics()
-        g.color = Color.GREEN.darker(40);
+        g.color = when (GameController.groundType) {
+            OPTION_GROUND_GRASS -> {
+                Color.GREEN.darker(40);
+            }
+            OPTION_GROUND_SNOW -> {
+                Color(240, 240, 255)
+            }
+
+            else -> { Color.orange.darker(50) }
+        }
 
         val rand = Random(System.currentTimeMillis())
         val xs = mutableListOf<Int>()
@@ -64,12 +75,22 @@ class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, p
 
         g.fillPolygon(xs.toIntArray(), ys.toIntArray(), xs.size)
 
-        addColoredTopLayer(rasterImage, 10, Color(0, 220, 0))
-        addColoredTopLayer(rasterImage, 8, Color(0, 200, 0))
-        addColoredTopLayer(rasterImage, 6, Color(0, 180, 0))
-        addColoredTopLayer(rasterImage, 4, Color(0, 160, 0))
-        addColoredTopLayer(rasterImage, 2, Color(0, 140, 0))
-
+        when (GameController.groundType) {
+            OPTION_GROUND_GRASS -> {
+                addColoredTopLayer(rasterImage, 10, g.color.darker(20))
+                addColoredTopLayer(rasterImage, 8, g.color.darker(40))
+                addColoredTopLayer(rasterImage, 6, g.color.darker(60))
+                addColoredTopLayer(rasterImage, 4, g.color.darker(80))
+                addColoredTopLayer(rasterImage, 2, g.color.darker(100))
+            }
+            OPTION_GROUND_SNOW -> {
+                addColoredTopLayer(rasterImage, 10, Color(230,230,255))
+                addColoredTopLayer(rasterImage, 8, Color(210, 220, 255))
+                addColoredTopLayer(rasterImage, 6, Color(190, 210, 255))
+                addColoredTopLayer(rasterImage, 4, Color(170, 200, 255))
+                addColoredTopLayer(rasterImage, 2, Color(150, 190, 255))
+            }
+        }
     }
 
     fun addColoredTopLayer(rasterImage: BufferedImage, depth: Int, color: Color){

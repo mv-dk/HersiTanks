@@ -17,6 +17,13 @@ import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.event.KeyEvent
 
+val OPTION_GROUND_GRASS = 1
+val OPTION_GROUND_SNOW = 2
+
+val OPTION_SKY_BLUE = 1
+val OPTION_SKY_STARRY = 2
+val OPTION_SKY_EVENING = 3
+
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
     var numPlayersSelected = 2
     var numGamesSelected = 10
@@ -29,7 +36,7 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
             GameController.players.clear()
             GameController.gamesToPlay = numGamesSelected
             GameController.gamesPlayed = 0
-            val colors = listOf(Color.RED, Color.BLUE, Color.CYAN, Color.YELLOW, Color.BLACK, Color.WHITE, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.LIGHT_GRAY)
+            val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.BLACK, Color.WHITE, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.LIGHT_GRAY)
             for (i in 1 .. numPlayersSelected) {
                 val newPlayer = Player("Player $i")
                 newPlayer.color = colors[i-1]
@@ -44,6 +51,23 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
         NumberSelectorMenuPoint("Rounds", this, 10, 1, 99, onChange = {_,new ->
             numGamesSelected = new
         }),
+        OptionSelectorMenuPoint("Sky", this,
+            listOf(
+                OptionValue(OPTION_SKY_BLUE, "Blue sky"),
+                OptionValue(OPTION_SKY_STARRY, "Starry sky"),
+                OptionValue(OPTION_SKY_EVENING, "Evening")
+            ), 0,
+            { old,new ->
+                GameController.skyType = new.id
+            }),
+        OptionSelectorMenuPoint("Ground", this,
+            listOf(
+                OptionValue(OPTION_GROUND_GRASS, "Grass"),
+                OptionValue(OPTION_GROUND_SNOW, "Snow")
+            ), 0,
+            {old,new ->
+                GameController.groundType = new.id
+            }),
         //MenuPointGameObject("Settings", parent, nextMenuPointPos()),
         ToggleFullScreenMenuPoint(this),
         //TextInputMenuPoint("Name", parent, nextMenuPointPos(), "", 10),
@@ -127,8 +151,10 @@ class MenuGameObject(parent: IGameScene, position: Pos2D, var width: Int, var he
             selectedIdx = if (selectedIdx == 0) menuPoints.size-1 else selectedIdx - 1
         } else if (e?.keyCode == KeyEvent.VK_LEFT) {
             (selected as? NumberSelectorMenuPoint)?.decrease()
+            (selected as? OptionSelectorMenuPoint)?.decrease()
         } else if (e?.keyCode == KeyEvent.VK_RIGHT){
             (selected as? NumberSelectorMenuPoint)?.increase()
+            (selected as? OptionSelectorMenuPoint)?.increase()
         } else if (e?.keyCode == KeyEvent.VK_BACK_SPACE) {
             (selected as? TextInputMenuPoint)?.apply{
                 if (textValue.length > 0) {

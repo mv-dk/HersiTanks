@@ -1,5 +1,7 @@
 package Game
 
+import Experimental.Menu.OPTION_GROUND_GRASS
+import Experimental.Menu.OPTION_SKY_BLUE
 import Experimental.TerrainScene.Tank
 import java.awt.Color
 
@@ -15,6 +17,8 @@ import java.awt.Color
     Purchase (Purchase, Battle)
 */
 object GameController {
+    var groundType: Int = OPTION_GROUND_GRASS
+    var skyType: Int = OPTION_SKY_BLUE
     var state: IState = MenuState()
     var teams: MutableList<Team> = mutableListOf()
     var players: MutableList<Player> = mutableListOf()
