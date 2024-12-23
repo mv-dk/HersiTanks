@@ -3,6 +3,7 @@ package Experimental.TerrainScene
 import Engine.GameObject2
 import Engine.IGameScene
 import Engine.Pos2D
+import Engine.Vec2D
 import Game.BattleState
 import Game.GameController
 import java.awt.Color
@@ -15,12 +16,22 @@ class Snowflake(parent: IGameScene, position: Pos2D) : GameObject2(parent, posit
 
     override fun update() {
         tick += 1
+
+        if (GameController.glowUp > 0 && Explosion.currentExplosions.size > 0) {
+            val explosion = Explosion.currentExplosions.first()
+            val distance = position.distance(explosion.position)
+            if (distance < explosion.size*1.5) {
+                val diff = Vec2D(explosion.position, position)
+                position.x += diff.x/(distance/10)
+                position.y += diff.y/(distance/10)
+                return
+            }
+        }
         position.y += dy
         if (position.y > parent.height) {
             parent.remove(this)
             return
         }
-
         position.x += GameController.wind + Random.nextDouble(-0.1, 0.1)
         if (tick > 10) {
             tick = 0
