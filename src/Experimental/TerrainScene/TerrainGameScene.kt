@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent
 import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.hours
 
 val random = Random(1)
 
@@ -201,6 +202,15 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         }
         if (GameController.glowUp > 0) {
             GameController.glowUp -= 1
+        }
+
+        if (GameController.groundOption == OPTION_GROUND_SNOW) {
+            val pos = when {
+                GameController.wind < 0 -> Pos2D(Random.nextDouble(0.0, width + Math.abs(GameController.wind*height)), -1.0)
+                GameController.wind > 0 -> Pos2D(Random.nextDouble(-GameController.wind*height, width.toDouble()), -1.0)
+                else -> Pos2D(Random.nextDouble(0.0, width.toDouble()), -1.0)
+            }
+            add(Snowflake(this, pos))
         }
 
         super.update()
