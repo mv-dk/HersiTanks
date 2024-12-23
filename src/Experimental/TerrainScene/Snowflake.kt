@@ -4,7 +4,6 @@ import Engine.GameObject2
 import Engine.IGameScene
 import Engine.Pos2D
 import Engine.Vec2D
-import Game.BattleState
 import Game.GameController
 import java.awt.Color
 import java.awt.Graphics2D
