@@ -106,6 +106,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         }
 
         if (busy()) return
+        if (updatePlayersTurnOnNextPossibleOccasion) return
 
         if (e.keyCode == KeyEvent.VK_1) {
             rasterTerrain.mode = 1
