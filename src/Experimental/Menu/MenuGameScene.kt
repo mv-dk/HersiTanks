@@ -95,7 +95,7 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
         //TextInputMenuPoint("Name", parent, nextMenuPointPos(), "", 10),
         ExitGameMenuPoint("Exit", this)
     )
-    val menuGameObject = MenuGameObject(this, Pos2D(100.0, 20.0), 300, 400, 40.0, menuPoints)
+    val menuGameObject = MenuGameObject(this, Pos2D(100.0, 20.0), 400, 400, 30.0, menuPoints)
 
     init {
         add(menuGameObject)
