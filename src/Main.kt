@@ -49,13 +49,14 @@ fun getBestScale() : Int{
 }
 
 fun preloadSounds(){
-    AudioHelper.load("./resources/earthquake3.wav","earthquake")
-    AudioHelper.load("./resources/hersi-eksplosion-01.wav", "small-boom")
-    AudioHelper.load("./resources/boom2.wav", "big-boom")
-    AudioHelper.load("./resources/vhup.wav", "fire")
-    AudioHelper.load("./resources/hersi-vinkel.wav", "change-angle")
-    AudioHelper.load("./resources/increase_power.wav", "increase-power")
-    AudioHelper.load("./resources/decrease_power.wav", "decrease-power")
+
+    AudioHelper.load("earthquake3.wav","earthquake")
+    AudioHelper.load("hersi-eksplosion-01.wav", "small-boom")
+    AudioHelper.load("boom2.wav", "big-boom")
+    AudioHelper.load("vhup.wav", "fire")
+    AudioHelper.load("hersi-vinkel.wav", "change-angle")
+    AudioHelper.load("increase_power.wav", "increase-power")
+    AudioHelper.load("decrease_power.wav", "decrease-power")
 }
 
 /*

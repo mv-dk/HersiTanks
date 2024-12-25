@@ -292,8 +292,9 @@ object AudioHelper {
     private val _lock = ReentrantLock()
 
     fun load(path: String, name: String){
+        val url = AudioHelper.javaClass.classLoader.getResource(path)
         _lock.withLock {
-            clipPlayer.loadSound(path, name)
+            clipPlayer.loadSound(url, name)
         }
     }
 
@@ -326,10 +327,10 @@ class AudioClipPlayer {
     private var audioInputStreamMap = mutableMapOf<String, AudioInputStream>()
     private var clipMap = mutableMapOf<String, Clip>()
 
-    fun loadSound(path: String, name: String) {
+    fun loadSound(path: URL, name: String) {
         if (clipMap.containsKey(name)) return
 
-        val audioStream = AudioSystem.getAudioInputStream(File(path))
+        val audioStream = AudioSystem.getAudioInputStream(path)
         val audioClip = AudioSystem.getClip()
         audioClip.open(audioStream)
         audioInputStreamMap[name] = audioStream
