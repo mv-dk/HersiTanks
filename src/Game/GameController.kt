@@ -6,6 +6,7 @@ import Experimental.Menu.OPTION_SKY_BLUE
 import Experimental.Menu.OPTION_WIND_MEDIUM
 import Experimental.TerrainScene.Tank
 import java.awt.Color
+import kotlin.time.Duration
 
 /*
     state (potential next states):
@@ -19,6 +20,9 @@ import java.awt.Color
     Purchase (Purchase, Battle)
 */
 object GameController {
+    var updateTime: Long = 0
+    var renderBufferTime: Long = 0
+    var renderScreenTime: Long = 0
     var decorationOption: Int = OPTION_DECO_NONE
     var wind: Double = 0.0
     var windOption: Int = OPTION_WIND_MEDIUM

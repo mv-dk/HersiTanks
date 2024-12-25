@@ -62,8 +62,12 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
             g.drawString(player.name, gameResX / 2 - nameWidth/2, position.y.toInt() + 22)
 
             if (GameRunner.debug) {
+                g.color = Color.RED
                 g.font = debugFont
-                g.drawString("GameObjects: ${parent.gameObjectsCount()}, wind: ${GameController.wind}", 0, gameResY - 10)
+                g.drawString("GameObjects: ${parent.gameObjectsCount()}, wind: ${(GameController.wind * 100).toInt()/100.0}", 0, gameResY - 10)
+                g.drawString("RenderBuffer [ms]: ${GameController.renderBufferTime}", 250, gameResY - 10)
+                g.drawString("RenderScreen [ms]: ${GameController.renderScreenTime}", 400, gameResY - 10)
+                g.drawString("Update [ms]: ${GameController.updateTime}", 520, gameResY - 10)
             }
         }
     }

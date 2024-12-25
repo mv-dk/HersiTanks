@@ -1,5 +1,6 @@
 package Engine
 
+import Game.GameController
 import gameResX
 import gameResY
 import gameWindow
@@ -226,12 +227,21 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListen
             timeTaken = 0.seconds
             while (updatesPerDraw < maxSkips){
                 timeTaken += measureTime {
-                    update()
+                    val updateTime = measureTime {
+                        update()
+                    }
+                    GameController.updateTime = updateTime.inWholeMilliseconds
                     handleKeyEvents()
                     handleMouseEvents()
                     if (updatesPerDraw == 1) {
-                        renderBuffer()
-                        renderScreen()
+                        val renderBufferTime = measureTime {
+                            renderBuffer()
+                        }
+                        val renderScreenTime = measureTime {
+                            renderScreen()
+                        }
+                        GameController.renderBufferTime = renderBufferTime.inWholeMilliseconds
+                        GameController.renderScreenTime = renderScreenTime.inWholeMilliseconds
                     }
                 }
                 if (timeTaken < (updatesPerDraw * period)){
