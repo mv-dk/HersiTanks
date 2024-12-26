@@ -14,7 +14,6 @@ import java.awt.event.KeyEvent
 import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
 import kotlin.random.Random
-import kotlin.time.Duration.Companion.hours
 
 val random = Random(1)
 
@@ -38,10 +37,10 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
                 g.fillRect(0, 0, width, height)
                 g.color = Color(128,128,255)
                 for (i in 1 .. 100) {
-                    val size = Random.nextInt(2,4)
+                    val size = random.nextInt(2,4)
                     g.fillArc(
-                        Random.nextInt(0, width),
-                        Random.nextInt(0, height),
+                        random.nextInt(0, width),
+                        random.nextInt(0, height),
                         size, size, 0, 360)
                 }
             }
@@ -216,9 +215,9 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 
         if (GameController.groundOption == OPTION_GROUND_SNOW) {
             val pos = when {
-                GameController.wind < 0 -> Pos2D(Random.nextDouble(0.0, width + Math.abs(GameController.wind*height)), -1.0)
-                GameController.wind > 0 -> Pos2D(Random.nextDouble(-GameController.wind*height, width.toDouble()), -1.0)
-                else -> Pos2D(Random.nextDouble(0.0, width.toDouble()), -1.0)
+                GameController.wind < 0 -> Pos2D(random.nextDouble(0.0, width + Math.abs(GameController.wind*height)), -1.0)
+                GameController.wind > 0 -> Pos2D(random.nextDouble(-GameController.wind*height, width.toDouble()), -1.0)
+                else -> Pos2D(random.nextDouble(0.0, width.toDouble()), -1.0)
             }
             add(Snowflake(this, pos))
         }
@@ -230,15 +229,15 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         if (first) {
             GameController.wind = when (GameController.windOption) {
                 OPTION_WIND_NONE -> 0.0
-                OPTION_WIND_LIGHT -> -1.0 + Math.random() * 2.0
-                OPTION_WIND_MEDIUM -> -2.0 + Math.random() * 4.0
-                OPTION_WIND_STRONG -> -8.0 + Math.random() * 16.0
+                OPTION_WIND_LIGHT -> -1.0 + random.nextDouble() * 2.0
+                OPTION_WIND_MEDIUM -> -2.0 + random.nextDouble() * 4.0
+                OPTION_WIND_STRONG -> -8.0 + random.nextDouble() * 16.0
                 else -> 0.0
             }
         } else {
             GameController.wind = when (GameController.windOption) {
                 OPTION_WIND_NONE -> 0.0
-                else -> GameController.wind + Random.nextDouble(-Math.abs(GameController.wind * 0.05), Math.abs(GameController.wind * 0.05))
+                else -> GameController.wind + random.nextDouble(-Math.abs(GameController.wind * 0.05), Math.abs(GameController.wind * 0.05))
             }
         }
     }

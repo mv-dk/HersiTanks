@@ -5,6 +5,7 @@ import gameResX
 import gameResY
 import gameWindow
 import java.awt.*
+import java.awt.RenderingHints.*
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.awt.event.MouseEvent
@@ -41,7 +42,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
     var panel = JPanel()
     var frame: JFrame = JFrame()
 
-    val renderingHints = java.util.Map.of(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
+    val renderingHints = mapOf<Key, Any>(Pair(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON))
 
     var gameRunner: GameRunner = GameRunner(this, gameScene)
 
