@@ -12,7 +12,7 @@ class NumberSelectorMenuPoint(
     val step: Int = 1,
     val onChange: (old: Int, new: Int) -> Unit
 ):
-    MenuPointGameObject("$label: $numberValue", parent) {
+    MenuPointGameObject("$label: $numberValue", parent, onActivate = {}) {
 
     init {
         super.text = "$label: $numberValue"

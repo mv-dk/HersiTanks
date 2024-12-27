@@ -10,7 +10,7 @@ class OptionSelectorMenuPoint(
     var optionIdx: Int,
     val onChange: (old: OptionValue, new: OptionValue) -> Unit
 ):
-    MenuPointGameObject("$label: ${options[optionIdx].name}", parent) {
+    MenuPointGameObject("$label: ${options[optionIdx].name}", parent, onActivate = {}) {
 
 //    init {
 //        super.text = "$label: ${values[optionIdx]}"

@@ -10,9 +10,8 @@ import java.awt.Graphics2D
 abstract class Weapon(
     val id: Int,
     val  name: String,
-    purchasePrice: Double,
-    purchaseQuantity: Int,
-    //val onExplode: (terrain: RasterTerrain, gameScene: IGameScene, projectile: Projectile) -> Unit
+    val purchasePrice: Double,
+    val purchaseQuantity: Int,
 ) {
     companion object {
         val allWeapons = listOf(

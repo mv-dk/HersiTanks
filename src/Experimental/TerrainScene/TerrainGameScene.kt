@@ -144,7 +144,12 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         } else if (e.keyCode == KeyEvent.VK_TAB) {
             val tank = GameController.getCurrentPlayersTank()
             if (tank != null) {
-                tank.activeWeaponIdx = (tank.activeWeaponIdx + 1) % Weapon.allWeapons.size
+                var oldIdx = tank.activeWeaponIdx
+                var ammo = 0
+                do {
+                    tank.activeWeaponIdx = (tank.activeWeaponIdx + 1) % Weapon.allWeapons.size
+                    ammo = GameController.getCurrentPlayer().weaponry.get(Weapon.allWeapons[tank.activeWeaponIdx].id) ?: 0
+                } while (ammo <= 0 && tank.activeWeaponIdx != oldIdx)
                 println("ActiveWeaponIdx: ${tank.activeWeaponIdx}")
             }
         } else if (e.keyCode == KeyEvent.VK_0) {

@@ -37,7 +37,9 @@ class WeaponBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, posit
                 g.color = darkPurple
             }
             g.drawRect((position.x + i).toInt(), position.y.toInt(), 32, 32)
-            weapon.drawIcon(g, (position.x + i).toInt(), position.y.toInt())
+            if ((GameController.getCurrentPlayer().weaponry[weapon.id] ?: 0) > 0) {
+                weapon.drawIcon(g, (position.x + i).toInt(), position.y.toInt())
+            }
             i += 35
             idx += 1
         }

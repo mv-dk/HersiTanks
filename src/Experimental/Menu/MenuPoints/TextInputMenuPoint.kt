@@ -16,7 +16,7 @@ class TextInputMenuPoint(
     val maxLength: Int,
     val coloredBorder: Color? = null,
     initialFontSize : Int = 24
-) : MenuPointGameObject(label, parent, cursor = true, fontSize = initialFontSize){
+) : MenuPointGameObject(label, parent, cursor = true, fontSize = initialFontSize, onActivate = {}){
     var lighterColoredBorder = if (coloredBorder == null) null else Color(
         Math.min(coloredBorder?.red?.plus(100) ?: 255, 255),
         Math.min(coloredBorder?.green?.plus(100) ?: 255, 255),

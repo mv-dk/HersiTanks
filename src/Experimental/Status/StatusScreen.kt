@@ -5,7 +5,9 @@ import Engine.GameScene
 import Engine.GameWindow
 import Engine.nextColor
 import Experimental.Menu.MenuGameScene
+import Experimental.Purchase.PurchaseGameScene
 import Experimental.TerrainScene.TerrainGameScene
+import Experimental.TerrainScene.Weapon
 import Game.GameController
 import gameResX
 import gameResY
@@ -29,8 +31,16 @@ class StatusScreen(val lines: List<StatusLine>) : GameScene(Color(182, 179, 173)
         if (GameController.gamesPlayed == GameController.gamesToPlay) {
             gameWindow?.gameRunner?.currentGameScene = MenuGameScene(gameResX, gameResY, Random.nextColor())
         } else {
-            gameWindow?.gameRunner?.currentGameScene =
-                TerrainGameScene(menuGameScene, Color(113, 136, 248), gameResX, gameResY, GameController.groundSizeOption)
+
+            val cheapestWeaponPrice = Weapon.allWeapons.minOf { it.purchasePrice }
+            val playersAbleToPurchase = GameController.players.filter { it.money > cheapestWeaponPrice }
+            if (playersAbleToPurchase.size > 0) {
+                gameWindow?.gameRunner?.currentGameScene =
+                    PurchaseGameScene(GameController.players.filter { it.money > cheapestWeaponPrice }, 0)
+            } else {
+                gameWindow?.gameRunner?.currentGameScene =
+                    TerrainGameScene(menuGameScene, Color(113, 136, 248), gameResX, gameResY, GameController.groundSizeOption)
+            }
         }
     }
 

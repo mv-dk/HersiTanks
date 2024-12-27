@@ -78,6 +78,7 @@ object GameController {
 class Player(var name: String) {
     var tank: Tank? = null
     var playing: Boolean = true
+    var weaponry = mutableMapOf<Int,Int>()
     var money = 0.0
     var color = Color.RED
     fun victories(): Int {

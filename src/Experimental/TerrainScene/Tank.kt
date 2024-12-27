@@ -21,7 +21,7 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
     var falling: Boolean = false
     var firstFall = true
     var playing = true
-    var activeWeaponIdx = 0
+    var activeWeaponIdx: Int = 0
         set(value) {
             if (value < 0 || value > Weapon.allWeapons.size-1) throw Exception("Weapon must be between 0 and ${Weapon.allWeapons.size-1} (inclusive)")
             field = value
@@ -39,8 +39,10 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
                     rasterTerrain.rasterImage.graphics.color = Color(0,0,0,0)
                     rasterTerrain.pokeLine((position.x-size/2).toInt(), position.y.toInt()-5, (position.x+size/2).toInt(), position.y.toInt()-5, 3f)
 
-                    if (!firstFall && energy > 0)
+                    if (!firstFall && energy > 0) {
                         energy -= 1
+                        GameController.getCurrentPlayer().money += 1
+                    }
 
                     onTankMoved()
                 } else {

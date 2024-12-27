@@ -50,6 +50,11 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
                 position.y.toInt() + 22
             )
             g.drawString(
+                "\$${GameController.getCurrentPlayer().money}",
+                position.x.toInt() + 420,
+                position.y.toInt() + 22
+            )
+            g.drawString(
                 "Energy: ${currentTank.energy}",
                 position.x.toInt() + 516,
                 position.y.toInt() + 22

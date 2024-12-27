@@ -48,6 +48,8 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
             val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.BLACK, Color.WHITE, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.LIGHT_GRAY)
             for (i in 1 .. numPlayersSelected) {
                 val newPlayer = Player("Player $i")
+                newPlayer.weaponry.put(1, 20)
+                newPlayer.weaponry.put(2, 10)
                 newPlayer.color = colors[i-1]
                 GameController.teams.add(Team("Team $i", listOf(newPlayer)))
                 GameController.players.add(newPlayer)
@@ -203,14 +205,7 @@ class MenuGameObject(parent: IGameScene, position: Pos2D, var width: Int, var he
                 }
             }
         } else if (e?.keyCode == KeyEvent.VK_ENTER){
-            if ((selected as? ExitGameMenuPoint)?.selected == true) {
-                GameRunner.exitGame = true
-            } else if ((selected as? ChangeSceneMenuPoint)?.selected == true) {
-
-                gameWindow?.gameRunner?.currentGameScene = (selected as ChangeSceneMenuPoint).nextScene()
-            } else if ((selected as? ToggleFullScreenMenuPoint)?.selected == true) {
-                gameWindow?.toggleFullScreen()
-            }
+            selected.onActivate()
         } else if (e?.keyCode == KeyEvent.VK_ESCAPE) {
             GameRunner.exitGame = true
         }
@@ -234,7 +229,8 @@ open class MenuPointGameObject(
     parent: IGameScene,
     var shadow: Boolean = true,
     var cursor: Boolean = false,
-    open var fontSize: Int = 24
+    open var fontSize: Int = 24,
+    val onActivate: () -> Unit
 ): GameObject2(parent, Pos2D(0.0, 0.0)) {
     var selected: Boolean = false
         set(value) {
