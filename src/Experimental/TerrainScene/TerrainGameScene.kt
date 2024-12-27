@@ -127,12 +127,23 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         } else if (e.keyCode == KeyEvent.VK_UP) {
             AudioHelper.loop("increase-power", -1)
             GameController.getCurrentPlayersTank()?.increasePower(1)
-         } else if (e.keyCode == KeyEvent.VK_ENTER || e.keyCode == KeyEvent.VK_SPACE){
-            AudioHelper.play("fire")
+        } else if (e.keyCode == KeyEvent.VK_PAGE_DOWN) {
+            AudioHelper.loop("decrease-power", -1)
+            GameController.getCurrentPlayersTank()?.increasePower(-10)
+        } else if (e.keyCode == KeyEvent.VK_PAGE_UP) {
+            AudioHelper.loop("increase-power", -1)
+            GameController.getCurrentPlayersTank()?.increasePower(10)
+        } else if (e.keyCode == KeyEvent.VK_ENTER || e.keyCode == KeyEvent.VK_SPACE){
+            when (Random.nextInt(3)) {
+                0 -> AudioHelper.play("fire")
+                1 -> AudioHelper.play("fire2")
+                2 -> AudioHelper.play("fire3")
+            }
+
             val player = GameController.getCurrentPlayer()
             val tank = player.tank
             if ((player.weaponry[player.currentWeaponId] ?: 0) == 0) {
-                AudioHelper.play("fire");
+                AudioHelper.play("fizzle");
             } else {
                 if (tank != null) {
                     val projectile = Projectile(
@@ -173,9 +184,9 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     override fun keyReleased(e: KeyEvent) {
         if (e.keyCode == KeyEvent.VK_LEFT || e.keyCode == KeyEvent.VK_RIGHT) {
             AudioHelper.stop("change-angle")
-        } else if (e.keyCode == KeyEvent.VK_UP) {
+        } else if (e.keyCode == KeyEvent.VK_UP || e.keyCode == KeyEvent.VK_PAGE_UP) {
             AudioHelper.stop("increase-power")
-        } else if (e.keyCode == KeyEvent.VK_DOWN) {
+        } else if (e.keyCode == KeyEvent.VK_DOWN || e.keyCode == KeyEvent.VK_PAGE_DOWN) {
             AudioHelper.stop("decrease-power")
         }
     }
