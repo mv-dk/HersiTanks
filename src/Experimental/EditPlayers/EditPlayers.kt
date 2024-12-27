@@ -8,6 +8,9 @@ import Experimental.Menu.MenuGameScene
 import Experimental.Menu.MenuPointGameObject
 import Experimental.Menu.MenuPoints.ChangeSceneMenuPoint
 import Experimental.Menu.MenuPoints.TextInputMenuPoint
+import Experimental.Menu.OPTION_GROUNDSIZE_LARGE
+import Experimental.Menu.OPTION_GROUNDSIZE_MEDIUM
+import Experimental.Menu.OPTION_GROUNDSIZE_SMALL
 import Experimental.TerrainScene.TerrainGameScene
 import Game.GameController
 import gameResX
@@ -34,7 +37,12 @@ class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
                 }
             }
 
-            TerrainGameScene(this, Color(113,136, 248), gameResX, gameResY)
+            val groundSize = when (GameController.groundSizeOption) {
+                OPTION_GROUNDSIZE_MEDIUM -> gameResX*2
+                OPTION_GROUNDSIZE_LARGE -> gameResX*4
+                else -> gameResX
+            }
+            TerrainGameScene(this, Color(113,136, 248), gameResX, gameResY, groundSize)
         }))
     }
 

@@ -11,8 +11,8 @@ import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 import kotlin.random.Random
 
-class RasterTerrain(parent: IGameScene, position: Pos2D) : GameObject2(parent, position){
-    var rasterImage: BufferedImage = BufferedImage(parent.width, parent.height, BufferedImage.BITMASK)
+class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int) : GameObject2(parent, position){
+    var rasterImage: BufferedImage = BufferedImage(width, height, BufferedImage.BITMASK)
     var mode: Int = 1
     var crumble: Boolean = false
     var earthquake: Earthquake? = null

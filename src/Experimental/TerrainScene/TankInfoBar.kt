@@ -28,6 +28,9 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
     }
 
     override fun draw(g: Graphics2D) {
+        val oldTranslationX = g.transform.translateX
+        val oldTranslationY = g.transform.translateY
+        g.translate(-oldTranslationX, -oldTranslationY)
         g.color = Color.DARK_GRAY
         g.fillRect(position.x.toInt(), position.y.toInt(), parent.width, 32)
 
@@ -70,5 +73,6 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
                 g.drawString("Update [ms]: ${GameController.updateTime}", 520, gameResY - 10)
             }
         }
+        g.translate(oldTranslationX, oldTranslationY)
     }
 }

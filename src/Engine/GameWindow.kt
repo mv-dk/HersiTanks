@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
+import java.awt.event.MouseMotionListener
 import java.awt.image.VolatileImage
 import java.io.File
 import java.io.InputStream
@@ -78,6 +79,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
         frame.isVisible = true
         panel.addKeyListener(gameRunner)
         panel.addMouseListener(gameRunner)
+        panel.addMouseMotionListener(gameRunner)
         panel.setFocusTraversalKeysEnabled(false)
     }
 
@@ -148,7 +150,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
     }
 }
 
-class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListener, MouseListener {
+class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListener, MouseListener, MouseMotionListener {
     private val keyEventQueue: ConcurrentLinkedQueue<KeyEvent> = ConcurrentLinkedQueue()
     private val mouseEventQueue: ConcurrentLinkedQueue<MouseEvent> = ConcurrentLinkedQueue()
 
@@ -201,6 +203,14 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListen
     }
 
     override fun mouseExited(e: MouseEvent?) {
+        mouseEventQueue.add(e)
+    }
+
+    override fun mouseDragged(e: MouseEvent?) {
+        mouseEventQueue.add(e)
+    }
+
+    override fun mouseMoved(e: MouseEvent?) {
         mouseEventQueue.add(e)
     }
 

@@ -17,12 +17,14 @@ import kotlin.random.Random
 
 val random = Random(1)
 
-class TerrainGameScene(private val parentScene: IGameScene, color: Color, width: Int, height: Int) : GameScene(color, width, height) {
+class TerrainGameScene(private val parentScene: IGameScene, color: Color, width: Int, height: Int, val terrainWidth: Int) : GameScene(color, width, height) {
     lateinit var rasterTerrain: RasterTerrain
     var updatePlayersTurnOnNextPossibleOccasion = false
     var tankInfoBar = TankInfoBar(this, Pos2D(0.0, 0.0))
     var weaponBar = WeaponBar(this, Pos2D(0.0, 32.0))
     var skyImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+    var translationX = 0
+    var translationY = 0
 
     init {
         when (GameController.skyOption) {
@@ -69,14 +71,14 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 
     override fun load() {
         GameController.state = BattleState()
-        rasterTerrain = RasterTerrain(this, Pos2D(0.0, 0.0))
+        rasterTerrain = RasterTerrain(this, Pos2D(0.0, 0.0), terrainWidth, height)
         add(rasterTerrain)
         add(tankInfoBar)
         add(weaponBar)
 
         val margin = 40.0
         var numPlayers = GameController.players.size
-        val spaceBetweenTanks = if (numPlayers == 1) (width-margin)/2.0 else ((width-2.0*margin) / (numPlayers-1))
+        val spaceBetweenTanks = if (numPlayers == 1) (terrainWidth-margin)/2.0 else ((terrainWidth-2.0*margin) / (numPlayers-1))
         var x = margin
         for (i in 1 .. numPlayers){
             val p = GameController.players[i-1]
@@ -159,6 +161,10 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
                 tank.updateCanonXY()
                 println("Tank size: ${tank.size}")
             }
+        } else if (e.keyCode == KeyEvent.VK_COMMA) {
+            translationX -= 1
+        } else if (e.keyCode == KeyEvent.VK_PERIOD) {
+            translationX += 1
         }
     }
 
@@ -178,6 +184,17 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             rasterTerrain.mouseClicked(e.x, e.y)
         } else if (e.button == MouseEvent.BUTTON3){
             AudioHelper.play("big-boom")
+        }
+    }
+
+    override fun mouseMoved(e: MouseEvent) {
+        super.mouseMoved(e)
+        translationY = Math.max(0, 300 - e.y)
+        if (GameController.groundSizeOption == OPTION_GROUNDSIZE_SMALL) return
+        if (GameController.groundSizeOption == OPTION_GROUNDSIZE_MEDIUM) {
+            translationX = 500 - e.x
+        } else if (GameController.groundSizeOption == OPTION_GROUNDSIZE_LARGE) {
+            translationX = 500 - (e.x*2).toInt()
         }
     }
 
@@ -244,6 +261,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 
     override fun draw(g: Graphics2D) {
         g.drawImage(skyImage, null, 0, 0)
+        g.translate(translationX, translationY)
         gameObjectsByDrawOrder.forEach { it.draw(g) }
     }
 }

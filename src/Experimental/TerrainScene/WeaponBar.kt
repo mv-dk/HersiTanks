@@ -18,6 +18,12 @@ class WeaponBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, posit
     }
 
     override fun draw(g: Graphics2D) {
+        // Undo transforms (from moving view by moving the mouse)
+        val oldTranslationX = g.transform.translateX
+        var oldTranslationY = g.transform.translateY
+        g.translate(-oldTranslationX, -oldTranslationY)
+
+        // Draw HUD
         g.color = Color.DARK_GRAY
         g.fillRect(position.x.toInt(), position.y.toInt(), parent.width, 32)
 
@@ -35,5 +41,8 @@ class WeaponBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, posit
             i += 35
             idx += 1
         }
+
+        // Redo transforms (moving view by moving the mouse)
+        g.translate(oldTranslationX, oldTranslationY)
     }
 }

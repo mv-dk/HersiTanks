@@ -30,7 +30,7 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D) 
 
         if (position.y > parent.height) {
             explode()
-        } else if (position.x >= 0 && position.x < parent.width && position.y >= 0) {
+        } else if (position.x >= terrain.position.x && position.x < terrain.rasterImage.width && position.y >= 0) {
             if (terrain.rasterImage.getRGB(position.x.toInt(), position.y.toInt()) != 0) {
                 explode()
             }

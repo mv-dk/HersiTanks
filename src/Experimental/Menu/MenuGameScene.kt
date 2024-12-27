@@ -28,6 +28,10 @@ val OPTION_WIND_STRONG = 3
 val OPTION_DECO_NONE = 0
 val OPTION_DECO_CHRISTMAS = 1
 
+val OPTION_GROUNDSIZE_SMALL = 0
+val OPTION_GROUNDSIZE_MEDIUM = 1
+val OPTION_GROUNDSIZE_LARGE = 2
+
 class MenuGameScene(override val width: Int, override val height: Int, color: Color) : GameScene(color, width, height) {
     var numPlayersSelected = 2
     var numGamesSelected = 10
@@ -71,6 +75,15 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
             ), OPTION_GROUND_GRASS,
             {old,new ->
                 GameController.groundOption = new.id
+            }),
+        OptionSelectorMenuPoint("Ground size", this,
+            listOf(
+                OptionValue(OPTION_GROUNDSIZE_SMALL, "Small"),
+                OptionValue(OPTION_GROUNDSIZE_MEDIUM, "Medium"),
+                OptionValue(OPTION_GROUNDSIZE_LARGE, "Large")
+            ), OPTION_GROUNDSIZE_SMALL,
+            {old,new ->
+                GameController.groundSizeOption = new.id
             }),
         OptionSelectorMenuPoint("Wind", this,
             listOf(
