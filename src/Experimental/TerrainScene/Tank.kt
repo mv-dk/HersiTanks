@@ -21,11 +21,6 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
     var falling: Boolean = false
     var firstFall = true
     var playing = true
-    var activeWeaponIdx: Int = 0
-        set(value) {
-            if (value < 0 || value > Weapon.allWeapons.size-1) throw Exception("Weapon must be between 0 and ${Weapon.allWeapons.size-1} (inclusive)")
-            field = value
-        }
     var canonX = (position.x + size * Math.cos(Math.PI*angle/180.0)).toInt()
     var canonY = (position.y - size * Math.sin(Math.PI*angle/180.0)).toInt()
 

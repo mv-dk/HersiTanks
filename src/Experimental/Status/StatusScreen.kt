@@ -32,7 +32,7 @@ class StatusScreen(val lines: List<StatusLine>) : GameScene(Color(182, 179, 173)
             gameWindow?.gameRunner?.currentGameScene = MenuGameScene(gameResX, gameResY, Random.nextColor())
         } else {
 
-            val cheapestWeaponPrice = Weapon.allWeapons.minOf { it.purchasePrice }
+            val cheapestWeaponPrice = Weapon.allWeapons.minOf { it.value.purchasePrice }
             val playersAbleToPurchase = GameController.players.filter { it.money > cheapestWeaponPrice }
             if (playersAbleToPurchase.size > 0) {
                 gameWindow?.gameRunner?.currentGameScene =

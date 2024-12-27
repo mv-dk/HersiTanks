@@ -14,14 +14,16 @@ abstract class Weapon(
     val purchaseQuantity: Int,
 ) {
     companion object {
-        val allWeapons = listOf(
-            ExplosionWeapon(1, "Knaldperle", 10.0, 50, 10),
-            ExplosionWeapon(2, "Kanonslaw", 50.0, 25, 20),
-            ExplosionWeapon(3, "Granat", 100.0, 10, 40),
-            ExplosionWeapon(4, "Klumpedumpebombe", 200.0, 5, 80),
-            EarthquakeWeapon(5, "Jordskælv", 40.0, 2),
-            FrogBombWeapon(6, "Frøbombe", 200.0, 3)
-        )
+        val allWeapons: Map<Int, Weapon> = listOf(
+            ExplosionWeapon(1, "Knaldperle", 100.0, 50, 10),
+            ExplosionWeapon(2, "Kanonslaw", 200.0, 10, 20),
+            ExplosionWeapon(3, "Granat", 300.0, 10, 40),
+            ExplosionWeapon(4, "Klumpedumpebombe", 1000.0, 5, 80),
+            EarthquakeWeapon(5, "Jordskælv", 450.0, 2),
+            FrogBombWeapon(6, "Frøbombe", 1100.0, 3)
+        ).associate { it.id to it }
+        val minWeaponId = allWeapons.minOf { it.key }
+        val maxWeaponId = allWeapons.maxOf { it.key }
     }
     abstract fun drawIcon(g: Graphics2D, x: Int, y: Int)
     abstract fun onExplode(terrain: RasterTerrain, gameScene: IGameScene, projectile: Projectile)

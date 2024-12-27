@@ -129,29 +129,26 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             GameController.getCurrentPlayersTank()?.increasePower(1)
          } else if (e.keyCode == KeyEvent.VK_ENTER || e.keyCode == KeyEvent.VK_SPACE){
             AudioHelper.play("fire")
-            val tank = GameController.getCurrentPlayersTank()
-            if (tank != null) {
-                val projectile = Projectile(
-                    this, Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble()),
-                    Vec2D(
-                        tank.position.copy(),
-                        Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())
-                    ).times(tank.power / 100.0)
-                )
-                add(projectile)
+            val player = GameController.getCurrentPlayer()
+            val tank = player.tank
+            if ((player.weaponry[player.currentWeaponId] ?: 0) == 0) {
+                AudioHelper.play("fire");
+            } else {
+                if (tank != null) {
+                    val projectile = Projectile(
+                        this, Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble()),
+                        Vec2D(
+                            tank.position.copy(),
+                            Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())
+                        ).times(tank.power / 100.0)
+                    )
+                    add(projectile)
+                    player.decreaseAmmoAndCycleIfZero()
+                }
             }
             updatePlayersTurnOnNextPossibleOccasion = true
         } else if (e.keyCode == KeyEvent.VK_TAB) {
-            val tank = GameController.getCurrentPlayersTank()
-            if (tank != null) {
-                var oldIdx = tank.activeWeaponIdx
-                var ammo = 0
-                do {
-                    tank.activeWeaponIdx = (tank.activeWeaponIdx + 1) % Weapon.allWeapons.size
-                    ammo = GameController.getCurrentPlayer().weaponry.get(Weapon.allWeapons[tank.activeWeaponIdx].id) ?: 0
-                } while (ammo <= 0 && tank.activeWeaponIdx != oldIdx)
-                println("ActiveWeaponIdx: ${tank.activeWeaponIdx}")
-            }
+            GameController.getCurrentPlayer().cycleWeapon()
         } else if (e.keyCode == KeyEvent.VK_0) {
             val tank = GameController.getCurrentPlayersTank()
             if (tank != null) {
@@ -180,15 +177,6 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             AudioHelper.stop("increase-power")
         } else if (e.keyCode == KeyEvent.VK_DOWN) {
             AudioHelper.stop("decrease-power")
-        }
-    }
-
-    override fun mousePressed(e: MouseEvent) {
-        if (!busy()) return
-        if (e.button == MouseEvent.BUTTON1) {
-            rasterTerrain.mouseClicked(e.x, e.y)
-        } else if (e.button == MouseEvent.BUTTON3){
-            AudioHelper.play("big-boom")
         }
     }
 

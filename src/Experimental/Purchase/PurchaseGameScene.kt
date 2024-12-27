@@ -24,7 +24,7 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(Col
 
     init {
         val player = players[idx]
-        for (w in Weapon.allWeapons.filter({ it.purchasePrice <= player.money})) {
+        for (w in Weapon.allWeapons.filter({ it.value.purchasePrice <= player.money}).map{it.value}) {
             menuPoints.add(MenuPointGameObject("${w.name}, ${w.purchaseQuantity} for \$${w.purchasePrice}",
                 this,
                 shadow = true,
@@ -33,7 +33,7 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(Col
                 onActivate = {
                     if (player.money >= w.purchasePrice) {
                         if (player.weaponry.containsKey(w.id)) {
-                            player.weaponry[w.id] = player.weaponry[w.id] ?: (0 + w.purchaseQuantity)
+                            player.weaponry[w.id] = (player.weaponry[w.id] ?: 0) + w.purchaseQuantity
                         } else {
                             player.weaponry.put(w.id, w.purchaseQuantity)
                         }

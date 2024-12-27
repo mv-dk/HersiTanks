@@ -30,8 +30,10 @@ class WeaponBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, posit
         g.stroke = stroke
         var i = 0
         var idx = 0
-        for (weapon in Weapon.allWeapons) {
-            if (idx == GameController.getCurrentPlayersTank()?.activeWeaponIdx) {
+        var currentWeaponId = GameController.getCurrentPlayer().currentWeaponId
+
+        for (weapon in Weapon.allWeapons.values) {
+            if (weapon.id == currentWeaponId) {
                 g.color = Color.RED
             } else {
                 g.color = darkPurple
@@ -43,6 +45,10 @@ class WeaponBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, posit
             i += 35
             idx += 1
         }
+        val selectedWeapon = Weapon.allWeapons[currentWeaponId]
+        val selectedWeaponName = selectedWeapon?.name
+        val selectedWeaponAmmo = GameController.getCurrentPlayer().weaponry[selectedWeapon?.id]
+        g.drawString("$selectedWeaponName ($selectedWeaponAmmo)", (position.x + i).toInt(), 42)
 
         // Redo transforms (moving view by moving the mouse)
         g.translate(oldTranslationX, oldTranslationY)

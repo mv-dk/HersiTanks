@@ -69,9 +69,7 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D) 
     }
 
     fun explode() {
-        val activeWeapon = GameController.getCurrentPlayersTank()?.activeWeaponIdx
-        if (activeWeapon == null) return
-        Weapon.allWeapons[activeWeapon].onExplode(terrain, parent, this)
+        Weapon.allWeapons[GameController.getCurrentPlayer().currentWeaponId]?.onExplode(terrain, parent, this)
     }
 
     override fun draw(g: Graphics2D) {

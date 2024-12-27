@@ -6,6 +6,7 @@ import Experimental.Menu.OPTION_GROUND_GRASS
 import Experimental.Menu.OPTION_SKY_BLUE
 import Experimental.Menu.OPTION_WIND_MEDIUM
 import Experimental.TerrainScene.Tank
+import Experimental.TerrainScene.Weapon
 import gameResX
 import java.awt.Color
 import kotlin.time.Duration
@@ -81,8 +82,26 @@ class Player(var name: String) {
     var weaponry = mutableMapOf<Int,Int>()
     var money = 0.0
     var color = Color.RED
+    var currentWeaponId = 1
     fun victories(): Int {
         return GameController.teams.find { it.players.contains(this) }?.victories ?: 0
+    }
+
+    fun decreaseAmmoAndCycleIfZero() {
+        weaponry[currentWeaponId] = (weaponry[currentWeaponId] ?: 1) -1
+        if ((weaponry[currentWeaponId] ?: 0) == 0) {
+            cycleWeapon()
+        }
+    }
+
+    fun cycleWeapon() {
+        val oldWeaponId = currentWeaponId
+        while (true) {
+            currentWeaponId += 1
+            if (currentWeaponId > Weapon.maxWeaponId) currentWeaponId = Weapon.minWeaponId
+            if (weaponry.containsKey(currentWeaponId) && (weaponry[currentWeaponId] ?: 0) > 0) break
+            if (currentWeaponId == oldWeaponId) break
+        }
     }
 }
 
