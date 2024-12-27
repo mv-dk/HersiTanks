@@ -50,6 +50,7 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
                 val newPlayer = Player("Player $i")
                 newPlayer.weaponry.put(1, 20)
                 newPlayer.weaponry.put(2, 10)
+                newPlayer.weaponry.put(5, 2)
                 newPlayer.color = colors[i-1]
                 GameController.teams.add(Team("Team $i", listOf(newPlayer)))
                 GameController.players.add(newPlayer)
@@ -87,7 +88,7 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
             ), OPTION_GROUNDSIZE_SMALL,
             {old,new ->
                 GameController.groundSizeOption = new.id
-                GameController.groundSizeOption = when (new.id) {
+                GameController.groundSize = when (new.id) {
                     OPTION_GROUNDSIZE_MEDIUM -> gameResX*2
                     OPTION_GROUNDSIZE_LARGE -> gameResX*4
                     else -> gameResX

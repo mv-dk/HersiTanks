@@ -31,7 +31,8 @@ object GameController {
     var windOption: Int = OPTION_WIND_MEDIUM
     var groundOption: Int = OPTION_GROUND_GRASS
     var skyOption: Int = OPTION_SKY_BLUE
-    var groundSizeOption: Int = gameResX
+    var groundSizeOption: Int = OPTION_GROUNDSIZE_SMALL
+    var groundSize: Int = gameResX
     var state: IState = MenuState()
     var teams: MutableList<Team> = mutableListOf()
     var players: MutableList<Player> = mutableListOf()

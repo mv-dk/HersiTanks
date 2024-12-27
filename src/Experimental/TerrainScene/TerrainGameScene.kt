@@ -151,7 +151,8 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
                         Vec2D(
                             tank.position.copy(),
                             Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())
-                        ).times(tank.power / 100.0)
+                        ).times(tank.power / 100.0),
+                        player.currentWeaponId
                     )
                     add(projectile)
                     player.decreaseAmmoAndCycleIfZero()

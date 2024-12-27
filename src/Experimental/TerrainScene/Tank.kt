@@ -121,11 +121,9 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
 
     fun onAngleChanged(){
         updateCanonXY()
-        println("angle: $angle")
     }
 
     fun onPowerChanged(){
-        println("power: $power")
     }
 
     // Call this every time the tank has moved, or the angle has changed

@@ -1,8 +1,6 @@
 package Experimental.Purchase
 
 import Engine.GameScene
-import Engine.IGameObject
-import Engine.IGameScene
 import Engine.Pos2D
 import Experimental.Menu.MenuGameObject
 import Experimental.Menu.MenuPointGameObject
@@ -13,7 +11,6 @@ import Game.GameController
 import Game.Player
 import gameResX
 import gameResY
-import gameWindow
 import menuGameScene
 import java.awt.Color
 import java.awt.Graphics2D
@@ -42,7 +39,7 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(Col
             }))
         }
         if (idx == players.size - 1) {
-            menuPoints.add(ChangeSceneMenuPoint("Done", this, { TerrainGameScene(menuGameScene, Color(113, 136, 248), gameResX, gameResY, GameController.groundSizeOption) }))
+            menuPoints.add(ChangeSceneMenuPoint("Done", this, { TerrainGameScene(menuGameScene, Color(113, 136, 248), gameResX, gameResY, GameController.groundSize) }))
         } else {
             menuPoints.add(ChangeSceneMenuPoint("Done", this, { PurchaseGameScene(players, idx + 1)}))
         }

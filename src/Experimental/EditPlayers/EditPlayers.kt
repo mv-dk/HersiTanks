@@ -37,7 +37,7 @@ class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
                 }
             }
 
-            TerrainGameScene(this, Color(113,136, 248), gameResX, gameResY, GameController.groundSizeOption)
+            TerrainGameScene(this, Color(113,136, 248), gameResX, gameResY, GameController.groundSize)
         }))
     }
 

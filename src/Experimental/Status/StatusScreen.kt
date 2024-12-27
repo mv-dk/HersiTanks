@@ -39,7 +39,7 @@ class StatusScreen(val lines: List<StatusLine>) : GameScene(Color(182, 179, 173)
                     PurchaseGameScene(GameController.players.filter { it.money > cheapestWeaponPrice }, 0)
             } else {
                 gameWindow?.gameRunner?.currentGameScene =
-                    TerrainGameScene(menuGameScene, Color(113, 136, 248), gameResX, gameResY, GameController.groundSizeOption)
+                    TerrainGameScene(menuGameScene, Color(113, 136, 248), gameResX, gameResY, GameController.groundSize)
             }
         }
     }

@@ -1,6 +1,7 @@
 package Experimental.TerrainScene
 
 import Engine.IGameScene
+import Engine.Pos2D
 import Engine.Vec2D
 import Game.GameController
 import java.awt.BasicStroke
@@ -9,7 +10,7 @@ import java.awt.Graphics2D
 
 abstract class Weapon(
     val id: Int,
-    val  name: String,
+    val name: String,
     val purchasePrice: Double,
     val purchaseQuantity: Int,
 ) {
@@ -26,6 +27,11 @@ abstract class Weapon(
         val maxWeaponId = allWeapons.maxOf { it.key }
     }
     abstract fun drawIcon(g: Graphics2D, x: Int, y: Int)
+
+    open fun getProjectile(gameScene: IGameScene, pos: Pos2D, velocity: Vec2D): Projectile {
+        return Projectile(gameScene, pos, velocity, id)
+    }
+
     abstract fun onExplode(terrain: RasterTerrain, gameScene: IGameScene, projectile: Projectile)
 
 }
