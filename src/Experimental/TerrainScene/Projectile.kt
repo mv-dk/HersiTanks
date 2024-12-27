@@ -23,18 +23,49 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D) 
         val oldPos = position.copy()
         position.x += velocity.x + GameController.wind
         position.y += velocity.y
-        val newSmokes = oldPos.stepsTo(position, 10)
-        newSmokes.forEach { parent.add(ProjectileTrail(parent, it)) }
 
         velocity.y += 1
 
         if (position.y > parent.height) {
             explode()
         } else if (position.x >= terrain.position.x && position.x < terrain.rasterImage.width && position.y >= 0) {
-            if (terrain.rasterImage.getRGB(position.x.toInt(), position.y.toInt()) != 0) {
+            if (terrainAt(position)) {
+                position = findExactTerrainIntersection(oldPos, position)
                 explode()
             }
         }
+        val newSmokes = oldPos.stepsTo(position, 10)
+        newSmokes.forEach { parent.add(ProjectileTrail(parent, it)) }
+    }
+
+    private fun terrainAt(p: Pos2D): Boolean {
+        return terrain.rasterImage.getRGB(p.x.toInt(), p.y.toInt()) != 0
+    }
+
+    private fun findExactTerrainIntersection(oldPos: Pos2D, newPos: Pos2D): Pos2D {
+        var done = false
+        var p0 = oldPos.copy()
+        var p1 = position.copy()
+        var pHalf = position.copy()
+        pHalf.x = p0.x + (p1.x - p0.x)/2.0
+        pHalf.y = p0.y + (p1.y - p0.y)/2.0
+
+        while (!done) {
+            if (terrainAt(pHalf)) {
+                p1.x = pHalf.x
+                p1.y = pHalf.y
+                pHalf.x = p0.x + (p1.x - p0.x)/2.0
+                pHalf.y = p0.y + (p1.y - p0.y)/2.0
+            } else {
+                p0.x = pHalf.x
+                p0.y = pHalf.y
+                pHalf.x = p0.x + (p1.x - p0.x)/2.0
+                pHalf.y = p0.y + (p1.y - p0.y)/2.0
+            }
+            val dist = p0.distance(p1)
+            done = dist < 2
+        }
+        return p0
     }
 
     fun explode() {

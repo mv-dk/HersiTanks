@@ -30,7 +30,7 @@ class StatusScreen(val lines: List<StatusLine>) : GameScene(Color(182, 179, 173)
             gameWindow?.gameRunner?.currentGameScene = MenuGameScene(gameResX, gameResY, Random.nextColor())
         } else {
             gameWindow?.gameRunner?.currentGameScene =
-                TerrainGameScene(menuGameScene, Color(113, 136, 248), gameResX, gameResY, gameResX*2)
+                TerrainGameScene(menuGameScene, Color(113, 136, 248), gameResX, gameResY, GameController.groundSizeOption)
         }
     }
 

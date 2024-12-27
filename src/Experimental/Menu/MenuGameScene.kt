@@ -6,6 +6,7 @@ import Experimental.Menu.MenuPoints.*
 import Game.GameController
 import Game.Player
 import Game.Team
+import gameResX
 import gameWindow
 import java.awt.BasicStroke
 import java.awt.Color
@@ -84,6 +85,11 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
             ), OPTION_GROUNDSIZE_SMALL,
             {old,new ->
                 GameController.groundSizeOption = new.id
+                GameController.groundSizeOption = when (new.id) {
+                    OPTION_GROUNDSIZE_MEDIUM -> gameResX*2
+                    OPTION_GROUNDSIZE_LARGE -> gameResX*4
+                    else -> gameResX
+                }
             }),
         OptionSelectorMenuPoint("Wind", this,
             listOf(

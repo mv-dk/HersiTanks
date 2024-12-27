@@ -6,6 +6,7 @@ import Experimental.Menu.OPTION_GROUND_GRASS
 import Experimental.Menu.OPTION_SKY_BLUE
 import Experimental.Menu.OPTION_WIND_MEDIUM
 import Experimental.TerrainScene.Tank
+import gameResX
 import java.awt.Color
 import kotlin.time.Duration
 
@@ -29,7 +30,7 @@ object GameController {
     var windOption: Int = OPTION_WIND_MEDIUM
     var groundOption: Int = OPTION_GROUND_GRASS
     var skyOption: Int = OPTION_SKY_BLUE
-    var groundSizeOption: Int = OPTION_GROUNDSIZE_SMALL
+    var groundSizeOption: Int = gameResX
     var state: IState = MenuState()
     var teams: MutableList<Team> = mutableListOf()
     var players: MutableList<Player> = mutableListOf()
