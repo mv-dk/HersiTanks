@@ -48,11 +48,8 @@ class MenuGameScene(override val width: Int, override val height: Int, color: Co
             val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.BLACK, Color.WHITE, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.LIGHT_GRAY)
             for (i in 1 .. numPlayersSelected) {
                 val newPlayer = Player("Player $i")
-                newPlayer.weaponry.put(1, 20)
-                newPlayer.weaponry.put(2, 10)
-                newPlayer.weaponry.put(7, 20)
-                newPlayer.weaponry.put(8, 20)
-                newPlayer.weaponry.put(9, 20)
+                newPlayer.weaponry.put(1, 200)
+                newPlayer.weaponry.put(2, 100)
                 newPlayer.color = colors[i-1]
                 GameController.teams.add(Team("Team $i", listOf(newPlayer)))
                 GameController.players.add(newPlayer)
