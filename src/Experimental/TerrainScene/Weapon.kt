@@ -7,6 +7,7 @@ import Game.GameController
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
+import kotlin.random.Random
 
 abstract class Weapon(
     val id: Int,
@@ -18,10 +19,13 @@ abstract class Weapon(
         val allWeapons: Map<Int, Weapon> = listOf(
             ExplosionWeapon(1, "Knaldperle", 100.0, 50, 10),
             ExplosionWeapon(2, "Kanonslaw", 200.0, 10, 20),
-            ExplosionWeapon(3, "Granat", 300.0, 10, 40),
-            ExplosionWeapon(4, "Klumpedumpebombe", 1000.0, 5, 80),
-            EarthquakeWeapon(5, "Jordskælv", 450.0, 2),
-            FrogBombWeapon(6, "Frøbombe", 1100.0, 3)
+            ExplosionWeapon(3, "Granat", 200.0, 10, 40),
+            ExplosionWeapon(4, "Klumpedumpebombe", 300.0, 1, 80),
+            EarthquakeWeapon(5, "Jordskælv", 350.0, 2),
+            FrogBombWeapon(6, "Frøbombe", 400.0, 3),
+            MirvWeapon(7, "MIRV-3", 400.0, 2, 3),
+            MirvWeapon(8, "MIRV-5", 500.0, 2, 5),
+            MirvWeapon(9, "MIRV-7", 700.0, 2, 7),
         ).associate { it.id to it }
         val minWeaponId = allWeapons.minOf { it.key }
         val maxWeaponId = allWeapons.maxOf { it.key }
@@ -36,12 +40,59 @@ abstract class Weapon(
 
 }
 
+class MirvWeapon(id: Int, name: String, purchasePrice: Double, purchaseQuantity: Int, val subProjectiles: Int):
+    Weapon(id, name, purchasePrice, purchaseQuantity) {
+    override fun drawIcon(g: Graphics2D, x: Int, y: Int) {
+        val oldStroke = g.stroke
+        g.stroke = BasicStroke(2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
+        g.drawArc(x + 10, y + 16, 12, 20, -180, -90)
+
+        g.drawArc(x + 6, y + 10, 8, 12, 0, 180)
+        g.drawArc(x + 16, y + 10, 8, 12, 180, -180)
+        g.drawArc(x + 6, y + 6, 8, 16, 90, -90)
+        if (subProjectiles > 3) {
+            g.drawArc(x + 16, y + 6, 8, 16, 180, -90)
+            g.drawArc(x + 14, y + 16, 8, 8, 90, -90)
+        }
+        if (subProjectiles > 5) {
+            g.drawArc(x + 8, y + 16, 6, 4, 180, -180)
+            g.drawArc(x + 14, y + 18, 4, 12, 90, -90)
+        }
+
+        g.stroke = oldStroke
+    }
+
+    override fun onExplode(
+        terrain: RasterTerrain,
+        gameScene: IGameScene,
+        projectile: Projectile
+    ) {
+        gameScene.add(Explosion(gameScene, projectile.position, 30, 15, {
+            terrain.crumble = true
+        }))
+        gameScene.remove(projectile)
+        GameController.projectilesFlying -= 1
+        for (i in 1 .. subProjectiles) {
+            val velocity = Vec2D(Random.nextDouble(-10.0, 10.0), -3.0)
+            val p = Projectile(gameScene, projectile.position.copy(), velocity, 3)
+            gameScene.add(p)
+        }
+    }
+
+    override fun getProjectile(gameScene: IGameScene, pos: Pos2D, velocity: Vec2D): Projectile {
+        return MidairExplodingProjectile(gameScene, pos, velocity, id)
+    }
+
+}
+
 class FrogBombWeapon(id: Int, name: String, purchasePrice: Double, purchaseQuantity: Int):
     Weapon(id, name, purchasePrice, purchaseQuantity) {
     override fun drawIcon(g: Graphics2D, x: Int, y: Int) {
+        val oldStroke = g.stroke
         g.stroke = BasicStroke(2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
         g.drawArc(x, y+12, 16, 24, 0, 90)
         g.drawArc(x+16, y+16, 8, 16, 0, 180)
+        g.stroke = oldStroke
     }
 
     override fun onExplode(terrain: RasterTerrain, gameScene: IGameScene, projectile: Projectile) {

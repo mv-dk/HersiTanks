@@ -114,6 +114,7 @@ class MidairExplodingProjectile(parent: IGameScene, position: Pos2D, velocity: V
         ticks += 1
         if (ticks > minTicks) {
             if (velocity.y >= 0) {
+                parent.remove(this)
                 explode()
             }
         }

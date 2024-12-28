@@ -146,15 +146,14 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
                 AudioHelper.play("fizzle");
             } else {
                 if (tank != null) {
-                    val projectile = Projectile(
-                        this, Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble()),
-                        Vec2D(
-                            tank.position.copy(),
-                            Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())
-                        ).times(tank.power / 100.0),
-                        player.currentWeaponId
-                    )
-                    add(projectile)
+                    val velocity = Vec2D(
+                        tank.position.copy(),
+                        Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())).times(tank.power / 100.0)
+                    val position = Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())
+                    val projectile = Weapon.allWeapons[player.currentWeaponId]?.getProjectile(this, position, velocity)
+                    if (projectile != null) {
+                        add(projectile)
+                    }
                     player.decreaseAmmoAndCycleIfZero()
                 }
             }
