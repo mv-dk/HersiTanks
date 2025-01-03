@@ -6,6 +6,8 @@ import Experimental.Menu.MenuPoints.*
 import Game.GameController
 import Game.Player
 import Game.Team
+import SND_BAMBOO_01
+import SND_BAMBOO_02
 import gameResX
 import gameWindow
 import java.awt.BasicStroke
@@ -197,8 +199,10 @@ class MenuGameObject(parent: IGameScene, position: Pos2D, var width: Int, var he
 
     fun keyPressed(e: KeyEvent?){
         if (e?.keyCode == KeyEvent.VK_DOWN) {
+            AudioHelper.play(SND_BAMBOO_02)
             selectedIdx = (selectedIdx + 1) % menuPoints.size
         } else if (e?.keyCode == KeyEvent.VK_UP) {
+            AudioHelper.play(SND_BAMBOO_01)
             selectedIdx = if (selectedIdx == 0) menuPoints.size-1 else selectedIdx - 1
         } else if (e?.keyCode == KeyEvent.VK_LEFT) {
             (selected as? NumberSelectorMenuPoint)?.decrease()

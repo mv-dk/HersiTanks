@@ -1,5 +1,6 @@
 package Experimental.Purchase
 
+import Engine.AudioHelper
 import Engine.GameScene
 import Engine.Pos2D
 import Experimental.Menu.MenuGameObject
@@ -9,6 +10,8 @@ import Experimental.TerrainScene.TerrainGameScene
 import Experimental.TerrainScene.Weapon
 import Game.GameController
 import Game.Player
+import SND_BUY
+import SND_BUY_FINISH
 import gameResX
 import gameResY
 import menuGameScene
@@ -29,6 +32,7 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(Col
                 fontSize = 16,
                 onActivate = {
                     if (player.money >= w.purchasePrice) {
+                        AudioHelper.play(SND_BUY)
                         if (player.weaponry.containsKey(w.id)) {
                             player.weaponry[w.id] = (player.weaponry[w.id] ?: 0) + w.purchaseQuantity
                         } else {
@@ -39,9 +43,19 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(Col
             }))
         }
         if (idx == players.size - 1) {
-            menuPoints.add(ChangeSceneMenuPoint("Done", this, { TerrainGameScene(menuGameScene, Color(113, 136, 248), gameResX, gameResY, GameController.groundSize) }))
+            menuPoints.add(
+                ChangeSceneMenuPoint("Done", this,
+                    {
+                        AudioHelper.play(SND_BUY_FINISH)
+                        TerrainGameScene(menuGameScene, Color(113, 136, 248), gameResX, gameResY, GameController.groundSize)
+                    }))
         } else {
-            menuPoints.add(ChangeSceneMenuPoint("Done", this, { PurchaseGameScene(players, idx + 1)}))
+            menuPoints.add(
+                ChangeSceneMenuPoint("Done", this,
+                    {
+                        AudioHelper.play(SND_BUY_FINISH)
+                        PurchaseGameScene(players, idx + 1)
+                    }))
         }
 
     }

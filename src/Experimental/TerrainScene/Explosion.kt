@@ -4,6 +4,8 @@ import Engine.*
 import Game.GameController
 import java.awt.Color
 import java.awt.Graphics2D
+import SND_BIG_BOOM
+import SND_SMALL_BOOM
 
 class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration: Int, val onDone: () -> Unit) : GameObject2(parent, position) {
     var tick: Int = 0
@@ -18,9 +20,9 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
         val terrain = (parent as TerrainGameScene).rasterTerrain
         terrain.pokeHole(position.x.toInt(), position.y.toInt(), size)
         if (size > 100){
-            AudioHelper.play("big-boom")
+            AudioHelper.play(SND_BIG_BOOM)
         } else {
-            AudioHelper.play("small-boom")
+            AudioHelper.play(SND_SMALL_BOOM)
         }
 
         Explosion.currentExplosions.add(this)

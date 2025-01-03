@@ -360,26 +360,25 @@ class AudioClipPlayer {
 
     fun playSound(name: String) {
         if (!clipMap.containsKey(name)) throw Exception("clip $name was not preloaded!")
-        val clip = clipMap[name]!!
-        println("active: ${clip.isActive}, running: ${clip.isRunning}, framePosition: ${clip.framePosition}")
-
-        if (clip.isActive || clip.isRunning) {
-            clip.stop()
-        }
-        if (clip.framePosition > 0) {
-            clip.framePosition = 0
-        }
-        clip.start()
+         clipMap[name]?.let { clip ->
+             clip.stop()
+             clip.flush()
+             clip.framePosition = 0
+             clip.start()
+         }
     }
 
     fun stopSound(name: String) {
         if (!clipMap.containsKey(name)) throw Exception("clip $name was not preloaded!")
-        val clip = clipMap[name]!!
-        clip.stop()
+        clipMap[name]?.let { clip ->
+            clip.stop()
+            clip.flush()
+            clip.framePosition = 0
+        }
     }
 
     fun loopSound(name: String, times: Int = -1){
-        clipMap[name]!!.loop(times)
+        clipMap[name]?.loop(times)
     }
 
     fun unload(){

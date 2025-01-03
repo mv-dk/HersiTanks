@@ -4,6 +4,7 @@ import Engine.*
 import Experimental.Menu.OPTION_GROUND_GRASS
 import Experimental.Menu.OPTION_GROUND_SNOW
 import Game.GameController
+import SND_EARTHQUAKE
 import java.awt.AlphaComposite
 import java.awt.BasicStroke
 import java.awt.Color
@@ -176,7 +177,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
             if (!didUpdateTerrain) {
                 earthquake?.remove()
                 earthquake = null
-                AudioHelper.stop("earthquake")
+                AudioHelper.stop(SND_EARTHQUAKE)
                 maybeStartCrumble()
             }
         }
@@ -221,7 +222,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
     fun startEarthquake(x: Int, y:Int){
         earthquake = Earthquake(x, y, 5, 100, 1.0)
 
-        AudioHelper.loop("earthquake", -1)
+        AudioHelper.loop(SND_EARTHQUAKE, -1)
     }
 
     override fun draw(g: Graphics2D) {

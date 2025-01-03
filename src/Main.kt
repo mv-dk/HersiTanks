@@ -48,17 +48,38 @@ fun getBestScale() : Int{
     return scale
 }
 
+const val SND_EARTHQUAKE = "earthquake"
+const val SND_SMALL_BOOM = "small-boom"
+const val SND_BIG_BOOM = "big-boom"
+const val SND_FIRE = "fire"
+const val SND_CHANGE_ANGLE = "change-angle"
+const val SND_INCREASE_POWER = "increase-power"
+const val SND_DECREASE_POWER = "decrease-power"
+const val SND_FIZZLE = "fizzle"
+const val SND_FIRE2 = "fire2"
+const val SND_FIRE3 = "fire3"
+const val SND_BUY = "buy"
+const val SND_BUY_FINISH = "buy-finish"
+const val SND_BAMBOO_01 = "bamboo01"
+const val SND_BAMBOO_02 = "bamboo02"
+const val SND_BAMBOO_03 = "bamboo03"
+
 fun preloadSounds(){
-    AudioHelper.load("earthquake3.wav","earthquake")
-    AudioHelper.load("hersi-eksplosion-01.wav", "small-boom")
-    AudioHelper.load("boom3.wav", "big-boom")
-    AudioHelper.load("vhup.wav", "fire")
-    AudioHelper.load("hersi-vinkel.wav", "change-angle")
-    AudioHelper.load("increase_power.wav", "increase-power")
-    AudioHelper.load("decrease_power.wav", "decrease-power")
-    AudioHelper.load("fjuj.wav", "fizzle")
-    AudioHelper.load("pew1.wav", "fire2")
-    AudioHelper.load("pew2.wav", "fire3")
+    AudioHelper.load("earthquake3.wav",SND_EARTHQUAKE)
+    AudioHelper.load("hersi-eksplosion-01.wav", SND_SMALL_BOOM)
+    AudioHelper.load("boom3.wav", SND_BIG_BOOM)
+    AudioHelper.load("vhup.wav", SND_FIRE)
+    AudioHelper.load("hersi-vinkel.wav", SND_CHANGE_ANGLE)
+    AudioHelper.load("increase_power.wav", SND_INCREASE_POWER)
+    AudioHelper.load("decrease_power.wav", SND_DECREASE_POWER)
+    AudioHelper.load("fjuj.wav", SND_FIZZLE)
+    AudioHelper.load("pew1.wav", SND_FIRE2)
+    AudioHelper.load("pew2.wav", SND_FIRE3)
+    AudioHelper.load("buy01.wav", SND_BUY)
+    AudioHelper.load("buy-finish.wav", SND_BUY_FINISH)
+    AudioHelper.load("bamboo01.wav", SND_BAMBOO_01)
+    AudioHelper.load("bamboo02.wav", SND_BAMBOO_02)
+    AudioHelper.load("bamboo03.wav", SND_BAMBOO_03)
 }
 
 /*

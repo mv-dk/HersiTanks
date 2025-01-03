@@ -6,6 +6,13 @@ import Experimental.Status.StatusLine
 import Experimental.Status.StatusScreen
 import Game.BattleState
 import Game.GameController
+import SND_CHANGE_ANGLE
+import SND_DECREASE_POWER
+import SND_FIRE
+import SND_FIRE2
+import SND_FIRE3
+import SND_FIZZLE
+import SND_INCREASE_POWER
 import gameWindow
 import menuGameScene
 import java.awt.Color
@@ -114,41 +121,41 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 
         when (keyPressed) {
             KeyEvent.VK_LEFT -> {
-                AudioHelper.loop("change-angle", -1)
+                AudioHelper.loop(SND_CHANGE_ANGLE, -1)
                 GameController.getCurrentPlayersTank()?.increaseAngle(1)
             }
             KeyEvent.VK_RIGHT -> {
-                AudioHelper.loop("change-angle", -1)
+                AudioHelper.loop(SND_CHANGE_ANGLE, -1)
                 GameController.getCurrentPlayersTank()?.increaseAngle(-1)
             }
             KeyEvent.VK_DOWN -> {
-                AudioHelper.loop("decrease-power", -1)
+                AudioHelper.loop(SND_DECREASE_POWER, -1)
                 GameController.getCurrentPlayersTank()?.increasePower(-1)
             }
             KeyEvent.VK_UP -> {
-                AudioHelper.loop("increase-power", -1)
+                AudioHelper.loop(SND_INCREASE_POWER, -1)
                 GameController.getCurrentPlayersTank()?.increasePower(1)
             }
             KeyEvent.VK_PAGE_DOWN -> {
-                AudioHelper.loop("decrease-power", -1)
+                AudioHelper.loop(SND_DECREASE_POWER, -1)
                 GameController.getCurrentPlayersTank()?.increasePower(-10)
             }
             KeyEvent.VK_PAGE_UP -> {
-                AudioHelper.loop("increase-power", -1)
+                AudioHelper.loop(SND_INCREASE_POWER, -1)
                 GameController.getCurrentPlayersTank()?.increasePower(10)
             }
             KeyEvent.VK_ENTER, KeyEvent.VK_SPACE -> {
                 keyPressed = null
                 when (Random.nextInt(3)) {
-                    0 -> AudioHelper.play("fire")
-                    1 -> AudioHelper.play("fire2")
-                    2 -> AudioHelper.play("fire3")
+                    0 -> AudioHelper.play(SND_FIRE)
+                    1 -> AudioHelper.play(SND_FIRE2)
+                    2 -> AudioHelper.play(SND_FIRE3)
                 }
 
                 val player = GameController.getCurrentPlayer()
                 val tank = player.tank
                 if ((player.weaponry[player.currentWeaponId] ?: 0) == 0) {
-                    AudioHelper.play("fizzle");
+                    AudioHelper.play(SND_FIZZLE);
                 } else {
                     if (tank != null) {
                         val velocity = Vec2D(
@@ -193,11 +200,11 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 
     override fun keyReleased(e: KeyEvent) {
         if (e.keyCode == KeyEvent.VK_LEFT || e.keyCode == KeyEvent.VK_RIGHT) {
-            AudioHelper.stop("change-angle")
+            AudioHelper.stop(SND_CHANGE_ANGLE)
         } else if (e.keyCode == KeyEvent.VK_UP || e.keyCode == KeyEvent.VK_PAGE_UP) {
-            AudioHelper.stop("increase-power")
+            AudioHelper.stop(SND_INCREASE_POWER)
         } else if (e.keyCode == KeyEvent.VK_DOWN || e.keyCode == KeyEvent.VK_PAGE_DOWN) {
-            AudioHelper.stop("decrease-power")
+            AudioHelper.stop(SND_DECREASE_POWER)
         }
         keyPressed = null
     }
