@@ -30,7 +30,7 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
                 if (rasterTerrain.rasterImage.getRGB(position.x.toInt(), position.y.toInt() + 2) == 0 ||
                     rasterTerrain.rasterImage.getRGB(position.x.toInt() - size/4, position.y.toInt() + 2) == 0 ||
                     rasterTerrain.rasterImage.getRGB(position.x.toInt() + size/4, position.y.toInt() + 2) == 0) {
-                    position.y += 2
+                    position.y += 60 / GameRunner.fps
                     rasterTerrain.rasterImage.graphics.color = Color(0,0,0,0)
                     rasterTerrain.pokeLine((position.x-size/2).toInt(), position.y.toInt()-5, (position.x+size/2).toInt(), position.y.toInt()-5, 3f)
 

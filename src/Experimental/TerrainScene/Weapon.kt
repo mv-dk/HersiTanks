@@ -17,15 +17,15 @@ abstract class Weapon(
 ) {
     companion object {
         val allWeapons: Map<Int, Weapon> = listOf(
-            ExplosionWeapon(1, "Knaldperle", 100.0, 50, 10),
-            ExplosionWeapon(2, "Kanonslaw", 200.0, 10, 20),
-            ExplosionWeapon(3, "Granat", 200.0, 10, 40),
-            ExplosionWeapon(4, "Klumpedumpebombe", 300.0, 1, 80),
-            EarthquakeWeapon(5, "Jordskælv", 350.0, 2),
-            FrogBombWeapon(6, "Frøbombe", 400.0, 3),
-            MirvWeapon(7, "MIRV-3", 400.0, 2, 3),
-            MirvWeapon(8, "MIRV-5", 500.0, 2, 5),
-            MirvWeapon(9, "MIRV-7", 700.0, 2, 7),
+            ExplosionWeapon(1, "Knaldperle", 50.0, 50, 10),
+            ExplosionWeapon(2, "Kanonslaw", 100.0, 10, 20),
+            ExplosionWeapon(3, "Granat", 100.0, 10, 40),
+            ExplosionWeapon(4, "Klumpedumpebombe", 120.0, 1, 80),
+            EarthquakeWeapon(5, "Jordskælv", 150.0, 2),
+            FrogBombWeapon(6, "Frøbombe", 200.0, 3),
+            MirvWeapon(7, "MIRV-3", 200.0, 2, 3),
+            MirvWeapon(8, "MIRV-5", 300.0, 2, 5),
+            MirvWeapon(9, "MIRV-7", 400.0, 2, 7),
         ).associate { it.id to it }
         val minWeaponId = allWeapons.minOf { it.key }
         val maxWeaponId = allWeapons.maxOf { it.key }

@@ -12,8 +12,6 @@ import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
 import java.awt.event.MouseMotionListener
 import java.awt.image.VolatileImage
-import java.io.File
-import java.io.InputStream
 import java.net.URL
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.locks.ReentrantLock
@@ -158,6 +156,8 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListen
         val debug = true
         var exitGame = false
         var fps = 60.0
+
+        var tick = 1.0/fps // time for one cycle
     }
 
     var currentGameScene: IGameScene = gameScene

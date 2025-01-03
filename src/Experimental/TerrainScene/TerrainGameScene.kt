@@ -153,7 +153,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
                     if (tank != null) {
                         val velocity = Vec2D(
                             tank.position.copy(),
-                            Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())).times(tank.power / 100.0)
+                            Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())).times(tank.power / 400.0)
                         val position = Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())
                         val projectile = Weapon.allWeapons[player.currentWeaponId]?.getProjectile(this, position, velocity)
                         if (projectile != null) {

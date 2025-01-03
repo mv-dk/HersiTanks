@@ -1,9 +1,6 @@
 package Experimental.TerrainScene
 
-import Engine.GameObject2
-import Engine.IGameScene
-import Engine.Pos2D
-import Engine.Vec2D
+import Engine.*
 import Game.GameController
 import java.awt.BasicStroke
 import java.awt.Color
@@ -21,10 +18,11 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D, 
 
     override fun update() {
         val oldPos = position.copy()
-        position.x += velocity.x + GameController.wind
-        position.y += velocity.y
+        position.x += velocity.x 
+        position.y += velocity.y * (60.0/GameRunner.fps)
 
-        velocity.y += 1
+        velocity.x += GameController.wind * (1.0/GameRunner.fps)
+        velocity.y += 0.25 * (60/GameRunner.fps)
 
         if (position.y > parent.height) {
             explode()
@@ -107,7 +105,7 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D, 
 
 class MidairExplodingProjectile(parent: IGameScene, position: Pos2D, velocity: Vec2D, weaponId: Int): Projectile(parent, position, velocity, weaponId) {
     var ticks = 0
-    val minTicks = 30
+    val minTicks = 0.5 * GameRunner.fps
 
     override fun update() {
         super.update()
