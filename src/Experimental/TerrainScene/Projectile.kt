@@ -18,7 +18,7 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D, 
 
     override fun update() {
         val oldPos = position.copy()
-        position.x += velocity.x 
+        position.x += velocity.x * (60.0/GameRunner.fps)
         position.y += velocity.y * (60.0/GameRunner.fps)
 
         velocity.x += GameController.wind * (1.0/GameRunner.fps)

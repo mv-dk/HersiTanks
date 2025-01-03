@@ -1,5 +1,6 @@
 package Experimental.TerrainScene
 
+import Engine.GameRunner
 import Engine.Vec2D
 
 class Earthquake(val x: Int, val y: Int, numCracks: Int, val size: Int, val branchProbability: Double){
@@ -32,11 +33,11 @@ class Earthquake(val x: Int, val y: Int, numCracks: Int, val size: Int, val bran
                 val oldY = crack.y
 
                 if (random.nextDouble() < 0.1 || crack.growDuration % 6 == 0){
-                    crack.x -= crack.direction.y
-                    crack.y += crack.direction.x
+                    crack.x -= crack.direction.y * 60.0/GameRunner.fps
+                    crack.y += crack.direction.x * 60.0/GameRunner.fps
                 } else {
-                    crack.x += crack.direction.x
-                    crack.y += crack.direction.y
+                    crack.x += crack.direction.x * 60.0/GameRunner.fps
+                    crack.y += crack.direction.y * 60.0/GameRunner.fps
                     val futureX = crack.x + crack.direction.x * 10.0
                     val futureY = crack.y + crack.direction.y * 10.0
                     if (futureX < 0 || futureX > terrain.rasterImage.width || futureY < 0 || futureY > terrain.rasterImage.height ||
