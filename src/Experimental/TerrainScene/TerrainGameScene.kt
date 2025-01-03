@@ -62,9 +62,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 
         when (GameController.groundOption) {
             OPTION_GROUND_SNOW -> {
-                for (i in 1..100) {
-                    add(Snowflake(this, Random.nextPos2D(width.toDouble(), height.toDouble())))
-                }
+                add(SnowMaker(this, Pos2D(0.0, 0.0), terrainWidth))
             }
         }
     }
@@ -232,15 +230,6 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         }
         if (GameController.glowUp > 0) {
             GameController.glowUp -= 1
-        }
-
-        if (GameController.groundOption == OPTION_GROUND_SNOW) {
-            val pos = when {
-                GameController.wind < 0 -> Pos2D(random.nextDouble(0.0, width + Math.abs(GameController.wind*height)), -1.0)
-                GameController.wind > 0 -> Pos2D(random.nextDouble(-GameController.wind*height, width.toDouble()), -1.0)
-                else -> Pos2D(random.nextDouble(0.0, width.toDouble()), -1.0)
-            }
-            add(Snowflake(this, pos))
         }
 
         super.update()
