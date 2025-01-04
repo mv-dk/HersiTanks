@@ -28,11 +28,6 @@ class SnowMaker(
     }
 
     override fun update() {
-        val pos = when {
-            GameController.wind < 0 -> Pos2D(Random.nextDouble(0.0, width + Math.abs(GameController.wind * parent.height)), -width/2.0)
-            GameController.wind > 0 -> Pos2D(Random.nextDouble(-GameController.wind * parent.height, width.toDouble()), -width/2.0)
-            else -> Pos2D(Random.nextDouble(width * -1.5, width * 1.5), -width/2.0)
-        }
         parent.add(
             Snowflake(
                 parent,

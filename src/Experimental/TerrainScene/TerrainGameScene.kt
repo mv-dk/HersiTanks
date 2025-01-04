@@ -33,6 +33,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     var translationX = 0
     var translationY = 0
     var keyPressed : Int? = null
+    var viewport = Viewport(width, height, 0, 0)
 
     init {
         when (GameController.skyOption) {
@@ -212,12 +213,14 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     override fun mouseMoved(e: MouseEvent) {
         super.mouseMoved(e)
         translationY = Math.max(0, 300 - e.y)
+        viewport.y = -translationY
         if (GameController.groundSizeOption == OPTION_GROUNDSIZE_SMALL) return
         if (GameController.groundSizeOption == OPTION_GROUNDSIZE_MEDIUM) {
             translationX = 500 - e.x
         } else if (GameController.groundSizeOption == OPTION_GROUNDSIZE_LARGE) {
             translationX = 500 - (e.x*2).toInt()
         }
+        viewport.x = -translationX
     }
 
     override fun update() {
@@ -276,7 +279,23 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     override fun draw(g: Graphics2D) {
         g.drawImage(skyImage, null, 0, 0)
         g.translate(translationX, translationY)
-        gameObjectsByDrawOrder.forEach { it.draw(g) }
+        gameObjectsByDrawOrder.forEach {
+            if (it is RasterTerrain) {
+                if (viewport.inside(it.position.x, it.position.y) ||
+                    viewport.inside(it.position.x + terrainWidth, it.position.y) ||
+                    it.position.x < viewport.x && (it.position.x + terrainWidth) > (viewport.x + viewport.width)) {
+                    it.draw(g)
+                }
+            } else if (it is WeaponBar) {
+                it.draw(g)
+            } else if (it is TankInfoBar) {
+                it.draw(g)
+            } else if (it is GameObject2) {
+                if (viewport.inside(it)) {
+                    it.draw(g)
+                }
+            }
+        }
     }
 }
 
