@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent
 interface IGameScene {
     fun update()
     fun draw(g: Graphics2D)
+    fun hasGameObjectWithId(id: Int): Boolean
     fun add(gameObject: IGameObject)
     fun remove(gameObject: IGameObject)
     fun load()

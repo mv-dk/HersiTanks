@@ -40,6 +40,10 @@ abstract class GameScene(val color: Color, override val width: Int, override val
         gameObjectsByDrawOrder.remove(gameObject)
     }
 
+    override fun hasGameObjectWithId(id: Int): Boolean {
+        return gameObjects.containsKey(id) && !gameObjectsToRemove.contains(id)
+    }
+
     override fun forEachGameObject(act: (obj: IGameObject) -> Unit) = gameObjects.forEach { act(it.value) }
     final override fun unload() {
         forEachGameObject {

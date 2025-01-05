@@ -14,6 +14,11 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D, 
 
     init {
         GameController.projectilesFlying += 1
+        activeProjectiles.add(this)
+    }
+
+    companion object {
+        val activeProjectiles = mutableSetOf<Projectile>()
     }
 
     override fun update() {
@@ -93,8 +98,6 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D, 
     }
 
     override fun draw(g: Graphics2D) {
-        if (position.x < 0 || position.x > parent.width || position.y < 0) return
-
         g.color = Color.LIGHT_GRAY
         g.stroke = stroke
         val p0 = position.plus(velocity)

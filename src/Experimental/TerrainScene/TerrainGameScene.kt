@@ -33,7 +33,18 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
     var translationX = 0
     var translationY = 0
     var keyPressed : Int? = null
-    var viewport = Viewport(width, height, 0, 0)
+    var viewport = Viewport(
+        this,
+        width,
+        height,
+        0,
+        0,
+        minY = -400,
+        maxY = 0,
+        minX = if (GameController.groundSizeOption == OPTION_GROUNDSIZE_SMALL) 0 else Int.MIN_VALUE,
+        maxX = if (GameController.groundSizeOption == OPTION_GROUNDSIZE_SMALL) 0 else Int.MAX_VALUE
+    )
+    var mouseWasMoved = false
 
     init {
         when (GameController.skyOption) {
@@ -123,19 +134,39 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         when (keyPressed) {
             KeyEvent.VK_LEFT -> {
                 AudioHelper.loop(SND_CHANGE_ANGLE, -1)
-                GameController.getCurrentPlayersTank()?.increaseAngle(1)
+                GameController.getCurrentPlayersTank()?.let {
+                    it.increaseAngle(1)
+                    if (!viewport.inside(it)) {
+                        viewport.setFocus(it.position)
+                    }
+                }
             }
             KeyEvent.VK_RIGHT -> {
                 AudioHelper.loop(SND_CHANGE_ANGLE, -1)
-                GameController.getCurrentPlayersTank()?.increaseAngle(-1)
+                GameController.getCurrentPlayersTank()?.let {
+                    it.increaseAngle(-1)
+                    if (!viewport.inside(it)) {
+                        viewport.setFocus(it.position)
+                    }
+                }
             }
             KeyEvent.VK_DOWN -> {
                 AudioHelper.loop(SND_DECREASE_POWER, -1)
-                GameController.getCurrentPlayersTank()?.increasePower(-1)
+                GameController.getCurrentPlayersTank()?.let {
+                    it.increasePower(-1)
+                    if (!viewport.inside(it)) {
+                        viewport.setFocus(it.position)
+                    }
+                }
             }
             KeyEvent.VK_UP -> {
                 AudioHelper.loop(SND_INCREASE_POWER, -1)
-                GameController.getCurrentPlayersTank()?.increasePower(1)
+                GameController.getCurrentPlayersTank()?.let {
+                    it.increasePower(1)
+                    if (!viewport.inside(it)) {
+                        viewport.setFocus(it.position)
+                    }
+                }
             }
             KeyEvent.VK_PAGE_DOWN -> {
                 AudioHelper.loop(SND_DECREASE_POWER, -1)
@@ -212,15 +243,14 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 
     override fun mouseMoved(e: MouseEvent) {
         super.mouseMoved(e)
-        translationY = Math.max(0, 300 - e.y)
-        viewport.y = -translationY
+        mouseWasMoved = true
+        translationY = Math.min(180, e.y - 300)
         if (GameController.groundSizeOption == OPTION_GROUNDSIZE_SMALL) return
-        if (GameController.groundSizeOption == OPTION_GROUNDSIZE_MEDIUM) {
-            translationX = 500 - e.x
+        if (GameController.groundSizeOption == OPTION_GROUNDSIZE_MEDIUM || GameController.groundOption == OPTION_GROUNDSIZE_SMALL) {
+            translationX = e.x
         } else if (GameController.groundSizeOption == OPTION_GROUNDSIZE_LARGE) {
-            translationX = 500 - (e.x*2).toInt()
+            translationX = (e.x)
         }
-        viewport.x = -translationX
     }
 
     override fun update() {
@@ -232,6 +262,7 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
                 remove(deadTank)
                 deadTank.playing = false
                 deadPlayer.playing = false
+                viewport.setFocus(deadTank.position)
                 add(Explosion(this, deadTank.position, 100, 40, { }))
             }
             if (!busy()) {
@@ -249,9 +280,19 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
                     gameWindow?.gameRunner?.currentGameScene = StatusScreen(statusLines)
                 } else {
                     updateWind(false)
+                    GameController.getCurrentPlayersTank()?.let { viewport.setFocus(it.position) }
                 }
             }
         }
+        if (mouseWasMoved) {
+            mouseWasMoved = false
+            viewport.setFocus(translationX.toDouble(), translationY.toDouble())
+        }
+        else if (Projectile.activeProjectiles.size > 0) {
+            val p = Projectile.activeProjectiles.first()
+            viewport.setFocus(p.position)
+        }
+        viewport.update()
         if (GameController.glowUp > 0) {
             GameController.glowUp -= 1
         }
@@ -278,14 +319,11 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
 
     override fun draw(g: Graphics2D) {
         g.drawImage(skyImage, null, 0, 0)
-        g.translate(translationX, translationY)
+        //g.translate(translationX, translationY)
+        g.translate(-viewport.x, -viewport.y)
         gameObjectsByDrawOrder.forEach {
             if (it is RasterTerrain) {
-                if (viewport.inside(it.position.x, it.position.y) ||
-                    viewport.inside(it.position.x + terrainWidth, it.position.y) ||
-                    it.position.x < viewport.x && (it.position.x + terrainWidth) > (viewport.x + viewport.width)) {
-                    it.draw(g)
-                }
+                it.draw(g)
             } else if (it is WeaponBar) {
                 it.draw(g)
             } else if (it is TankInfoBar) {

@@ -81,7 +81,7 @@ class Player(var name: String) {
     var tank: Tank? = null
     var playing: Boolean = true
     var weaponry = mutableMapOf<Int,Int>()
-    var money = 0.0
+    var money = 200.0
     var color = Color.RED
     var currentWeaponId = 1
     fun victories(): Int {
