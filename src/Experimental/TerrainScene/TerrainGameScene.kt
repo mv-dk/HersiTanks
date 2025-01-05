@@ -292,6 +292,11 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
             val p = Projectile.activeProjectiles.first()
             viewport.setFocus(p.position)
         }
+        else if (GameController.players.any { it.playing && it.tank?.falling == true }) {
+            val p = GameController.players.first { it.playing && it.tank?.falling == true }.tank?.position
+            if (p != null)
+                viewport.setFocus(p)
+        }
         viewport.update()
         if (GameController.glowUp > 0) {
             GameController.glowUp -= 1
