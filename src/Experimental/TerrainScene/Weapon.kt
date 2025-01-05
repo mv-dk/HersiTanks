@@ -74,7 +74,7 @@ class MirvWeapon(id: Int, name: String, purchasePrice: Double, purchaseQuantity:
         GameController.projectilesFlying -= 1
         Projectile.activeProjectiles.remove(projectile)
         for (i in 1 .. subProjectiles) {
-            val velocity = Vec2D(Random.nextDouble(-10.0, 10.0), -3.0)
+            val velocity = Vec2D(Random.nextDouble(-5.0, 5.0), -3.0)
             val p = Projectile(gameScene, projectile.position.copy(), velocity, 3)
             gameScene.add(p)
         }
