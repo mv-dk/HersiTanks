@@ -20,7 +20,7 @@ class ProjectileTrail(parent: IGameScene, position: Pos2D) : GameObject2(parent,
         }
         position.x += velocity.x * 60
         position.y += velocity.y * 60
-        size += 0.1 * GameRunner.tick
+        size -= 5 * GameRunner.tick
         ticksLeft -= 1
     }
 
