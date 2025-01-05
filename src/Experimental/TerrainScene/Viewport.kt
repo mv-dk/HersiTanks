@@ -55,7 +55,6 @@ class Viewport(
             this.y = Math.min(maxY, (this.y * 0.9 + 0.1 * (target.y - gameResY/2)).toInt())
             if (this.y < minY) this.y = minY
 
-            println("viewport [ticksLeft], x,y: [$ticksLeft], $x, $y")
             if (inside(target.x, target.y)) {
                 ticksLeft = (ticksLeft*0.8).toInt()
             } else {

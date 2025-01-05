@@ -71,9 +71,7 @@ object GameController {
     }
 
     fun nextPlayersTurn() {
-        (state as BattleState).let {
-            it.nextTurn(players)
-        }
+        (state as BattleState).nextTurn(players)
     }
 }
 

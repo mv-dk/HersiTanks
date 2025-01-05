@@ -95,11 +95,12 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         add(weaponBar)
 
         val margin = 40.0
-        var numPlayers = GameController.players.size
+        val numPlayers = GameController.players.size
         val spaceBetweenTanks = if (numPlayers == 1) (terrainWidth-margin)/2.0 else ((terrainWidth-2.0*margin) / (numPlayers-1))
         var x = margin
-        for (i in 1 .. numPlayers){
-            val p = GameController.players[i-1]
+        val randomIndices = (0..<numPlayers).shuffled()
+        repeat (numPlayers){
+            val p = GameController.players[randomIndices[it]]
             val tank = Tank(this, rasterTerrain, Pos2D(x, 30.0), p.color)
             tank.falling = true
             p.tank = tank
