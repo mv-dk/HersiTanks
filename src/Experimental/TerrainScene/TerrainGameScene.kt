@@ -246,10 +246,10 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         mouseWasMoved = true
         translationY = Math.min(180, e.y - 300)
         if (GameController.groundSizeOption == OPTION_GROUNDSIZE_SMALL) return
-        if (GameController.groundSizeOption == OPTION_GROUNDSIZE_MEDIUM || GameController.groundOption == OPTION_GROUNDSIZE_SMALL) {
+        if (GameController.groundSizeOption == OPTION_GROUNDSIZE_MEDIUM) {
             translationX = e.x
         } else if (GameController.groundSizeOption == OPTION_GROUNDSIZE_LARGE) {
-            translationX = (e.x)
+            translationX = e.x * 2
         }
     }
 
