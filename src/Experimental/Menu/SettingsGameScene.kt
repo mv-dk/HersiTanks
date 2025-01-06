@@ -2,10 +2,7 @@ package Experimental.Menu
 
 import Engine.GameScene
 import Engine.Pos2D
-import Experimental.Menu.MenuPoints.ChangeSceneMenuPoint
-import Experimental.Menu.MenuPoints.MenuPointGameObject
-import Experimental.Menu.MenuPoints.OptionSelectorMenuPoint
-import Experimental.Menu.MenuPoints.OptionValue
+import Experimental.Menu.MenuPoints.*
 import Game.GameController
 import gameResX
 import gameResY
@@ -65,6 +62,7 @@ class SettingsGameScene : GameScene(Color(228, 217, 135), gameResX, gameResY) {
             { old, new ->
                 GameController.decorationOption = new.id
             }),
+        ToggleFullScreenMenuPoint(this),
         ChangeSceneMenuPoint("Done", this, { MenuGameScene() })
     )
 

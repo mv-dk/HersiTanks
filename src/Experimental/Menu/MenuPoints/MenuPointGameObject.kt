@@ -13,7 +13,7 @@ open class MenuPointGameObject(
     parent: IGameScene,
     var shadow: Boolean = true,
     var cursor: Boolean = false,
-    open var fontSize: Int = 24,
+    var fontSize: Int = 24,
     val onActivate: () -> Unit
 ): GameObject2(parent, Pos2D(0.0, 0.0)) {
     var selected: Boolean = false
@@ -22,11 +22,12 @@ open class MenuPointGameObject(
             if (value) onSelected()
             else onDeselected()
         }
+
     var selectedColor = Color(200, 0, 180);
     var unselectedColor = Color(80, 10, 40);
     var shadowColor = Color(48, 48, 48)
-    var selectedFont = Font("Helvetica", Font.BOLD, fontSize)
-    var unselectedFont = Font("Helvetica", Font.PLAIN, fontSize)
+    private var selectedFont = Font("Helvetica", Font.BOLD, fontSize)
+    private var unselectedFont = Font("Helvetica", Font.PLAIN, fontSize)
     private var tick = 0
 
     open fun onSelected() = Unit

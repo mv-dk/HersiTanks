@@ -76,7 +76,7 @@ class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
 
         //MenuPointGameObject("Settings", parent, nextMenuPointPos()),
         ChangeSceneMenuPoint("Settings", this, { SettingsGameScene() }),
-        ToggleFullScreenMenuPoint(this),
+        ChangeSceneMenuPoint("About", this, { AboutGameScene() }),
         ExitGameMenuPoint("Exit", this)
     )
     val menuGameObject = MenuGameObject(
