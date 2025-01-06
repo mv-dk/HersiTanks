@@ -36,13 +36,14 @@ val OPTION_GROUNDSIZE_MEDIUM = 1
 val OPTION_GROUNDSIZE_LARGE = 2
 
 class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
-    var numPlayersSelected = 2
-    var numGamesSelected = 10
+
+    companion object {
+        var numPlayersSelected = 2
+        var numGamesSelected = 10
+    }
 
     val menuPoints = mutableListOf(
         ChangeSceneMenuPoint("Go!", this, {
-            //CollisionBallsGameScene(Color.LIGHT_GRAY, 800, 600)
-            //TerrainGameScene(parent, Color(113,136, 248), gameResX, gameResY)
             GameController.teams.clear()
             GameController.players.clear()
             GameController.gamesToPlay = numGamesSelected
@@ -66,10 +67,10 @@ class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
             }
             EditPlayers()
         }),
-        NumberSelectorMenuPoint("Players", this, 2, 2, 10, onChange = {_,new ->
+        NumberSelectorMenuPoint("Players", this, numPlayersSelected, 2, 10, onChange = {_,new ->
             numPlayersSelected = new
         }),
-        NumberSelectorMenuPoint("Rounds", this, 10, 1, 99, onChange = {_,new ->
+        NumberSelectorMenuPoint("Rounds", this, numGamesSelected, 1, 99, onChange = {_,new ->
             numGamesSelected = new
         }),
 

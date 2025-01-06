@@ -2,6 +2,7 @@ package Experimental.Menu
 
 import Engine.GameScene
 import Engine.Pos2D
+import Experimental.Menu.MenuPoints.ChangeSceneMenuPoint
 import Experimental.Menu.MenuPoints.MenuPointGameObject
 import Experimental.Menu.MenuPoints.OptionSelectorMenuPoint
 import Experimental.Menu.MenuPoints.OptionValue
@@ -20,7 +21,7 @@ class SettingsGameScene : GameScene(Color(228, 217, 135), gameResX, gameResY) {
                 OptionValue(OPTION_SKY_BLUE, "Blue sky"),
                 OptionValue(OPTION_SKY_STARRY, "Starry sky"),
                 OptionValue(OPTION_SKY_EVENING, "Evening")
-            ), OPTION_SKY_BLUE,
+            ), GameController.skyOption,
             { old,new ->
                 GameController.skyOption = new.id
             }),
@@ -28,7 +29,7 @@ class SettingsGameScene : GameScene(Color(228, 217, 135), gameResX, gameResY) {
             listOf(
                 OptionValue(OPTION_GROUND_GRASS, "Grass"),
                 OptionValue(OPTION_GROUND_SNOW, "Snow")
-            ), OPTION_GROUND_GRASS,
+            ), GameController.groundOption,
             {old,new ->
                 GameController.groundOption = new.id
             }),
@@ -37,7 +38,7 @@ class SettingsGameScene : GameScene(Color(228, 217, 135), gameResX, gameResY) {
                 OptionValue(OPTION_GROUNDSIZE_SMALL, "Small"),
                 OptionValue(OPTION_GROUNDSIZE_MEDIUM, "Medium"),
                 OptionValue(OPTION_GROUNDSIZE_LARGE, "Large")
-            ), OPTION_GROUNDSIZE_SMALL,
+            ), GameController.groundSizeOption,
             {old,new ->
                 GameController.groundSizeOption = new.id
                 GameController.groundSize = when (new.id) {
@@ -52,7 +53,7 @@ class SettingsGameScene : GameScene(Color(228, 217, 135), gameResX, gameResY) {
                 OptionValue(OPTION_WIND_LIGHT, "Breeze"),
                 OptionValue(OPTION_WIND_MEDIUM, "Medium"),
                 OptionValue(OPTION_WIND_STRONG, "Stormy")
-            ), OPTION_WIND_MEDIUM,
+            ), GameController.windOption,
             { old, new ->
                 GameController.windOption = new.id
             }),
@@ -60,10 +61,11 @@ class SettingsGameScene : GameScene(Color(228, 217, 135), gameResX, gameResY) {
             listOf(
                 OptionValue(OPTION_DECO_NONE, "None"),
                 OptionValue(OPTION_DECO_CHRISTMAS, "Christmas hats"),
-            ), OPTION_DECO_NONE,
+            ), GameController.decorationOption,
             { old, new ->
                 GameController.decorationOption = new.id
             }),
+        ChangeSceneMenuPoint("Done", this, { MenuGameScene() })
     )
 
     val menuGameObject = MenuGameObject(
