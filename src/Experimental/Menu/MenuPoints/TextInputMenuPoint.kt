@@ -1,26 +1,24 @@
 package Experimental.Menu.MenuPoints
 
-import Engine.GameRunner
-import Engine.GameWindow
 import Engine.IGameScene
 import Engine.Pos2D
-import Experimental.Menu.MenuPointGameObject
 import java.awt.Color
 import java.awt.Graphics2D
+import kotlin.math.min
 
 class TextInputMenuPoint(
-    val label: String,
+    private val label: String,
     parent: IGameScene,
     override var position: Pos2D,
     initialTextValue: String,
-    val maxLength: Int,
-    val coloredBorder: Color? = null,
+    private val coloredBorder: Color? = null,
     initialFontSize : Int = 24
 ) : MenuPointGameObject(label, parent, cursor = true, fontSize = initialFontSize, onActivate = {}){
-    var lighterColoredBorder = if (coloredBorder == null) null else Color(
-        Math.min(coloredBorder?.red?.plus(100) ?: 255, 255),
-        Math.min(coloredBorder?.green?.plus(100) ?: 255, 255),
-        Math.min(coloredBorder?.blue?.plus(100) ?: 255, 255))
+    private var lighterColoredBorder = if (coloredBorder == null) null else Color(
+        min(coloredBorder.red.plus(100) ?: 255, 255),
+        min(coloredBorder.green.plus(100) ?: 255, 255),
+        min(coloredBorder.blue.plus(100) ?: 255, 255)
+    )
     var textValue = initialTextValue
         set(value) {
             text = "$label: $value"

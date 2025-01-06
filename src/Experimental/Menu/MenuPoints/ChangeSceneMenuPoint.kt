@@ -1,8 +1,6 @@
 package Experimental.Menu.MenuPoints
 
 import Engine.IGameScene
-import Engine.Pos2D
-import Experimental.Menu.MenuPointGameObject
 import gameWindow
 
 class ChangeSceneMenuPoint(

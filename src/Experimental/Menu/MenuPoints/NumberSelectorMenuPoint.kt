@@ -1,7 +1,6 @@
 package Experimental.Menu.MenuPoints
 
 import Engine.IGameScene
-import Experimental.Menu.MenuPointGameObject
 
 class NumberSelectorMenuPoint(
     val label: String,

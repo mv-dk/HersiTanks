@@ -12,7 +12,6 @@ import Game.GameController
 import gameResX
 import gameResY
 import gameWindow
-import menuGameScene
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
@@ -29,7 +28,8 @@ class StatusScreen(val lines: List<StatusLine>) : GameScene(Color(182, 179, 173)
     override fun keyPressed(e: KeyEvent) {
         super.keyPressed(e)
         if (GameController.gamesPlayed == GameController.gamesToPlay) {
-            gameWindow?.gameRunner?.currentGameScene = MenuGameScene(gameResX, gameResY, Random.nextColor())
+            unload()
+            gameWindow?.gameRunner?.currentGameScene = MenuGameScene()
         } else {
 
             val cheapestWeaponPrice = Weapon.allWeapons.minOf { it.value.purchasePrice }
@@ -38,8 +38,7 @@ class StatusScreen(val lines: List<StatusLine>) : GameScene(Color(182, 179, 173)
                 gameWindow?.gameRunner?.currentGameScene =
                     PurchaseGameScene(GameController.players.filter { it.money > cheapestWeaponPrice }, 0)
             } else {
-                gameWindow?.gameRunner?.currentGameScene =
-                    TerrainGameScene(menuGameScene, Color(113, 136, 248), gameResX, gameResY, GameController.groundSize)
+                gameWindow?.gameRunner?.currentGameScene = TerrainGameScene(GameController.groundSize)
             }
         }
     }

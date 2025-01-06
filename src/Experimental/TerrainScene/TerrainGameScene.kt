@@ -13,8 +13,9 @@ import SND_FIRE2
 import SND_FIRE3
 import SND_FIZZLE
 import SND_INCREASE_POWER
+import gameResX
+import gameResY
 import gameWindow
-import menuGameScene
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.event.KeyEvent
@@ -24,7 +25,7 @@ import kotlin.random.Random
 
 val random = Random(1)
 
-class TerrainGameScene(private val parentScene: IGameScene, color: Color, width: Int, height: Int, val terrainWidth: Int) : GameScene(color, width, height) {
+class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), gameResX, gameResY) {
     lateinit var rasterTerrain: RasterTerrain
     var updatePlayersTurnOnNextPossibleOccasion = false
     var tankInfoBar = TankInfoBar(this, Pos2D(0.0, 0.0))
@@ -126,7 +127,8 @@ class TerrainGameScene(private val parentScene: IGameScene, color: Color, width:
         if (keyPressed == KeyEvent.VK_ESCAPE){
             keyPressed = null
             GameController.onGoingToMenu()
-            gameWindow?.gameRunner?.currentGameScene = menuGameScene
+            unload()
+            gameWindow?.gameRunner?.currentGameScene = MenuGameScene()
         }
 
         if (busy()) return

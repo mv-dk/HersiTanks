@@ -2,9 +2,10 @@ package Experimental.Purchase
 
 import Engine.AudioHelper
 import Engine.GameScene
+import Engine.IGameScene
 import Engine.Pos2D
 import Experimental.Menu.MenuGameObject
-import Experimental.Menu.MenuPointGameObject
+import Experimental.Menu.MenuPoints.MenuPointGameObject
 import Experimental.Menu.MenuPoints.ChangeSceneMenuPoint
 import Experimental.TerrainScene.TerrainGameScene
 import Experimental.TerrainScene.Weapon
@@ -14,7 +15,7 @@ import SND_BUY
 import SND_BUY_FINISH
 import gameResX
 import gameResY
-import menuGameScene
+import gameWindow
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.event.KeyEvent
@@ -25,7 +26,8 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(Col
     init {
         val player = players[idx]
         for (w in Weapon.allWeapons.filter({ it.value.purchasePrice <= player.money}).map{it.value}) {
-            menuPoints.add(MenuPointGameObject("${w.name}, ${w.purchaseQuantity} for \$${w.purchasePrice}",
+            menuPoints.add(
+                MenuPointGameObject("${w.name}, ${w.purchaseQuantity} for \$${w.purchasePrice}",
                 this,
                 shadow = true,
                 cursor = false,
@@ -40,26 +42,41 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(Col
                         }
                         player.money -= w.purchasePrice
                     }
-            }))
+            })
+            )
         }
         if (idx == players.size - 1) {
             menuPoints.add(
-                ChangeSceneMenuPoint("Done", this,
-                    {
-                        AudioHelper.play(SND_BUY_FINISH)
-                        TerrainGameScene(menuGameScene, Color(113, 136, 248), gameResX, gameResY, GameController.groundSize)
-                    }))
+                ChangeSceneMenuPoint("Done", this, ::nextScene)
+            )
         } else {
             menuPoints.add(
-                ChangeSceneMenuPoint("Done", this,
-                    {
-                        AudioHelper.play(SND_BUY_FINISH)
-                        PurchaseGameScene(players, idx + 1)
-                    }))
+                ChangeSceneMenuPoint("Done", this, ::nextScene)
+            )
         }
-
     }
-    val menuGameObject = MenuGameObject(this, Pos2D(100.0, 60.0), 300, 400, 25.0, menuPoints)
+
+    private fun nextScene(): IGameScene {
+        AudioHelper.play(SND_BUY_FINISH)
+        return if (idx == players.size - 1) {
+            TerrainGameScene(GameController.groundSize)
+        } else {
+            PurchaseGameScene(players, idx + 1)
+        }
+    }
+
+    private val menuGameObject = MenuGameObject(
+        this,
+        Pos2D(100.0, 60.0),
+        300,
+        400,
+        25.0,
+        menuPoints,
+        onEscapePressed = {
+            unload()
+            gameWindow?.gameRunner?.currentGameScene = nextScene()
+        }
+    )
     override fun update() {
 
     }
@@ -68,7 +85,7 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(Col
         add(menuGameObject)
     }
 
-    var keyHasBeenReleasedOnce = false
+    private var keyHasBeenReleasedOnce = false
     override fun keyReleased(e: KeyEvent) {
         keyHasBeenReleasedOnce = true
     }

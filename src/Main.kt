@@ -19,8 +19,6 @@ var gameWindow: GameWindow? = null
 var gameResX = 640
 var gameResY = 360
 
-var menuGameScene = MenuGameScene(gameResX, gameResY, Color(77, 83, 128))
-
 fun main() {
     println("Hello World!")
     preloadSounds()
@@ -29,7 +27,7 @@ fun main() {
 
     val scale = getBestScale()
 
-    gameWindow = GameWindow(gameResX * scale, gameResY * scale, "Hersi", menuGameScene, false)
+    gameWindow = GameWindow(gameResX * scale, gameResY * scale, "Hersi", MenuGameScene(), false)
     val gameThread = Thread(gameWindow)
     gameThread.start()
     gameThread.join()

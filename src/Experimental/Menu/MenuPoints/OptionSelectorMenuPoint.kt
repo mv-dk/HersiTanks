@@ -1,7 +1,6 @@
 package Experimental.Menu.MenuPoints
 
 import Engine.IGameScene
-import Experimental.Menu.MenuPointGameObject
 
 class OptionSelectorMenuPoint(
     val label: String,
@@ -11,10 +10,6 @@ class OptionSelectorMenuPoint(
     val onChange: (old: OptionValue, new: OptionValue) -> Unit
 ):
     MenuPointGameObject("$label: ${options[optionIdx].name}", parent, onActivate = {}) {
-
-//    init {
-//        super.text = "$label: ${values[optionIdx]}"
-//    }
 
     override fun onSelected() {
         super.text = "$label: <${options[optionIdx].name}>"
