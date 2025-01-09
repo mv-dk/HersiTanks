@@ -3,6 +3,8 @@ package Engine
 import java.awt.Color
 import kotlin.random.Random
 import java.awt.geom.Point2D
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.sqrt
 import kotlin.math.pow
 
@@ -39,13 +41,33 @@ fun Random.nextColor(): Color {
 }
 
 fun Color.lighter(degree: Int): Color {
-    return Color(Math.min(this.red+degree, 255), Math.min(this.green+degree, 255), Math.min(this.blue+degree, 255))
+    return Color(min(this.red+degree, 255), min(this.green+degree, 255), min(this.blue+degree, 255))
+}
+
+fun Color.redder(degree: Int): Color {
+    return Color(min(this.red + degree, 255), this.green, this.blue)
+}
+
+fun Color.greener(degree: Int): Color {
+    return Color(this.red, min(this.green+degree, 255), this.blue)
+}
+
+fun Color.bluer(degree: Int): Color {
+    return Color(this.red, this.green, min(this.blue+degree, 255))
 }
 
 fun Color.darker(degree: Int): Color {
-    return Color(Math.max(this.red-degree, 0), Math.max(this.green-degree, 0), Math.max(this.blue-degree, 0))
+    return Color(max(this.red-degree, 0), max(this.green-degree, 0), max(this.blue-degree, 0))
 }
 
 fun Color.mult(factor: Double): Color {
-    return Color((this.red*factor).toInt(), (this.green*factor).toInt(), (this.blue*factor).toInt())
+    return Color(min(255, (this.red*factor).toInt()), min(255, (this.green*factor).toInt()), min(255, (this.blue*factor).toInt()))
+}
+
+fun Color.contrast(factor: Double = 2.0): Color {
+    return Color(
+        min(255, max(0, ((this.red - 128) * factor).toInt() + 128)),
+        min(255, max(0, ((this.green - 128) * factor).toInt() + 128)),
+        min(255, max(0, ((this.blue - 128) * factor).toInt() + 128))
+    )
 }

@@ -26,6 +26,10 @@ class MenuGameObject(
     var x: Double = position.x + 20.0
     var y: Double = position.y
     override var drawOrder = -1
+    var color = (parent as GameScene).color.lighter(20)
+    var strokeColor = (parent as GameScene).color.darker(40)// Color(80, 10, 40)
+    var stroke = BasicStroke(3f)
+
 
     fun nextMenuPointPos(): Pos2D {
         y += ySpacing
@@ -35,6 +39,8 @@ class MenuGameObject(
     init {
         menuPoints.forEach {
             it.position = nextMenuPointPos()
+            it.unselectedColor = strokeColor.lighter(30)
+            it.selectedColor = strokeColor.darker(20).contrast(1.5)
         }
     }
 
@@ -105,10 +111,10 @@ class MenuGameObject(
     override fun update() = Unit
 
     override fun draw(g: Graphics2D) {
-        g.color = Color(80, 10, 40)
-        g.setStroke(BasicStroke(3f))
+        g.color = strokeColor
+        g.setStroke(stroke)
         g.drawRect(position.x.toInt(), position.y.toInt(), width, height)
-        g.color = Color(200, 200, 200)
+        g.color = color
         g.fillRect(position.x.toInt() + 2, position.y.toInt() + 2, width-3, height-3)
     }
 }
