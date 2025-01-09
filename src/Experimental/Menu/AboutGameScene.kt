@@ -122,6 +122,9 @@ class AboutGameScene: GameScene(Color(229, 204, 202), gameResX, gameResY) {
     """.trimIndent().split("\n")
 
     init {
+        repeat(10) {
+            add(FloatingBlob(this))
+        }
         add(Transition(this))
     }
 

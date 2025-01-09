@@ -23,7 +23,7 @@ class MenuGameObject(
     var menuPoints: MutableList<MenuPointGameObject>,
     val onEscapePressed: () -> Unit) :
     GameObject2(parent, position) {
-    var x: Double = 120.0
+    var x: Double = position.x + 20.0
     var y: Double = position.y
     override var drawOrder = -1
 
@@ -57,7 +57,7 @@ class MenuGameObject(
     init {
         menuPoints.forEach { parent.add(it) }
         selectedIdx = 0
-        height = ((menuPoints.size+1) * ySpacing).toInt()
+        height = ((menuPoints.size+0.5) * ySpacing).toInt()
     }
 
     fun keyTyped(e: KeyEvent?){

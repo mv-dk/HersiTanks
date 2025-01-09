@@ -87,9 +87,9 @@ class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
     )
     val menuGameObject = MenuGameObject(
         this,
-        Pos2D(100.0, 20.0),
-        400,
-        400,
+        Pos2D(30.0, 100.0),
+        200,
+        300,
         30.0,
         menuPoints,
         onEscapePressed =
@@ -99,6 +99,9 @@ class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
         })
 
     init {
+        repeat(10) {
+            add(FloatingBlob(this))
+        }
         add(menuGameObject)
         add(Transition(this))
     }

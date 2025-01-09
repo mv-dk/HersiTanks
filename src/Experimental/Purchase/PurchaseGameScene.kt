@@ -4,6 +4,7 @@ import Engine.AudioHelper
 import Engine.GameScene
 import Engine.IGameScene
 import Engine.Pos2D
+import Experimental.Menu.FloatingBlob
 import Experimental.Menu.MenuGameObject
 import Experimental.Menu.MenuPoints.MenuPointGameObject
 import Experimental.Menu.MenuPoints.ChangeSceneMenuPoint
@@ -25,6 +26,10 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(Col
     val menuPoints = mutableListOf<MenuPointGameObject>()
 
     init {
+        repeat(10) {
+            add(FloatingBlob(this))
+        }
+
         val player = players[idx]
         for (w in Weapon.allWeapons.filter({ it.value.purchasePrice <= player.money}).map{it.value}) {
             menuPoints.add(

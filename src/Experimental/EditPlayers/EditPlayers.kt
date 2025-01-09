@@ -2,6 +2,7 @@ package Experimental.EditPlayers
 
 import Engine.GameScene
 import Engine.Pos2D
+import Experimental.Menu.FloatingBlob
 import Experimental.Menu.MenuGameObject
 import Experimental.Menu.MenuGameScene
 import Experimental.Menu.MenuPoints.MenuPointGameObject
@@ -19,6 +20,10 @@ import java.awt.event.KeyEvent
 class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
     private val menuPoints = mutableListOf<MenuPointGameObject>()
     init {
+        repeat(10) {
+            add(FloatingBlob(this))
+        }
+
         for (p in GameController.players) {
             val newMenuPoint = TextInputMenuPoint("Name", this, Pos2D(0.0, 0.0), p.name, p.color, 18)
             newMenuPoint.unselectedColor = Color.BLACK

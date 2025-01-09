@@ -86,6 +86,10 @@ class SettingsGameScene() : GameScene(Color(228, 217, 135), gameResX, gameResY) 
         })
 
     init {
+        repeat(10) {
+            add(FloatingBlob(this))
+        }
+
         add(menuGameObject)
         add(Transition(this))
     }
