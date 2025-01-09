@@ -1,6 +1,8 @@
 package Experimental.Menu
 
+import Engine.AudioHelper
 import Engine.GameScene
+import SND_SWOOSH2
 import gameResX
 import gameResY
 import gameWindow
@@ -119,6 +121,10 @@ class AboutGameScene: GameScene(Color(229, 204, 202), gameResX, gameResY) {
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     """.trimIndent().split("\n")
 
+    init {
+        add(Transition(this))
+    }
+
     override fun load() {
 
     }
@@ -138,6 +144,7 @@ class AboutGameScene: GameScene(Color(229, 204, 202), gameResX, gameResY) {
             KeyEvent.VK_ENTER,
             KeyEvent.VK_ESCAPE -> {
                 unload()
+                AudioHelper.play(SND_SWOOSH2)
                 gameWindow?.gameRunner?.currentGameScene = MenuGameScene()
             }
             KeyEvent.VK_DOWN -> {

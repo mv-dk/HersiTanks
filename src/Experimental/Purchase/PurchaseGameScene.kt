@@ -7,6 +7,7 @@ import Engine.Pos2D
 import Experimental.Menu.MenuGameObject
 import Experimental.Menu.MenuPoints.MenuPointGameObject
 import Experimental.Menu.MenuPoints.ChangeSceneMenuPoint
+import Experimental.Menu.Transition
 import Experimental.TerrainScene.TerrainGameScene
 import Experimental.TerrainScene.Weapon
 import Game.GameController
@@ -54,6 +55,8 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(Col
                 ChangeSceneMenuPoint("Done", this, ::nextScene)
             )
         }
+
+        add(Transition(this))
     }
 
     private fun nextScene(): IGameScene {
@@ -78,7 +81,7 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(Col
         }
     )
     override fun update() {
-
+        super.update()
     }
 
     override fun load() {

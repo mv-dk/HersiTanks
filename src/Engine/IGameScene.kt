@@ -3,10 +3,12 @@ package Engine
 import java.awt.Graphics2D
 import java.awt.event.KeyEvent
 import java.awt.event.MouseEvent
+import java.awt.image.BufferedImage
 
 interface IGameScene {
     fun update()
     fun draw(g: Graphics2D)
+    fun drawOnImage(): BufferedImage
     fun hasGameObjectWithId(id: Int): Boolean
     fun add(gameObject: IGameObject)
     fun remove(gameObject: IGameObject)

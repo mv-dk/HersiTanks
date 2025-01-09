@@ -1,6 +1,7 @@
 package Experimental.TerrainScene
 
 import Engine.*
+import Experimental.Menu.Transition
 import Game.GameController
 import java.awt.Color
 import java.awt.Graphics2D
@@ -26,6 +27,7 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
         }
 
         Explosion.currentExplosions.add(this)
+        parent.add(Transition(parent, 0.2))
     }
 
     override fun update() {

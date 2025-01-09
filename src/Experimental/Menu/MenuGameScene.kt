@@ -14,7 +14,13 @@ import Game.Team
 import gameResX
 import gameResY
 import java.awt.Color
+import java.awt.Graphics
+import java.awt.Graphics2D
+import java.awt.GraphicsConfiguration
+import java.awt.GraphicsEnvironment
+import java.awt.RenderingHints.*
 import java.awt.event.KeyEvent
+import java.awt.image.BufferedImage
 
 val OPTION_GROUND_GRASS = 0
 val OPTION_GROUND_SNOW = 1
@@ -94,6 +100,7 @@ class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
 
     init {
         add(menuGameObject)
+        add(Transition(this))
     }
 
     override fun load() {
@@ -108,5 +115,7 @@ class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
     }
 
     override fun keyReleased(e: KeyEvent) = Unit
+
+
 }
 

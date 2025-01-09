@@ -61,6 +61,8 @@ const val SND_BUY_FINISH = "buy-finish"
 const val SND_BAMBOO_01 = "bamboo01"
 const val SND_BAMBOO_02 = "bamboo02"
 const val SND_BAMBOO_03 = "bamboo03"
+const val SND_SWOOSH = "swoosh"
+const val SND_SWOOSH2 = "swoosh2"
 
 fun preloadSounds(){
     AudioHelper.load("earthquake3.wav",SND_EARTHQUAKE)
@@ -78,6 +80,8 @@ fun preloadSounds(){
     AudioHelper.load("bamboo01.wav", SND_BAMBOO_01)
     AudioHelper.load("bamboo02.wav", SND_BAMBOO_02)
     AudioHelper.load("bamboo03.wav", SND_BAMBOO_03)
+    AudioHelper.load("swoosh.wav", SND_SWOOSH) // https://freesound.org/people/lesaucisson/sounds/585257/
+    AudioHelper.load("swoosh2.wav", SND_SWOOSH2) // https://freesound.org/people/Benboncan/sounds/74692/
 }
 
 /*

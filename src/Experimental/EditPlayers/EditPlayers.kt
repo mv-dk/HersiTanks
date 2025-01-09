@@ -7,6 +7,7 @@ import Experimental.Menu.MenuGameScene
 import Experimental.Menu.MenuPoints.MenuPointGameObject
 import Experimental.Menu.MenuPoints.ChangeSceneMenuPoint
 import Experimental.Menu.MenuPoints.TextInputMenuPoint
+import Experimental.Menu.Transition
 import Experimental.TerrainScene.TerrainGameScene
 import Game.GameController
 import gameResX
@@ -33,6 +34,8 @@ class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
 
             TerrainGameScene(GameController.groundSize)
         }))
+
+        add(Transition(this))
     }
 
     private val menuGameObject = MenuGameObject(
@@ -61,12 +64,7 @@ class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
 
     override fun keyPressed(e: KeyEvent) {
         if (!keyHasBeenReleasedOnce) return
-        if (e.keyCode == KeyEvent.VK_ESCAPE) {
-            unload()
-            gameWindow?.gameRunner?.currentGameScene = MenuGameScene()
-        } else {
-            menuGameObject.keyPressed(e)
-        }
+        menuGameObject.keyPressed(e)
     }
 
     override fun keyReleased(e: KeyEvent) {

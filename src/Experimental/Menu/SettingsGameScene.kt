@@ -1,6 +1,8 @@
 package Experimental.Menu
 
+import Engine.GameRunner
 import Engine.GameScene
+import Engine.GameWindow
 import Engine.Pos2D
 import Experimental.Menu.MenuPoints.*
 import Game.GameController
@@ -8,9 +10,14 @@ import gameResX
 import gameResY
 import gameWindow
 import java.awt.Color
+import java.awt.Graphics2D
+import java.awt.Image
+import java.awt.RenderingHints
 import java.awt.event.KeyEvent
+import java.awt.image.*
+import kotlin.math.max
 
-class SettingsGameScene : GameScene(Color(228, 217, 135), gameResX, gameResY) {
+class SettingsGameScene() : GameScene(Color(228, 217, 135), gameResX, gameResY) {
 
     val menuPoints = mutableListOf<MenuPointGameObject>(
         OptionSelectorMenuPoint("Sky", this,
@@ -80,6 +87,7 @@ class SettingsGameScene : GameScene(Color(228, 217, 135), gameResX, gameResY) {
 
     init {
         add(menuGameObject)
+        add(Transition(this))
     }
 
     override fun load() { }
@@ -90,5 +98,13 @@ class SettingsGameScene : GameScene(Color(228, 217, 135), gameResX, gameResY) {
 
     override fun keyPressed(e: KeyEvent) {
         menuGameObject.keyPressed(e)
+    }
+
+    override fun draw(g: Graphics2D) {
+        super.draw(g)
+    }
+
+    override fun update() {
+        super.update()
     }
 }

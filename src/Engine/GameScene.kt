@@ -3,10 +3,13 @@ package Engine
 import nextId
 import java.awt.Color
 import java.awt.Graphics2D
+import java.awt.RenderingHints.KEY_TEXT_ANTIALIASING
+import java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.awt.event.MouseEvent
 import java.awt.event.MouseListener
+import java.awt.image.BufferedImage
 import java.util.PriorityQueue
 import java.util.SortedSet
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -83,4 +86,24 @@ abstract class GameScene(val color: Color, override val width: Int, override val
         g.fillRect(0, 0, width, height)
         gameObjectsByDrawOrder.forEach { it.draw(g) }
     }
+
+    private val renderingHints = mapOf(Pair(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON))
+
+    override fun drawOnImage() : BufferedImage {
+        var image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+        var graphics = image.graphics as Graphics2D
+        graphics.setRenderingHints(renderingHints)
+        draw(graphics)
+        return image
+    }
+}
+
+fun drawAsHud(g:Graphics2D,  draw: (g:Graphics2D) -> Unit) {
+    var oldTranslationX = g.transform.translateX
+    var oldTranslationY = g.transform.translateY
+    g.translate(-oldTranslationX, -oldTranslationY)
+
+    draw(g)
+
+    g.translate(oldTranslationX, oldTranslationY)
 }

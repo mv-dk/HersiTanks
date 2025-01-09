@@ -7,6 +7,8 @@ import Experimental.Menu.MenuPoints.OptionSelectorMenuPoint
 import Experimental.Menu.MenuPoints.TextInputMenuPoint
 import SND_BAMBOO_01
 import SND_BAMBOO_02
+import SND_SWOOSH
+import SND_SWOOSH2
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
@@ -90,8 +92,10 @@ class MenuGameObject(
                 }
             }
         } else if (e?.keyCode == KeyEvent.VK_ENTER){
+            AudioHelper.play(SND_SWOOSH)
             selected.onActivate()
         } else if (e?.keyCode == KeyEvent.VK_ESCAPE) {
+            AudioHelper.play(SND_SWOOSH2)
             onEscapePressed()
         }
     }

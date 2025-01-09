@@ -86,6 +86,8 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
                 add(SnowMaker(this, Pos2D(0.0, 0.0), terrainWidth))
             }
         }
+
+        add(Transition(this))
     }
 
     override fun load() {
@@ -126,9 +128,9 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
     fun handleKeyPressed() {
         if (keyPressed == KeyEvent.VK_ESCAPE){
             keyPressed = null
-            GameController.onGoingToMenu()
             unload()
             gameWindow?.gameRunner?.currentGameScene = MenuGameScene()
+            GameController.onGoingToMenu()
         }
 
         if (busy()) return
