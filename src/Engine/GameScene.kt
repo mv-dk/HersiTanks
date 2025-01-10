@@ -37,7 +37,7 @@ abstract class GameScene(val color: Color, override val width: Int, override val
     override fun add(gameObject: IGameObject) {
         gameObjectsToAdd.put(gameObject.id, gameObject)
     }
-    
+
     override fun remove(gameObject: IGameObject) {
         gameObjectsToRemove.add(gameObject.id)
     }

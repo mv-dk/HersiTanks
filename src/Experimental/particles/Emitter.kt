@@ -26,6 +26,7 @@ abstract class Emitter(
             parent.remove(this)
             return
         }
+        if (emitTicksLeft %2 == 0) return
         val particle = makeParticle(emitTicksLeft)
 
         particle.drawOrder = this.drawOrder
