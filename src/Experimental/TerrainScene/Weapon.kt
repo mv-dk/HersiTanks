@@ -17,10 +17,10 @@ abstract class Weapon(
 ) {
     companion object {
         val allWeapons: Map<Int, Weapon> = listOf(
-            ExplosionWeapon(1, "Knaldperle", 50.0, 50, 10),
-            ExplosionWeapon(2, "Kanonslaw", 100.0, 10, 20),
-            ExplosionWeapon(3, "Granat", 100.0, 10, 40),
-            ExplosionWeapon(4, "Klumpedumpebombe", 120.0, 1, 80),
+            ExplosionWeapon(1, "Knaldperle", 50.0, 50, 20),
+            ExplosionWeapon(2, "Kanonslaw", 100.0, 10, 40),
+            ExplosionWeapon(3, "Granat", 100.0, 10, 80),
+            ExplosionWeapon(4, "Klumpedumpebombe", 120.0, 1, 160),
             EarthquakeWeapon(5, "Jordskælv", 150.0, 2),
             FrogBombWeapon(6, "Frøbombe", 200.0, 3),
             MirvWeapon(7, "MIRV-3", 200.0, 2, 3),
@@ -125,7 +125,7 @@ class FrogBombWeapon(id: Int, name: String, purchasePrice: Double, purchaseQuant
 class ExplosionWeapon(id: Int, name: String, purchasePrice: Double, purchaseQuantity: Int, val size: Int)
     : Weapon(id, name, purchasePrice, purchaseQuantity) {
     override fun drawIcon(g: Graphics2D, x: Int, y: Int) {
-        val iconSize = size/4 + 2
+        val iconSize = size/8 + 2
         g.fillOval(x + 16 - iconSize/2, y + 16 - iconSize/2, iconSize, iconSize)
     }
 

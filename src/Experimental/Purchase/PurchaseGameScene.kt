@@ -1,9 +1,6 @@
 package Experimental.Purchase
 
-import Engine.AudioHelper
-import Engine.GameScene
-import Engine.IGameScene
-import Engine.Pos2D
+import Engine.*
 import Experimental.Menu.FloatingBlob
 import Experimental.Menu.MenuGameObject
 import Experimental.Menu.MenuPoints.MenuPointGameObject
@@ -18,11 +15,10 @@ import SND_BUY_FINISH
 import gameResX
 import gameResY
 import gameWindow
-import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.event.KeyEvent
 
-class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(Color(128,150, 132), gameResX, gameResY) {
+class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(players[idx].color.contrast(0.3), gameResX, gameResY) {
     val menuPoints = mutableListOf<MenuPointGameObject>()
 
     init {

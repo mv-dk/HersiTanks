@@ -2,6 +2,9 @@ package Experimental.TerrainScene
 
 import Engine.*
 import Experimental.Menu.OPTION_DECO_CHRISTMAS
+import Experimental.particles.Emitter
+import Experimental.particles.FireEmitter
+import Experimental.particles.SmokeEmitter
 import Game.GameController
 import java.awt.BasicStroke
 import java.awt.Color
@@ -23,6 +26,8 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
     var playing = true
     var canonX = (position.x + size * Math.cos(Math.PI*angle/180.0)).toInt()
     var canonY = (position.y - size * Math.sin(Math.PI*angle/180.0)).toInt()
+    var smokeEmitter: Emitter? = null
+    var fireEmitter: Emitter? = null
 
     override fun update() {
         if (falling){
@@ -49,6 +54,47 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
                 firstFall = false
             }
         }
+        if (energy < 50) {
+            if (fireEmitter == null) {
+                addFire()
+            }
+        }
+        if (fireEmitter != null) {
+            if (fireEmitter?.emitTicksLeft == 0) {
+                parent.remove(fireEmitter!!)
+                fireEmitter = null
+            }
+        }
+        if (smokeEmitter != null) {
+            if (smokeEmitter?.emitTicksLeft == 0) {
+                parent.remove(smokeEmitter!!)
+                smokeEmitter = null
+            }
+        }
+    }
+
+    fun addFire(){
+        if (fireEmitter == null) {
+            val emitter = FireEmitter(parent, this.position, 4, 5.0)
+            emitter.drawOrder = -10
+            fireEmitter = emitter
+        }
+        if (smokeEmitter == null) {
+            val emitter = SmokeEmitter(parent, this.position, 4, 10.0)
+            emitter.drawOrder = -11
+            smokeEmitter = emitter
+        }
+    }
+
+    fun onDie(){
+        fireEmitter?.let {
+            it.emitTicksLeft = 0
+        }
+        smokeEmitter?.let {
+            it.emitTicksLeft = 0
+        }
+        fireEmitter = null
+        smokeEmitter = null
     }
 
     override fun draw(g: Graphics2D) {

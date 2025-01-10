@@ -19,6 +19,7 @@ import javax.sound.sampled.*
 import javax.swing.JFrame
 import javax.swing.JPanel
 import kotlin.concurrent.withLock
+import kotlin.math.min
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
@@ -44,6 +45,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
     val renderingHints = mapOf<Key, Any>(Pair(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON))
 
     var gameRunner: GameRunner = GameRunner(this, gameScene)
+    var scale = 1.0
 
     init {
         initFrameAndPanel(fullScreen)
@@ -123,7 +125,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
         val g2d = panel.graphics as Graphics2D
         val scaleX = screenWidth / gameSceneWidth
         val scaleY = screenHeight / gameSceneHeight
-        val scale = Math.min(scaleX, scaleY)
+        scale = min(scaleX, scaleY)
         g2d.scale(scale, scale)
         g2d.translate((screenWidth / scale - gameSceneWidth) / 2, (screenHeight / scale - gameSceneHeight) / 2)
 

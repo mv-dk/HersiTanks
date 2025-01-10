@@ -80,10 +80,10 @@ class MenuGameObject(
 
     fun keyPressed(e: KeyEvent?){
         if (e?.keyCode == KeyEvent.VK_DOWN) {
-            AudioHelper.play(SND_BAMBOO_02)
+            AudioHelper.play(SND_SWOOSH)
             selectedIdx = (selectedIdx + 1) % menuPoints.size
         } else if (e?.keyCode == KeyEvent.VK_UP) {
-            AudioHelper.play(SND_BAMBOO_01)
+            AudioHelper.play(SND_SWOOSH2)
             selectedIdx = if (selectedIdx == 0) menuPoints.size-1 else selectedIdx - 1
         } else if (e?.keyCode == KeyEvent.VK_LEFT) {
             (selected as? NumberSelectorMenuPoint)?.decrease()
@@ -98,10 +98,10 @@ class MenuGameObject(
                 }
             }
         } else if (e?.keyCode == KeyEvent.VK_ENTER){
-            AudioHelper.play(SND_SWOOSH)
+            AudioHelper.play(SND_BAMBOO_01)
             selected.onActivate()
         } else if (e?.keyCode == KeyEvent.VK_ESCAPE) {
-            AudioHelper.play(SND_SWOOSH2)
+            AudioHelper.play(SND_BAMBOO_02)
             onEscapePressed()
         }
     }

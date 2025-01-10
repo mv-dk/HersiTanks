@@ -2,6 +2,7 @@ package Experimental.TerrainScene
 
 import Engine.*
 import Experimental.Menu.Transition
+import Experimental.particles.Emitter
 import Game.GameController
 import java.awt.Color
 import java.awt.Graphics2D
@@ -20,7 +21,7 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
         GameController.glowUp = 10
         val terrain = (parent as TerrainGameScene).rasterTerrain
         terrain.pokeHole(position.x.toInt(), position.y.toInt(), size)
-        if (size > 100){
+        if (size >= 100){
             AudioHelper.play(SND_BIG_BOOM)
         } else {
             AudioHelper.play(SND_SMALL_BOOM)
@@ -38,12 +39,12 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
                     val tank = it.tank
                     if (tank != null) {
                         val distance = Vec2D(position, tank.position).mag()
-                        if (distance < tank.size) { // direct hit
+                        if (distance < tank.size/2) { // direct hit
                             tank.energy = 0
                             GameController.getCurrentPlayer().money += 100
-                        } else if (distance < size) {
+                        } else if (distance < size*1.3) {
                             val delta = Math.abs(20 * (size / distance).toInt())
-                            tank.energy -= delta
+                            tank.energy -= delta/10
                             GameController.getCurrentPlayer().money += Math.min(200, delta)
                             if (tank.energy < 0) {
                                 tank.energy = 0

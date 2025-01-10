@@ -1,5 +1,6 @@
 package Experimental.Menu
 
+import Engine.DelayedAction
 import Engine.GameRunner
 import Engine.GameScene
 import Engine.Pos2D
@@ -8,11 +9,15 @@ import Experimental.Menu.MenuPoints.ChangeSceneMenuPoint
 import Experimental.Menu.MenuPoints.ExitGameMenuPoint
 import Experimental.Menu.MenuPoints.NumberSelectorMenuPoint
 import Experimental.Menu.MenuPoints.ToggleFullScreenMenuPoint
+import Experimental.particles.Emitter
+import Experimental.particles.FireEmitter
+import Experimental.particles.SmokeEmitter
 import Game.GameController
 import Game.Player
 import Game.Team
 import gameResX
 import gameResY
+import gameWindow
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D
@@ -20,6 +25,7 @@ import java.awt.GraphicsConfiguration
 import java.awt.GraphicsEnvironment
 import java.awt.RenderingHints.*
 import java.awt.event.KeyEvent
+import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
 
 val OPTION_GROUND_GRASS = 0
@@ -94,8 +100,10 @@ class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
         menuPoints,
         onEscapePressed =
         {
-            unload()
-            GameRunner.exitGame = true
+            DelayedAction(0.5) {
+                unload()
+                GameRunner.exitGame = true
+            }
         })
 
     init {

@@ -212,6 +212,24 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
                 keyPressed = null
                 GameController.getCurrentPlayer().cycleWeapon()
             }
+            KeyEvent.VK_E -> {
+                GameController.getCurrentPlayersTank()?.addFire()
+            }
+            KeyEvent.VK_U -> {
+                GameController.players.forEach {
+                    it.tank?.fireEmitter?.let { emitter ->
+                        emitter.emitTicksLeft = 0
+                    }
+                    it.tank?.fireEmitter = null
+                    it.tank?.smokeEmitter?.let { emitter ->
+                        emitter.emitTicksLeft = 0
+                    }
+                    it.tank?.smokeEmitter = null
+                }
+            }
+            KeyEvent.VK_O -> {
+                add(Transition(this))
+            }
             KeyEvent.VK_0 -> {
                 val tank = GameController.getCurrentPlayersTank()
                 if (tank != null) {
@@ -264,6 +282,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
             val deadPlayer = GameController.players.firstOrNull{it.playing && it.tank?.energy == 0}
             val deadTank = deadPlayer?.tank
             if (deadPlayer != null && deadTank != null){
+                deadTank.onDie()
                 remove(deadTank)
                 deadTank.playing = false
                 deadPlayer.playing = false

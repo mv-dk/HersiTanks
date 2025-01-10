@@ -17,6 +17,7 @@ class ProjectileTrail(parent: IGameScene, position: Pos2D) : GameObject2(parent,
     override fun update() {
         if (ticksLeft <= 0) {
             parent.remove(this)
+            return
         }
         position.x += velocity.x * 60
         position.y += velocity.y * 60
