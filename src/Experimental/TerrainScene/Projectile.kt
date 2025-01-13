@@ -62,8 +62,8 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D, 
     }
 
     private fun terrainAt(p: Pos2D): Boolean {
-        if (p.x < 0 || p.x > terrain.rasterImage.width) return false
-        if (p.y < 0 || p.y > terrain.rasterImage.height) return false
+        if (p.x < 0 || p.x >= terrain.rasterImage.width) return false
+        if (p.y < 0 || p.y >= terrain.rasterImage.height) return false
         return terrain.rasterImage.getRGB(p.x.toInt(), p.y.toInt()) != 0
     }
 

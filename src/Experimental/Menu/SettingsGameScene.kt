@@ -79,6 +79,7 @@ class SettingsGameScene() : GameScene(Color(228, 217, 135), gameResX, gameResY) 
         400,
         400,
         30.0,
+        20.0,
         menuPoints,
         {
             unload()

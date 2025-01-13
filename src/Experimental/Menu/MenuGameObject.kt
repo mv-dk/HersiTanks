@@ -20,14 +20,18 @@ class MenuGameObject(
     var width: Int,
     var height: Int,
     var ySpacing : Double = 40.0,
+    var leftMargin: Double = 20.0,
     var menuPoints: MutableList<MenuPointGameObject>,
-    val onEscapePressed: () -> Unit) :
+    val onEscapePressed: () -> Unit,
+    var color: Color = (parent as GameScene).color.lighter(20),
+    var strokeColor: Color = (parent as GameScene).color.darker(40)
+    ) :
     GameObject2(parent, position) {
-    var x: Double = position.x + 20.0
+    var x: Double = position.x + leftMargin
     var y: Double = position.y
     override var drawOrder = -1
-    var color = (parent as GameScene).color.lighter(20)
-    var strokeColor = (parent as GameScene).color.darker(40)// Color(80, 10, 40)
+    //var color = (parent as GameScene).color.lighter(20)
+    //var strokeColor = (parent as GameScene).color.darker(40)// Color(80, 10, 40)
     var stroke = BasicStroke(3f)
 
 

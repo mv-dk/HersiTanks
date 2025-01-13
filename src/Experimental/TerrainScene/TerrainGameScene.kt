@@ -112,6 +112,10 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
             x += spaceBetweenTanks
         }
         updateWind(true)
+        repeat(Random.nextInt(numPlayers)) {
+            GameController.nextPlayersTurn()
+        }
+        updatePlayersTurnOnNextPossibleOccasion = true
     }
 
     fun busy(): Boolean{
@@ -119,6 +123,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
         if (GameController.players.any {it.playing && (it.tank?.falling == true)}) return true
         if (GameController.projectilesFlying > 0) return true
         if (GameController.explosionsActive > 0) return true
+        if (decision != null) return true
         return false
     }
 

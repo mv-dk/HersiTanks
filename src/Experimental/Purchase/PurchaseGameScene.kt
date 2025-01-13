@@ -77,6 +77,7 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(pla
         300,
         400,
         25.0,
+        leftMargin = 20.0,
         menuPoints,
         onEscapePressed = {
             unload()

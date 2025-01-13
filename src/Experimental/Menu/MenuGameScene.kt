@@ -5,10 +5,7 @@ import Engine.GameRunner
 import Engine.GameScene
 import Engine.Pos2D
 import Experimental.EditPlayers.EditPlayers
-import Experimental.Menu.MenuPoints.ChangeSceneMenuPoint
-import Experimental.Menu.MenuPoints.ExitGameMenuPoint
-import Experimental.Menu.MenuPoints.NumberSelectorMenuPoint
-import Experimental.Menu.MenuPoints.ToggleFullScreenMenuPoint
+import Experimental.Menu.MenuPoints.*
 import Experimental.Purchase.PurchaseGameScene
 import Experimental.particles.Emitter
 import Experimental.particles.FireEmitter
@@ -66,25 +63,12 @@ class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
 
             EditPlayers()
         }),
-//        ChangeSceneMenuPoint("Test: Purchase", this, {
-//            PurchaseGameScene(
-//                listOf(
-//                    Player("Martin", PlayerType.LocalHuman).apply { color = Color.RED },
-//                    Player("cpu.John", PlayerType.LocalCpu).apply { color = Color.BLUE },
-//                    Player("cpu.Bent", PlayerType.LocalCpu).apply { color = Color.GREEN }
-//                ),
-//                0
-//            )
-//
-//        }),
         NumberSelectorMenuPoint("Players", this, numPlayersSelected, 2, 10, onChange = {_,new ->
             numPlayersSelected = new
         }),
         NumberSelectorMenuPoint("Rounds", this, numGamesSelected, 1, 99, onChange = {_,new ->
             numGamesSelected = new
         }),
-
-        //MenuPointGameObject("Settings", parent, nextMenuPointPos()),
         ChangeSceneMenuPoint("Settings", this, { SettingsGameScene() }),
         ChangeSceneMenuPoint("About", this, { AboutGameScene() }),
         ExitGameMenuPoint("Exit", this)
@@ -95,6 +79,7 @@ class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
         200,
         300,
         30.0,
+        leftMargin = 20.0,
         menuPoints,
         onEscapePressed =
         {

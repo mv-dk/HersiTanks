@@ -7,9 +7,10 @@ class OptionSelectorMenuPoint(
     parent: IGameScene,
     val options: List<OptionValue>,
     var optionIdx: Int,
-    val onChange: (old: OptionValue, new: OptionValue) -> Unit
-):
-    MenuPointGameObject("$label: ${options[optionIdx].name}", parent, onActivate = {}) {
+    val onChange: (old: OptionValue, new: OptionValue) -> Unit,
+    initialFontSize : Int = 24
+    ):
+    MenuPointGameObject("$label: ${options[optionIdx].name}", parent, onActivate = {}, fontSize = initialFontSize) {
 
     override fun onSelected() {
         super.text = "$label: <${options[optionIdx].name}>"

@@ -1,13 +1,10 @@
 package Experimental.EditPlayers
 
-import Engine.GameScene
-import Engine.Pos2D
+import Engine.*
 import Experimental.Menu.FloatingBlob
 import Experimental.Menu.MenuGameObject
 import Experimental.Menu.MenuGameScene
-import Experimental.Menu.MenuPoints.MenuPointGameObject
-import Experimental.Menu.MenuPoints.ChangeSceneMenuPoint
-import Experimental.Menu.MenuPoints.TextInputMenuPoint
+import Experimental.Menu.MenuPoints.*
 import Experimental.Menu.Transition
 import Experimental.TerrainScene.TerrainGameScene
 import Game.GameController
@@ -21,63 +18,117 @@ import java.awt.Color
 import java.awt.event.KeyEvent
 
 class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
-    private val menuPoints = mutableListOf<MenuPointGameObject>()
+
     init {
         repeat(10) {
             add(FloatingBlob(this))
         }
-
-        val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.BLACK, Color.WHITE, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.LIGHT_GRAY)
-
-        for (p in 0..<GameController.numberOfPlayersOption) {
-            val newMenuPoint = TextInputMenuPoint("Name", this, Pos2D(0.0, 0.0), "Player ${p+1}", colors[p], 18)
-            newMenuPoint.unselectedColor = Color.BLACK
-            newMenuPoint.selectedColor = colors[p]
-            menuPoints.add(newMenuPoint)
+    }
+    private val menuWidth = 137
+    private val menuHeight = 100
+    private val menuPadding = 20
+    private var menuPos = Pos2D(menuPadding/2.0, menuPadding/2.0)
+    private fun nextMenuPos() :Pos2D {
+        val pos = menuPos.copy()
+        if (menuPos.x + 2*(menuWidth + menuPadding) > gameResX) {
+            menuPos.y += menuHeight
+            menuPos.x = menuPadding/2.0
+        } else {
+            menuPos.x += menuWidth + menuPadding
         }
-        menuPoints.add(ChangeSceneMenuPoint("Start!", this, {
-            GameController.players.clear()
-            GameController.teams.clear()
-            menuPoints.forEachIndexed { idx, menuPoint ->
-                if (menuPoint is TextInputMenuPoint) {
-                    val playerType = if (menuPoint.textValue.startsWith("cpu.")) PlayerType.LocalCpu else PlayerType.LocalHuman
-                    val newPlayer = Player(menuPoint.textValue, playerType)
-                    newPlayer.weaponry.put(1, 200)
-                    newPlayer.weaponry.put(2, 25)
-//                newPlayer.weaponry.put(3, 100)
-//                newPlayer.weaponry.put(4, 100)
-//                newPlayer.weaponry.put(5, 100)
-//                newPlayer.weaponry.put(6, 100)
-//                newPlayer.weaponry.put(7, 100)
-//                newPlayer.weaponry.put(8, 100)
-//                newPlayer.weaponry.put(9, 100)
+        return pos
+    }
 
-                    newPlayer.color = colors[idx]
-                    GameController.teams.add(Team("Team $i", listOf(newPlayer)))
-                    GameController.players.add(newPlayer)
-                }
-            }
+    private val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.BLACK, Color.WHITE, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.LIGHT_GRAY)
 
-            TerrainGameScene(GameController.groundSize)
-        }))
+    private val playerMenuBoxes = (0..<GameController.numberOfPlayersOption).mapIndexed { index, it ->
+        MenuGameObject(this, nextMenuPos(), menuWidth, menuHeight, 25.0, leftMargin = 10.0,
+            mutableListOf(
+                MenuPointGameObject("<<< >>>", this, true, false, 14, blinkWhenActive = index == 0, onActivate = {}).apply {
+                    this.unselectedColor = colors[index]
+                    this.selectedColor = colors[index]
+                },
+                OptionSelectorMenuPoint("Type", this,
+                    listOf(
+                        OptionValue(1, "Human"),
+                        OptionValue(2, "CPU")
+                    ),
+                    optionIdx = 0,
+                    onChange = { _, _ -> },
+                    initialFontSize = 14
+                ),
+                TextInputMenuPoint("Name", this, "Player $index", colors[index], initialFontSize = 14),
+            ),
+            color =  colors[index].contrast(0.1),
+            strokeColor = colors[index].darker(100),
+            onEscapePressed = {}
+        )
+    }.toMutableList()
+
+    var activeMenuIdx = 0
+
+
+    init {
+        playerMenuBoxes.add(
+            MenuGameObject(
+                this,
+                Pos2D(gameResX*3.0/4.0, gameResY - 30.0),
+                gameResX/2,
+                50,
+                0.0,
+                menuPoints = mutableListOf(
+                    ChangeSceneMenuPoint(
+                        "Done!",
+                        this,
+                        {
+                            GameController.players.clear()
+                            GameController.teams.clear()
+
+                            playerMenuBoxes.forEachIndexed { idx, it ->
+                                if (idx == playerMenuBoxes.size - 1) return@forEachIndexed
+
+                                val newPlayer = getPlayer(it, colors[idx])
+                                GameController.teams.add(Team("Team $i", listOf(newPlayer)))
+                                GameController.players.add(newPlayer)
+                            }
+
+                            TerrainGameScene(GameController.groundSize)
+                        }
+                    )
+                ),
+                onEscapePressed = { }
+            )
+        )
 
         add(Transition(this))
     }
 
-    private val menuGameObject = MenuGameObject(
-        this,
-        Pos2D(100.0, 20.0),
-        300,
-        400,
-        25.0,
-        menuPoints,
-        onEscapePressed =
-        {
-            unload()
-            gameWindow?.gameRunner?.currentGameScene = MenuGameScene()
-        })
+    fun getPlayer(menuGameObject: MenuGameObject, color: Color) :Player {
+        val type = (menuGameObject.menuPoints[1] as? OptionSelectorMenuPoint)?.let {
+            when (it.options[it.optionIdx].id) {
+                1 -> PlayerType.LocalHuman
+                else -> PlayerType.LocalCpu
+            }
+        } ?: PlayerType.LocalHuman
+        val name = (menuGameObject.menuPoints[2] as? TextInputMenuPoint)?.textValue ?: "no name"
+        return Player(name, type).apply {
+            this.color = color
+            weaponry.put(1, 200)
+            weaponry.put(2, 25)
+//              weaponry.put(3, 100)
+//              weaponry.put(4, 100)
+//              weaponry.put(5, 100)
+//              weaponry.put(6, 100)
+//              weaponry.put(7, 100)
+//              weaponry.put(8, 100)
+//              weaponry.put(9, 100)
+        }
+    }
+
     init {
-        add(menuGameObject)
+        for (menu in playerMenuBoxes) {
+            add(menu)
+        }
     }
 
     override fun load() { }
@@ -85,16 +136,43 @@ class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
     private var keyHasBeenReleasedOnce = false
     override fun keyTyped(e: KeyEvent) {
         if (!keyHasBeenReleasedOnce) return
-        menuGameObject.keyTyped(e)
+        playerMenuBoxes[activeMenuIdx].keyTyped(e)
     }
 
     override fun keyPressed(e: KeyEvent) {
         if (!keyHasBeenReleasedOnce) return
-        menuGameObject.keyPressed(e)
+        if (e.keyCode == KeyEvent.VK_ESCAPE) {
+            unload()
+            gameWindow?.gameRunner?.currentGameScene = MenuGameScene()
+            return
+        }
+
+        if (playerMenuBoxes[activeMenuIdx].selectedIdx == 0) {
+            when (e.keyCode) {
+                KeyEvent.VK_LEFT -> {
+                    (playerMenuBoxes[activeMenuIdx].selected as? MenuPointGameObject)?.blinkWhenActive = false
+                    playerMenuBoxes[activeMenuIdx].color = colors[activeMenuIdx].darker(100)
+                    activeMenuIdx -= 1
+                    if (activeMenuIdx < 0) activeMenuIdx = playerMenuBoxes.size-1
+                    (playerMenuBoxes[activeMenuIdx].selected as? MenuPointGameObject)?.blinkWhenActive = true
+                    playerMenuBoxes[activeMenuIdx].color = colors[activeMenuIdx].lighter(100)
+                }
+                KeyEvent.VK_RIGHT -> {
+                    (playerMenuBoxes[activeMenuIdx].selected as? MenuPointGameObject)?.blinkWhenActive = false
+                    playerMenuBoxes[activeMenuIdx].color = colors[activeMenuIdx].darker(100)
+                    activeMenuIdx += 1
+                    if (activeMenuIdx > playerMenuBoxes.size - 1) activeMenuIdx = 0
+                    (playerMenuBoxes[activeMenuIdx].selected as? MenuPointGameObject)?.blinkWhenActive = true
+                    playerMenuBoxes[activeMenuIdx].color = colors[activeMenuIdx].lighter(100)
+                }
+                else -> playerMenuBoxes[activeMenuIdx].keyPressed(e)
+            }
+        } else {
+            playerMenuBoxes[activeMenuIdx].keyPressed(e)
+        }
     }
 
     override fun keyReleased(e: KeyEvent) {
         keyHasBeenReleasedOnce = true
     }
-
 }

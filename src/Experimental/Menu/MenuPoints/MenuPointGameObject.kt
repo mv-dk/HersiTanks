@@ -14,6 +14,7 @@ open class MenuPointGameObject(
     var shadow: Boolean = true,
     var cursor: Boolean = false,
     var fontSize: Int = 24,
+    var blinkWhenActive: Boolean = false,
     val onActivate: () -> Unit
 ): GameObject2(parent, Pos2D(0.0, 0.0)) {
     var selected: Boolean = false
@@ -23,8 +24,8 @@ open class MenuPointGameObject(
             else onDeselected()
         }
 
-    var selectedColor = Color(200, 0, 180);
-    var unselectedColor = Color(80, 10, 40);
+    var selectedColor = Color(200, 0, 180)
+    var unselectedColor = Color(80, 10, 40)
     var shadowColor = Color(48, 48, 48)
     private var selectedFont = Font("Helvetica", Font.BOLD, fontSize)
     private var unselectedFont = Font("Helvetica", Font.PLAIN, fontSize)
@@ -42,6 +43,8 @@ open class MenuPointGameObject(
     }
 
     override fun draw(g: Graphics2D) {
+        if (blinkWhenActive && tick < GameRunner.fps / 2) return
+
         g.font = getFont()
 
         if (shadow) {

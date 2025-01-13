@@ -179,6 +179,10 @@ class RandomCpu : Cpu() {
         repeat (Random.nextInt(10)) {
             player.cycleWeapon()
         }
+        if (GameController.players.count { it.playing} <= 1) {
+            return PlayerDecision(player, 0, 0, player.currentWeaponId)
+        }
+
         val target = getRandomTargetExcept(player)
         val targetTank = target.tank
         val playersTank = player.tank
