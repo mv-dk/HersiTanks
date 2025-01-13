@@ -1,5 +1,8 @@
 package Game
 
+import Engine.AudioHelper
+import Engine.Pos2D
+import Engine.Vec2D
 import Experimental.Menu.OPTION_DECO_NONE
 import Experimental.Menu.OPTION_GROUNDSIZE_SMALL
 import Experimental.Menu.OPTION_GROUND_GRASS
@@ -7,9 +10,13 @@ import Experimental.Menu.OPTION_SKY_BLUE
 import Experimental.Menu.OPTION_WIND_MEDIUM
 import Experimental.TerrainScene.Tank
 import Experimental.TerrainScene.Weapon
+import SND_FIRE
+import SND_FIRE2
+import SND_FIRE3
+import SND_FIZZLE
 import gameResX
 import java.awt.Color
-import kotlin.time.Duration
+import kotlin.random.Random
 
 /*
     state (potential next states):
@@ -23,6 +30,7 @@ import kotlin.time.Duration
     Purchase (Purchase, Battle)
 */
 object GameController {
+    var numberOfPlayersOption: Int = 2
     var updateTime: Long = 0
     var renderBufferTime: Long = 0
     var renderScreenTime: Long = 0
@@ -44,8 +52,7 @@ object GameController {
     var glowUp = 0 // whether everything should glow up
 
     fun onGoingToMenu(){
-        teams.clear()
-        players.clear()
+
     }
 
     fun addTeam(t: Team){
@@ -75,13 +82,14 @@ object GameController {
     }
 }
 
-class Player(var name: String) {
+class Player(var name: String, val playerType: PlayerType) {
     var tank: Tank? = null
     var playing: Boolean = true
-    var weaponry = mutableMapOf<Int,Int>()
+    var weaponry = mutableMapOf<Int,Int>() // Map from weaponId to ammo
     var money = 200.0
     var color = Color.RED
     var currentWeaponId = 1
+
     fun victories(): Int {
         return GameController.teams.find { it.players.contains(this) }?.victories ?: 0
     }
@@ -102,6 +110,99 @@ class Player(var name: String) {
             if (currentWeaponId == oldWeaponId) break
         }
     }
+
+    fun fire() {
+        when (Random.nextInt(3)) {
+            0 -> AudioHelper.play(SND_FIRE)
+            1 -> AudioHelper.play(SND_FIRE2)
+            2 -> AudioHelper.play(SND_FIRE3)
+        }
+
+        val player = GameController.getCurrentPlayer()
+
+        if ((player.weaponry[player.currentWeaponId] ?: 0) == 0) {
+            AudioHelper.play(SND_FIZZLE);
+        } else {
+            tank?.let {
+                val velocity = Vec2D(
+                    it.position.copy(),
+                    Pos2D(it.canonX.toDouble(), it.canonY.toDouble())
+                ).times(it.power / 400.0)
+                val position = Pos2D(it.canonX.toDouble(), it.canonY.toDouble())
+                val projectile = Weapon.allWeapons[player.currentWeaponId]?.getProjectile(it.parent, position, velocity)
+                if (projectile != null) {
+                    it.parent.add(projectile)
+                }
+                player.decreaseAmmoAndCycleIfZero()
+            }
+        }
+    }
+}
+
+class PlayerDecision(
+    var player: Player,
+    var angle: Int,
+    var power: Int,
+    var weaponId: Int) {
+
+    fun isValid(): Boolean {
+        return (player.weaponry[weaponId] ?: 0) > 0
+    }
+}
+
+abstract class Cpu {
+    abstract fun getDecision(player: Player): PlayerDecision
+
+    fun isThereAPlayerOnMyLeft(me: Player) :Boolean {
+        val myX: Double = me.tank?.position?.x ?: 0.0
+        return GameController.players.filter{it.playing}.any {
+            val itsX = it.tank?.position?.x ?: 0.0
+            return itsX < myX
+        }
+    }
+
+    fun isThereAPlayerOnMyRight(me: Player) :Boolean {
+        val myX: Double = me.tank?.position?.x ?: 0.0
+        return GameController.players.filter{it.playing}.any {
+            val itsX = it.tank?.position?.x ?: 0.0
+            return itsX > myX
+        }
+    }
+
+    fun getRandomTargetExcept(exceptThis: Player) :Player {
+        return GameController.players.filter {it.playing && it != exceptThis }.random()
+    }
+}
+
+class RandomCpu : Cpu() {
+    override fun getDecision(player: Player): PlayerDecision {
+        repeat (Random.nextInt(10)) {
+            player.cycleWeapon()
+        }
+        val target = getRandomTargetExcept(player)
+        val targetTank = target.tank
+        val playersTank = player.tank
+
+        if (targetTank == null || playersTank == null) return PlayerDecision(player, 0, 0, player.currentWeaponId)
+        var minAngle = 0
+        var maxAngle = 180
+        var minPower = 50
+        var maxPower = 300
+        if (playersTank.position.x > targetTank.position.x) {
+            minAngle = 91
+        } else if (playersTank.position.x < targetTank.position.x) {
+            maxAngle = 89
+        }
+        val distance = (playersTank.position.distance(targetTank.position))
+        maxPower += distance.toInt()/10
+        val decision = PlayerDecision(player, Random.nextInt(minAngle, maxAngle), Random.nextInt(minPower, maxPower), player.currentWeaponId)
+        println("Decision: angle ${decision.angle}, power ${decision.power}, weapon ${decision.weaponId}")
+        return decision
+    }
+}
+
+enum class PlayerType {
+    LocalHuman, LocalCpu, NetworkHuman, NetworkCpu
 }
 
 class Team(val name: String, val players: List<Player>) {

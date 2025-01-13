@@ -78,31 +78,59 @@ class MenuGameObject(
         }
     }
 
+    fun selectNext() {
+        AudioHelper.play(SND_SWOOSH)
+        selectedIdx = (selectedIdx + 1) % menuPoints.size
+    }
+
+    fun selectPrevious() {
+        AudioHelper.play(SND_SWOOSH2)
+        selectedIdx = if (selectedIdx == 0) menuPoints.size-1 else selectedIdx - 1
+    }
+
+    fun decreaseValue() {
+        (selected as? NumberSelectorMenuPoint)?.decrease()
+        (selected as? OptionSelectorMenuPoint)?.decrease()
+    }
+
+    fun increaseValue() {
+        (selected as? NumberSelectorMenuPoint)?.increase()
+        (selected as? OptionSelectorMenuPoint)?.increase()
+    }
+
+    fun deleteCharacter() {
+        (selected as? TextInputMenuPoint)?.apply{
+            if (textValue.length > 0) {
+                textValue = textValue.substring(0, textValue.length - 1)
+            }
+        }
+    }
+
+    fun activate() {
+        AudioHelper.play(SND_BAMBOO_01)
+        selected.onActivate()
+    }
+
+    fun escape() {
+        AudioHelper.play(SND_BAMBOO_02)
+        onEscapePressed()
+    }
+
     fun keyPressed(e: KeyEvent?){
         if (e?.keyCode == KeyEvent.VK_DOWN) {
-            AudioHelper.play(SND_SWOOSH)
-            selectedIdx = (selectedIdx + 1) % menuPoints.size
+            selectNext()
         } else if (e?.keyCode == KeyEvent.VK_UP) {
-            AudioHelper.play(SND_SWOOSH2)
-            selectedIdx = if (selectedIdx == 0) menuPoints.size-1 else selectedIdx - 1
+            selectPrevious()
         } else if (e?.keyCode == KeyEvent.VK_LEFT) {
-            (selected as? NumberSelectorMenuPoint)?.decrease()
-            (selected as? OptionSelectorMenuPoint)?.decrease()
+            decreaseValue()
         } else if (e?.keyCode == KeyEvent.VK_RIGHT){
-            (selected as? NumberSelectorMenuPoint)?.increase()
-            (selected as? OptionSelectorMenuPoint)?.increase()
+            increaseValue()
         } else if (e?.keyCode == KeyEvent.VK_BACK_SPACE) {
-            (selected as? TextInputMenuPoint)?.apply{
-                if (textValue.length > 0) {
-                    textValue = textValue.substring(0, textValue.length - 1)
-                }
-            }
+            deleteCharacter()
         } else if (e?.keyCode == KeyEvent.VK_ENTER){
-            AudioHelper.play(SND_BAMBOO_01)
-            selected.onActivate()
+            activate()
         } else if (e?.keyCode == KeyEvent.VK_ESCAPE) {
-            AudioHelper.play(SND_BAMBOO_02)
-            onEscapePressed()
+            escape()
         }
     }
 

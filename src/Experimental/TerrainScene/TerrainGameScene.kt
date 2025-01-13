@@ -4,8 +4,7 @@ import Engine.*
 import Experimental.Menu.*
 import Experimental.Status.StatusLine
 import Experimental.Status.StatusScreen
-import Game.BattleState
-import Game.GameController
+import Game.*
 import SND_CHANGE_ANGLE
 import SND_DECREASE_POWER
 import SND_FIRE
@@ -46,6 +45,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
         maxX = if (GameController.groundSizeOption == OPTION_GROUNDSIZE_SMALL) 0 else Int.MAX_VALUE
     )
     var mouseWasMoved = false
+    var decision: PlayerDecision? = null
 
     init {
         when (GameController.skyOption) {
@@ -131,10 +131,12 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
             unload()
             gameWindow?.gameRunner?.currentGameScene = MenuGameScene()
             GameController.onGoingToMenu()
+            return
         }
 
         if (busy()) return
         if (updatePlayersTurnOnNextPossibleOccasion) return
+        if (GameController.getCurrentPlayer().playerType != PlayerType.LocalHuman) return
 
         when (keyPressed) {
             KeyEvent.VK_LEFT -> {
@@ -183,39 +185,17 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
             }
             KeyEvent.VK_ENTER, KeyEvent.VK_SPACE -> {
                 keyPressed = null
-                when (Random.nextInt(3)) {
-                    0 -> AudioHelper.play(SND_FIRE)
-                    1 -> AudioHelper.play(SND_FIRE2)
-                    2 -> AudioHelper.play(SND_FIRE3)
-                }
-
-                val player = GameController.getCurrentPlayer()
-                val tank = player.tank
-                if ((player.weaponry[player.currentWeaponId] ?: 0) == 0) {
-                    AudioHelper.play(SND_FIZZLE);
-                } else {
-                    if (tank != null) {
-                        val velocity = Vec2D(
-                            tank.position.copy(),
-                            Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())).times(tank.power / 400.0)
-                        val position = Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble())
-                        val projectile = Weapon.allWeapons[player.currentWeaponId]?.getProjectile(this, position, velocity)
-                        if (projectile != null) {
-                            add(projectile)
-                        }
-                        player.decreaseAmmoAndCycleIfZero()
-                    }
-                }
+                GameController.getCurrentPlayer().fire()
                 updatePlayersTurnOnNextPossibleOccasion = true
             }
             KeyEvent.VK_TAB -> {
                 keyPressed = null
                 GameController.getCurrentPlayer().cycleWeapon()
             }
-            KeyEvent.VK_E -> {
+            KeyEvent.VK_E -> { // Toy
                 GameController.getCurrentPlayersTank()?.addFire()
             }
-            KeyEvent.VK_U -> {
+            KeyEvent.VK_U -> { // Toy
                 GameController.players.forEach {
                     it.tank?.fireEmitter?.let { emitter ->
                         emitter.emitTicksLeft = 0
@@ -227,10 +207,10 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
                     it.tank?.smokeEmitter = null
                 }
             }
-            KeyEvent.VK_O -> {
+            KeyEvent.VK_O -> { // Toy
                 add(Transition(this))
             }
-            KeyEvent.VK_0 -> {
+            KeyEvent.VK_0 -> { // Toy
                 val tank = GameController.getCurrentPlayersTank()
                 if (tank != null) {
                     tank.size += 1
@@ -238,7 +218,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
                     println("Tank size: ${tank.size}")
                 }
             }
-            KeyEvent.VK_9 -> {
+            KeyEvent.VK_9 -> { // Toy
                 val tank = GameController.getCurrentPlayersTank()
                 if (tank != null) {
                     tank.size -= 1
@@ -279,34 +259,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
     override fun update() {
         handleKeyPressed()
         if (!busy() && updatePlayersTurnOnNextPossibleOccasion) {
-            val deadPlayer = GameController.players.firstOrNull{it.playing && it.tank?.energy == 0}
-            val deadTank = deadPlayer?.tank
-            if (deadPlayer != null && deadTank != null){
-                deadTank.onDie()
-                remove(deadTank)
-                deadTank.playing = false
-                deadPlayer.playing = false
-                viewport.setFocus(deadTank.position)
-                add(Explosion(this, deadTank.position, 100, 40, { }))
-            }
-            if (!busy()) {
-                updatePlayersTurnOnNextPossibleOccasion = false
-                GameController.nextPlayersTurn()
-                if ((GameController.state as BattleState).isBattleOver()) {
-                    val team = GameController.getCurrentPlayersTeam()
-                    team.victories += 1
-                    GameController.gamesPlayed += 1
-                    val statusLines = GameController.players.map {
-                        StatusLine(it.name, it.victories(), it.money, it.color)
-                    }
-
-                    unload()
-                    gameWindow?.gameRunner?.currentGameScene = StatusScreen(statusLines)
-                } else {
-                    updateWind(false)
-                    GameController.getCurrentPlayersTank()?.let { viewport.setFocus(it.position) }
-                }
-            }
+            handleNextPlayersTurn()
         }
         if (mouseWasMoved) {
             mouseWasMoved = false
@@ -317,16 +270,98 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
             viewport.setFocus(p.position)
         }
         else if (GameController.players.any { it.playing && it.tank?.falling == true }) {
-            val p = GameController.players.first { it.playing && it.tank?.falling == true }.tank?.position
-            if (p != null)
-                viewport.setFocus(p)
+            GameController.players.first { it.playing && it.tank?.falling == true }.tank?.position?.let {
+                viewport.setFocus(it)
+            }
         }
         viewport.update()
         if (GameController.glowUp > 0) {
             GameController.glowUp -= 1
         }
 
+        if (GameController.getCurrentPlayer().playerType == PlayerType.LocalCpu) {
+            carryOutDecision()
+        }
+
         super.update()
+    }
+
+    private fun carryOutDecision() {
+        decision?.let {
+            val player = GameController.getCurrentPlayer()
+            val tank = player.tank ?: return
+            if (tank.angle.toInt() < it.angle) {
+                tank.increaseAngle(+1)
+                AudioHelper.loop(SND_CHANGE_ANGLE)
+            } else if (tank.angle.toInt() > it.angle) {
+                tank.increaseAngle(-1)
+                AudioHelper.loop(SND_CHANGE_ANGLE)
+            } else if (tank.power != it.power) {
+                AudioHelper.stop(SND_CHANGE_ANGLE)
+                if (tank.power > it.power) {
+                    AudioHelper.loop(SND_DECREASE_POWER)
+                    tank.increasePower(-1)
+                } else {
+                    AudioHelper.loop(SND_INCREASE_POWER)
+                    tank.increasePower(1)
+                }
+            } else {
+                AudioHelper.stop(SND_CHANGE_ANGLE)
+                AudioHelper.stop(SND_DECREASE_POWER)
+                AudioHelper.stop(SND_INCREASE_POWER)
+                player.fire()
+                updatePlayersTurnOnNextPossibleOccasion = true
+                decision = null
+            }
+        }
+    }
+
+    private fun handleNextPlayersTurn() {
+        explodeDeadPlayers()
+        if (!busy()) {
+            updatePlayersTurnOnNextPossibleOccasion = false
+            GameController.nextPlayersTurn()
+            if ((GameController.state as BattleState).isBattleOver()) {
+                handleBattleOver()
+            } else {
+                updateWind(false)
+                GameController.getCurrentPlayersTank()?.let { viewport.setFocus(it.position) }
+            }
+
+            val currentPlayer = GameController.getCurrentPlayer()
+            if (currentPlayer.playerType == PlayerType.LocalCpu) {
+                if (decision == null) {
+                    DelayedAction(1.0, {
+                        decision = RandomCpu().getDecision(currentPlayer)
+                    })
+                }
+            }
+        }
+    }
+
+    private fun handleBattleOver() {
+        val team = GameController.getCurrentPlayersTeam()
+        team.victories += 1
+        GameController.gamesPlayed += 1
+        val statusLines = GameController.players.map {
+            StatusLine(it.name, it.victories(), it.money, it.color)
+        }
+
+        unload()
+        gameWindow?.gameRunner?.currentGameScene = StatusScreen(statusLines)
+    }
+
+    private fun explodeDeadPlayers() {
+        val deadPlayer = GameController.players.firstOrNull { it.playing && it.tank?.energy == 0 }
+        val deadTank = deadPlayer?.tank
+        if (deadPlayer != null && deadTank != null) {
+            deadTank.onDie()
+            remove(deadTank)
+            deadTank.playing = false
+            deadPlayer.playing = false
+            viewport.setFocus(deadTank.position)
+            add(Explosion(this, deadTank.position, 100, 40, { }))
+        }
     }
 
     fun updateWind(first: Boolean) {
@@ -348,7 +383,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
 
     override fun draw(g: Graphics2D) {
         g.drawImage(skyImage, null, 0, 0)
-        //g.translate(translationX, translationY)
+
         g.translate(-viewport.x, -viewport.y)
         gameObjectsByDrawOrder.forEach {
             if (it is RasterTerrain) {

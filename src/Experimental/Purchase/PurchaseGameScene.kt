@@ -10,6 +10,7 @@ import Experimental.TerrainScene.TerrainGameScene
 import Experimental.TerrainScene.Weapon
 import Game.GameController
 import Game.Player
+import Game.PlayerType
 import SND_BUY
 import SND_BUY_FINISH
 import gameResX
@@ -17,16 +18,17 @@ import gameResY
 import gameWindow
 import java.awt.Graphics2D
 import java.awt.event.KeyEvent
+import kotlin.random.Random
 
 class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(players[idx].color.contrast(0.3), gameResX, gameResY) {
     val menuPoints = mutableListOf<MenuPointGameObject>()
+    val player = players[idx]
 
     init {
         repeat(10) {
             add(FloatingBlob(this))
         }
 
-        val player = players[idx]
         for (w in Weapon.allWeapons.filter({ it.value.purchasePrice <= player.money}).map{it.value}) {
             menuPoints.add(
                 MenuPointGameObject("${w.name}, ${w.purchaseQuantity} for \$${w.purchasePrice}",
@@ -87,6 +89,24 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(pla
 
     override fun load() {
         add(menuGameObject)
+
+        if (player.playerType == PlayerType.LocalCpu) {
+            var i = 1.0
+            repeat(Random.nextInt(1,3)) {
+                repeat(Random.nextInt(menuPoints.size)) {
+                    DelayedAction(i) {
+                        menuGameObject.selectNext()
+                    }
+                    i += .1
+                }
+                DelayedAction(i) {
+                    menuGameObject.activate()
+                }
+            }
+            DelayedAction(i+0.5, {
+                menuGameObject.onEscapePressed()
+            })
+        }
     }
 
     private var keyHasBeenReleasedOnce = false
@@ -96,6 +116,8 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(pla
 
     override fun keyPressed(e: KeyEvent) {
         if (!keyHasBeenReleasedOnce) return
+        if (player.playerType != PlayerType.LocalHuman) return
+
         menuGameObject.keyPressed(e)
     }
 

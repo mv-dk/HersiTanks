@@ -9,11 +9,13 @@ import Experimental.Menu.MenuPoints.ChangeSceneMenuPoint
 import Experimental.Menu.MenuPoints.ExitGameMenuPoint
 import Experimental.Menu.MenuPoints.NumberSelectorMenuPoint
 import Experimental.Menu.MenuPoints.ToggleFullScreenMenuPoint
+import Experimental.Purchase.PurchaseGameScene
 import Experimental.particles.Emitter
 import Experimental.particles.FireEmitter
 import Experimental.particles.SmokeEmitter
 import Game.GameController
 import Game.Player
+import Game.PlayerType
 import Game.Team
 import gameResX
 import gameResY
@@ -60,25 +62,21 @@ class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
             GameController.players.clear()
             GameController.gamesToPlay = numGamesSelected
             GameController.gamesPlayed = 0
-            val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.BLACK, Color.WHITE, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.LIGHT_GRAY)
-            for (i in 1 .. numPlayersSelected) {
-                val newPlayer = Player("Player $i")
-                newPlayer.weaponry.put(1, 200)
-                newPlayer.weaponry.put(2, 100)
-//                newPlayer.weaponry.put(3, 100)
-//                newPlayer.weaponry.put(4, 100)
-//                newPlayer.weaponry.put(5, 100)
-//                newPlayer.weaponry.put(6, 100)
-//                newPlayer.weaponry.put(7, 100)
-//                newPlayer.weaponry.put(8, 100)
-//                newPlayer.weaponry.put(9, 100)
+            GameController.numberOfPlayersOption = numPlayersSelected
 
-                newPlayer.color = colors[i-1]
-                GameController.teams.add(Team("Team $i", listOf(newPlayer)))
-                GameController.players.add(newPlayer)
-            }
             EditPlayers()
         }),
+//        ChangeSceneMenuPoint("Test: Purchase", this, {
+//            PurchaseGameScene(
+//                listOf(
+//                    Player("Martin", PlayerType.LocalHuman).apply { color = Color.RED },
+//                    Player("cpu.John", PlayerType.LocalCpu).apply { color = Color.BLUE },
+//                    Player("cpu.Bent", PlayerType.LocalCpu).apply { color = Color.GREEN }
+//                ),
+//                0
+//            )
+//
+//        }),
         NumberSelectorMenuPoint("Players", this, numPlayersSelected, 2, 10, onChange = {_,new ->
             numPlayersSelected = new
         }),
