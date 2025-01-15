@@ -6,19 +6,30 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
 
-open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D, val weaponId: Int) : GameObject2(parent, position) {
+open class Projectile(
+    parent: IGameScene,
+    position: Pos2D,
+    var velocity: Vec2D,
+    val weaponId: Int,
+    val simulated: Boolean = false,
+    val onExplode: ((pos: Pos2D) -> Unit)? = null
+    ) : GameObject2(parent, position) {
+
     var jumps: Int = 0
     private val stroke = BasicStroke(2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
     var size = 3
-    var terrain = (parent as TerrainGameScene).rasterTerrain
+    var terrain = (parent as? TerrainGameScene)?.rasterTerrain
 
     init {
-        GameController.projectilesFlying += 1
-        activeProjectiles.add(this)
+        if (!simulated) {
+            GameController.projectilesFlying += 1
+            activeProjectiles.add(this)
+        }
     }
 
     companion object {
         val activeProjectiles = mutableSetOf<Projectile>()
+        val gravity = 0.25 * (60/GameRunner.fps)
     }
 
     override fun update() {
@@ -27,26 +38,32 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D, 
         position.y += velocity.y * (60.0/GameRunner.fps)
 
         velocity.x += GameController.wind * (1.0/GameRunner.fps)
-        velocity.y += 0.25 * (60/GameRunner.fps)
+        velocity.y += Projectile.gravity
 
         if (position.y > parent.height) {
             explode()
-        } else if (position.x >= terrain.position.x && position.x < terrain.rasterImage.width && position.y >= 0) {
-            val posWithTerrainHit = oldPos.stepsTo(position, 10).find{p -> terrainAt(p)}
-            if (posWithTerrainHit != null) {
-                position = findExactTerrainIntersection(oldPos, position)
-                explode()
-            } else {
-                val posWithTankHit = oldPos.stepsTo(position, 10).find { p -> tankAt(p)}
-                if (posWithTankHit != null) {
-                    position.x = posWithTankHit.x
-                    position.y = posWithTankHit.y
-                    explode()
+        } else {
+            terrain?.let { terrain ->
+                if (position.x >= terrain.position.x && position.x < terrain.rasterImage.width && position.y >= 0) {
+                    val posWithTerrainHit = oldPos.stepsTo(position, 10).find{p -> terrainAt(p)}
+                    if (posWithTerrainHit != null) {
+                        position = findExactTerrainIntersection(oldPos, position)
+                        explode()
+                    } else {
+                        val posWithTankHit = oldPos.stepsTo(position, 10).find { p -> tankAt(p)}
+                        if (posWithTankHit != null) {
+                            position.x = posWithTankHit.x
+                            position.y = posWithTankHit.y
+                            explode()
+                        }
+                    }
                 }
             }
         }
-        val newSmokes = oldPos.stepsTo(position, 10)
-        newSmokes.forEach { parent.add(ProjectileTrail(parent, it)) }
+        if (!simulated) {
+            val newSmokes = oldPos.stepsTo(position, 10)
+            newSmokes.forEach { parent.add(ProjectileTrail(parent, it)) }
+        }
     }
 
     private fun tankAt(p: Pos2D): Boolean {
@@ -62,16 +79,19 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D, 
     }
 
     private fun terrainAt(p: Pos2D): Boolean {
-        if (p.x < 0 || p.x >= terrain.rasterImage.width) return false
-        if (p.y < 0 || p.y >= terrain.rasterImage.height) return false
-        return terrain.rasterImage.getRGB(p.x.toInt(), p.y.toInt()) != 0
+        terrain?.let { terrain ->
+            if (p.x < 0 || p.x >= terrain.rasterImage.width) return false
+            if (p.y < 0 || p.y >= terrain.rasterImage.height) return false
+            return terrain.rasterImage.getRGB(p.x.toInt(), p.y.toInt()) != 0
+        }
+        return false
     }
 
     private fun findExactTerrainIntersection(oldPos: Pos2D, newPos: Pos2D): Pos2D {
         var done = false
-        var p0 = oldPos.copy()
-        var p1 = position.copy()
-        var pHalf = position.copy()
+        val p0 = oldPos.copy()
+        val p1 = newPos.copy()
+        val pHalf = newPos.copy()
         pHalf.x = p0.x + (p1.x - p0.x)/2.0
         pHalf.y = p0.y + (p1.y - p0.y)/2.0
 
@@ -94,7 +114,13 @@ open class Projectile(parent: IGameScene, position: Pos2D, var velocity: Vec2D, 
     }
 
     fun explode() {
-        Weapon.allWeapons[weaponId]?.onExplode(terrain, parent, this)
+        if (onExplode == null) {
+            terrain?.let { terrain ->
+                Weapon.allWeapons[weaponId]?.onExplode(terrain, parent, this)
+            }
+        } else {
+            onExplode.invoke(position)
+        }
     }
 
     override fun draw(g: Graphics2D) {

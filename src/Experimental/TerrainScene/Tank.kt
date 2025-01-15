@@ -194,4 +194,12 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
 
         onPowerChanged()
     }
+
+    fun getFireVelocity(power: Int = this.power) :Vec2D {
+        val velocity = Vec2D(
+            position.copy(),
+            Pos2D(this.canonX.toDouble(), this.canonY.toDouble())
+        ).times(power / 400.0)
+        return velocity
+    }
 }

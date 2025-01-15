@@ -83,7 +83,7 @@ class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
         menuPoints,
         onEscapePressed =
         {
-            DelayedAction(0.5) {
+            DelayedAction(this, 0.5) {
                 unload()
                 GameRunner.exitGame = true
             }

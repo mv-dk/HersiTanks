@@ -1,6 +1,7 @@
 package Game
 
 import Engine.AudioHelper
+import Engine.GameWindow
 import Engine.Pos2D
 import Engine.Vec2D
 import Experimental.Menu.OPTION_DECO_NONE
@@ -8,6 +9,8 @@ import Experimental.Menu.OPTION_GROUNDSIZE_SMALL
 import Experimental.Menu.OPTION_GROUND_GRASS
 import Experimental.Menu.OPTION_SKY_BLUE
 import Experimental.Menu.OPTION_WIND_MEDIUM
+import Experimental.TerrainScene.Projectile
+import Experimental.TerrainScene.ProjectileTrail
 import Experimental.TerrainScene.Tank
 import Experimental.TerrainScene.Weapon
 import SND_FIRE
@@ -15,6 +18,7 @@ import SND_FIRE2
 import SND_FIRE3
 import SND_FIZZLE
 import gameResX
+import gameWindow
 import java.awt.Color
 import kotlin.random.Random
 
@@ -124,10 +128,7 @@ class Player(var name: String, val playerType: PlayerType) {
             AudioHelper.play(SND_FIZZLE);
         } else {
             tank?.let {
-                val velocity = Vec2D(
-                    it.position.copy(),
-                    Pos2D(it.canonX.toDouble(), it.canonY.toDouble())
-                ).times(it.power / 400.0)
+                val velocity = it.getFireVelocity()
                 val position = Pos2D(it.canonX.toDouble(), it.canonY.toDouble())
                 val projectile = Weapon.allWeapons[player.currentWeaponId]?.getProjectile(it.parent, position, velocity)
                 if (projectile != null) {
@@ -147,6 +148,29 @@ class PlayerDecision(
 
     fun isValid(): Boolean {
         return (player.weaponry[weaponId] ?: 0) > 0
+    }
+
+    fun getSimulatedExplosionLocation(tank: Tank): Pos2D{
+        val pos = tank.position.copy()
+        var done = false
+        val explosionPosition = Pos2D(0.0, 0.0)
+        gameWindow?.gameRunner?.currentGameScene?.let {gameScene ->
+            val canonX = (tank.position.x + tank.size * Math.cos(Math.PI*angle/180.0)).toInt()
+            val canonY = (tank.position.y - tank.size * Math.sin(Math.PI*angle/180.0)).toInt()
+            val velocity = Vec2D(
+                pos.copy(),
+                Pos2D(canonX.toDouble(), canonY.toDouble())
+            ).times(power / 400.0)
+            val projectile = Projectile(gameScene, Pos2D(canonX.toDouble(), canonY.toDouble()), velocity, 0, simulated = true, onExplode = { position ->
+                explosionPosition.x = position.x
+                explosionPosition.y = position.y
+                done = true
+            })
+            while (!done) {
+                projectile.update()
+            }
+        }
+        return explosionPosition
     }
 }
 
@@ -200,8 +224,55 @@ class RandomCpu : Cpu() {
         val distance = (playersTank.position.distance(targetTank.position))
         maxPower += distance.toInt()/10
         val decision = PlayerDecision(player, Random.nextInt(minAngle, maxAngle), Random.nextInt(minPower, maxPower), player.currentWeaponId)
-        println("Decision: angle ${decision.angle}, power ${decision.power}, weapon ${decision.weaponId}")
+        //println("Decision: angle ${decision.angle}, power ${decision.power}, weapon ${decision.weaponId}")
         return decision
+    }
+}
+
+class MonteCarloCpu(val showDecisionOutcomes: Boolean): Cpu() {
+    override fun getDecision(player: Player): PlayerDecision {
+        player.tank?.let { tank ->
+            val target = getRandomTargetExcept(player)
+            val randomCpu = RandomCpu()
+            var bestDecision = randomCpu.getDecision(player)
+            var bestExplosionPosition = bestDecision.getSimulatedExplosionLocation(tank)
+            var distance = bestExplosionPosition.distance(target.tank!!.position)
+            repeat(10) {
+                val otherDecision = randomCpu.getDecision(player)
+                val explosionPosition = otherDecision.getSimulatedExplosionLocation(tank)
+                val otherDistance = explosionPosition.distance(target.tank!!.position)
+                if (otherDistance < distance) {
+                    bestDecision = otherDecision
+                    bestExplosionPosition = explosionPosition.copy()
+                    distance = otherDistance
+                }
+                if (showDecisionOutcomes) {
+                    gameWindow?.gameRunner?.currentGameScene?.let {
+                        it.add(ProjectileTrail(it, explosionPosition.copy(), Color.WHITE))
+                    }
+                }
+            }
+            if (showDecisionOutcomes) {
+                gameWindow?.gameRunner?.currentGameScene?.let {
+                    it.add(ProjectileTrail(it, bestExplosionPosition.copy(), Color.BLACK))
+                }
+            }
+            return bestDecision
+        }
+        return RandomCpu().getDecision(player)
+    }
+
+
+
+    fun getDistanceToNearestAliveTankExcept(exceptThisTank: Tank, pos: Pos2D): Double {
+        var minDistance = Double.MAX_VALUE
+        for (player in GameController.players.filter { it.tank != exceptThisTank && it.playing && it.tank != null && (it.tank?.energy ?: 0) > 0  }) {
+            val d = player.tank?.position?.distance(pos) ?: Double.MAX_VALUE
+            if (d < minDistance) {
+                minDistance = d
+            }
+        }
+        return minDistance
     }
 }
 

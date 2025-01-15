@@ -7,10 +7,6 @@ import Experimental.Status.StatusScreen
 import Game.*
 import SND_CHANGE_ANGLE
 import SND_DECREASE_POWER
-import SND_FIRE
-import SND_FIRE2
-import SND_FIRE3
-import SND_FIZZLE
 import SND_INCREASE_POWER
 import gameResX
 import gameResY
@@ -127,6 +123,20 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
         return false
     }
 
+    fun showDecisionOutcome() {
+        GameController.getCurrentPlayer().also { player ->
+            player.tank?.also { tank ->
+                val p = PlayerDecision(
+                    player,
+                    tank.angle.toInt() ?: 0,
+                    tank.power ?: 0,
+                    1
+                ).getSimulatedExplosionLocation(tank)
+                add(ProjectileTrail(this, p.copy(), Color.BLACK))
+            }
+        }
+    }
+
     /**
      * This is running on every update.
      */
@@ -151,6 +161,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
                     if (!viewport.inside(it)) {
                         viewport.setFocus(it.position)
                     }
+                    //showDecisionOutcome()
                 }
             }
             KeyEvent.VK_RIGHT -> {
@@ -160,6 +171,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
                     if (!viewport.inside(it)) {
                         viewport.setFocus(it.position)
                     }
+                    //showDecisionOutcome()
                 }
             }
             KeyEvent.VK_DOWN -> {
@@ -169,6 +181,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
                     if (!viewport.inside(it)) {
                         viewport.setFocus(it.position)
                     }
+                    //showDecisionOutcome()
                 }
             }
             KeyEvent.VK_UP -> {
@@ -178,6 +191,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
                     if (!viewport.inside(it)) {
                         viewport.setFocus(it.position)
                     }
+                    //showDecisionOutcome()
                 }
             }
             KeyEvent.VK_PAGE_DOWN -> {
@@ -336,8 +350,8 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
             val currentPlayer = GameController.getCurrentPlayer()
             if (currentPlayer.playerType == PlayerType.LocalCpu) {
                 if (decision == null) {
-                    DelayedAction(1.0, {
-                        decision = RandomCpu().getDecision(currentPlayer)
+                    DelayedAction(this, 1.0, {
+                        decision = MonteCarloCpu(showDecisionOutcomes = false).getDecision(currentPlayer)
                     })
                 }
             }

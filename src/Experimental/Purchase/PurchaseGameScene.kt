@@ -95,16 +95,16 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(pla
             var i = 1.0
             repeat(Random.nextInt(1,3)) {
                 repeat(Random.nextInt(menuPoints.size)) {
-                    DelayedAction(i) {
+                    DelayedAction(this, i) {
                         menuGameObject.selectNext()
                     }
                     i += .1
                 }
-                DelayedAction(i) {
+                DelayedAction(this, i) {
                     menuGameObject.activate()
                 }
             }
-            DelayedAction(i+0.5, {
+            DelayedAction(this, i+0.5, {
                 menuGameObject.onEscapePressed()
             })
         }

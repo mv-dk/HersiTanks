@@ -4,9 +4,10 @@ import gameWindow
 import java.awt.Graphics2D
 
 class DelayedAction(
+    parent: IGameScene,
     seconds: Double,
     val action: () -> Unit
-    ): GameObject2(gameWindow!!.gameRunner.currentGameScene, Pos2D(0.0, 0.0)) {
+    ): GameObject2(parent, Pos2D(0.0, 0.0)) {
     var ticks = (seconds * GameRunner.fps).toInt()
 
     init {
