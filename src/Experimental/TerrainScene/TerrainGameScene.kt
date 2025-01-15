@@ -351,7 +351,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
             if (currentPlayer.playerType == PlayerType.LocalCpu) {
                 if (decision == null) {
                     DelayedAction(this, 1.0, {
-                        decision = MonteCarloCpu(showDecisionOutcomes = false).getDecision(currentPlayer)
+                        decision = MonteCarloCpu(repetitions = 10, showDecisionOutcomes = false).getDecision(currentPlayer)
                     })
                 }
             }

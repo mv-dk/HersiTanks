@@ -229,7 +229,7 @@ class RandomCpu : Cpu() {
     }
 }
 
-class MonteCarloCpu(val showDecisionOutcomes: Boolean): Cpu() {
+class MonteCarloCpu(val repetitions: Int, val showDecisionOutcomes: Boolean): Cpu() {
     override fun getDecision(player: Player): PlayerDecision {
         player.tank?.let { tank ->
             val target = getRandomTargetExcept(player)
@@ -237,7 +237,7 @@ class MonteCarloCpu(val showDecisionOutcomes: Boolean): Cpu() {
             var bestDecision = randomCpu.getDecision(player)
             var bestExplosionPosition = bestDecision.getSimulatedExplosionLocation(tank)
             var distance = bestExplosionPosition.distance(target.tank!!.position)
-            repeat(10) {
+            repeat(repetitions) {
                 val otherDecision = randomCpu.getDecision(player)
                 val explosionPosition = otherDecision.getSimulatedExplosionLocation(tank)
                 val otherDistance = explosionPosition.distance(target.tank!!.position)
