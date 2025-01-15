@@ -41,14 +41,20 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
                         val distance = Vec2D(position, tank.position).mag()
                         if (distance < tank.size/2) { // direct hit
                             tank.energy = 0
-                            GameController.getCurrentPlayer().money += 100
+                            if (GameController.getCurrentPlayersTank() != it.tank) {
+                                GameController.getCurrentPlayer().money += 100
+                            }
                         } else if (distance < size*1.3) {
                             val delta = Math.abs(20 * (size / distance).toInt())
-                            tank.energy -= delta/10
-                            GameController.getCurrentPlayer().money += Math.min(200, delta)
+                            tank.energy -= delta / 10
+                            if (GameController.getCurrentPlayersTank() != it.tank) {
+                                GameController.getCurrentPlayer().money += Math.min(200, delta)
+                            }
                             if (tank.energy < 0) {
                                 tank.energy = 0
-                                GameController.getCurrentPlayer().money += 100
+                                if (GameController.getCurrentPlayersTank() != it.tank) {
+                                    GameController.getCurrentPlayer().money += 100
+                                }
                             }
                         }
                     }

@@ -360,6 +360,11 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
 
     private fun handleBattleOver() {
         val team = GameController.getCurrentPlayersTeam()
+        team.players.filter { it.playing && (it.tank?.energy ?: 0) > 0 }.let {survivors ->
+            for (player in survivors) {
+                player.money += 100
+            }
+        }
         team.victories += 1
         GameController.gamesPlayed += 1
         val statusLines = GameController.players.map {
