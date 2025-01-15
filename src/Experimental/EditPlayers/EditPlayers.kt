@@ -11,6 +11,8 @@ import Game.GameController
 import Game.Player
 import Game.PlayerType
 import Game.Team
+import SND_SWOOSH
+import SND_SWOOSH2
 import gameResX
 import gameResY
 import gameWindow
@@ -57,7 +59,7 @@ class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
                     onChange = { _, _ -> },
                     initialFontSize = 14
                 ),
-                TextInputMenuPoint("Name", this, "Player $index", colors[index], initialFontSize = 14),
+                TextInputMenuPoint("Name", this, "Player $index", colors[index], initialFontSize = 14, maxTextLength = 10),
             ),
             color =  colors[index].contrast(0.1),
             strokeColor = colors[index].darker(100),
@@ -150,20 +152,30 @@ class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
         if (playerMenuBoxes[activeMenuIdx].selectedIdx == 0) {
             when (e.keyCode) {
                 KeyEvent.VK_LEFT -> {
-                    (playerMenuBoxes[activeMenuIdx].selected as? MenuPointGameObject)?.blinkWhenActive = false
-                    playerMenuBoxes[activeMenuIdx].color = colors[activeMenuIdx].darker(100)
+                    AudioHelper.play(SND_SWOOSH)
+                    (playerMenuBoxes[activeMenuIdx].selected as? MenuPointGameObject)?.let {
+                        it.blinkWhenActive = false
+                        it.selectedColor = it.selectedColor.darker(100)
+                    }
                     activeMenuIdx -= 1
                     if (activeMenuIdx < 0) activeMenuIdx = playerMenuBoxes.size-1
-                    (playerMenuBoxes[activeMenuIdx].selected as? MenuPointGameObject)?.blinkWhenActive = true
-                    playerMenuBoxes[activeMenuIdx].color = colors[activeMenuIdx].lighter(100)
+                    (playerMenuBoxes[activeMenuIdx].selected as? MenuPointGameObject)?.let {
+                        it.blinkWhenActive = true
+                        it.selectedColor = it.selectedColor.lighter(100)
+                    }
                 }
                 KeyEvent.VK_RIGHT -> {
-                    (playerMenuBoxes[activeMenuIdx].selected as? MenuPointGameObject)?.blinkWhenActive = false
-                    playerMenuBoxes[activeMenuIdx].color = colors[activeMenuIdx].darker(100)
+                    AudioHelper.play(SND_SWOOSH2)
+                    (playerMenuBoxes[activeMenuIdx].selected as? MenuPointGameObject)?.let {
+                        it.blinkWhenActive = false
+                        it.selectedColor = it.selectedColor.darker(100)
+                    }
                     activeMenuIdx += 1
                     if (activeMenuIdx > playerMenuBoxes.size - 1) activeMenuIdx = 0
-                    (playerMenuBoxes[activeMenuIdx].selected as? MenuPointGameObject)?.blinkWhenActive = true
-                    playerMenuBoxes[activeMenuIdx].color = colors[activeMenuIdx].lighter(100)
+                    (playerMenuBoxes[activeMenuIdx].selected as? MenuPointGameObject)?.let {
+                        it.blinkWhenActive = true
+                        it.selectedColor = it.selectedColor.lighter(100)
+                    }
                 }
                 else -> playerMenuBoxes[activeMenuIdx].keyPressed(e)
             }

@@ -12,13 +12,16 @@ class TextInputMenuPoint(
     parent: IGameScene,
     initialTextValue: String,
     private val coloredBorder: Color? = null,
-    initialFontSize : Int = 24
+    initialFontSize : Int = 24,
+    val maxTextLength: Int = Int.MAX_VALUE
 ) : MenuPointGameObject(label, parent, cursor = true, fontSize = initialFontSize, onActivate = {}){
     private var lighterColoredBorder = coloredBorder?.lighter(100)
     var textValue = initialTextValue
         set(value) {
-            text = "$label: $value"
-            field = value
+            if (value.length <= maxTextLength) {
+                text = "$label: $value"
+                field = value
+            }
         }
 
     init {
