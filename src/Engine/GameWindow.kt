@@ -183,9 +183,6 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListen
 
     override fun keyReleased(e: KeyEvent?) {
         keyEventQueue.add(e)
-        if (e?.keyCode == KeyEvent.VK_F){
-            gameWindow?.toggleFullScreen()
-        }
     }
 
     override fun mouseClicked(e: MouseEvent?) {
