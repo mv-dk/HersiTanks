@@ -43,8 +43,8 @@ class MenuGameObject(
     init {
         menuPoints.forEach {
             it.position = nextMenuPointPos()
-            it.unselectedColor = strokeColor.lighter(30)
-            it.selectedColor = strokeColor.darker(20).contrast(1.5)
+            it.unselectedColor = strokeColor.darker(30)
+            it.selectedColor = strokeColor.redder(150).lighter(50).contrast(1.5)
         }
     }
 
