@@ -115,6 +115,17 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
             x += spaceBetweenTanks
         }
         updateWind(true)
+
+        repeat(Random.nextInt(3)) {
+            CloudMaker.make(
+                this,
+                position = Pos2D(
+                    Random.nextInt(0, terrainWidth),
+                    Random.nextInt(0, 100)
+                ),
+                width = Random.nextInt(200, 400))
+        }
+
         repeat(Random.nextInt(numPlayers)) {
             GameController.nextPlayersTurn()
         }
@@ -246,6 +257,14 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
             }
             KeyEvent.VK_1 -> { // Toy
                 rasterTerrain.addColoredTopLayer(rasterTerrain.rasterImage, 2, Color.BLACK)
+            }
+            KeyEvent.VK_2 -> { // Toy
+                CloudMaker.make(
+                    this,
+                    Pos2D(
+                        Random.nextInt(0, terrainWidth),
+                        Random.nextInt(0, 100)),
+                    Random.nextInt(200, 400))
             }
             KeyEvent.VK_9 -> { // Toy
                 val tank = GameController.getCurrentPlayersTank()

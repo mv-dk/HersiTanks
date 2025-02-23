@@ -33,7 +33,7 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
         }
 
         Explosion.currentExplosions.add(this)
-        parent.add(Transition(parent, 0.2))
+        //parent.add(Transition(parent, 0.2))
         parent.add(SmokeEmitter(parent, position, size/2, 0.5))
         parent.add(FireEmitter(parent, position, size/2, 0.5))
         parent.add(DirtFragmentEmitter(parent, position, size/2))

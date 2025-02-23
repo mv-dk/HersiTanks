@@ -1,6 +1,9 @@
 package Engine
 
 data class Pos2D(var x: Double, var y: Double){
+
+    constructor(xi: Int, yi: Int) : this(xi.toDouble(), yi.toDouble())
+
     fun translate(vec: Vec2D) {
         x += vec.x
         y += vec.y

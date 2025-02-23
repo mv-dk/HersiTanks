@@ -5,6 +5,7 @@ import kotlin.math.sqrt
 
 data class Vec2D(var x: Double, var y: Double) {
     constructor(p1: Pos2D, p2: Pos2D) : this(p2.x - p1.x, p2.y - p1.y)
+    constructor(xi: Int, yi: Int) : this(xi.toDouble(), yi.toDouble())
 
     fun copy(): Vec2D = Vec2D(x, y)
     operator fun plus(other: Vec2D): Vec2D = Vec2D(x + other.x, y + other.y)

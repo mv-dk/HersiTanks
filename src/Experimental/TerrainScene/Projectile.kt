@@ -16,7 +16,6 @@ open class Projectile(
     ) : GameObject2(parent, position) {
 
     var jumps: Int = 0
-    private val stroke = BasicStroke(2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
     var size = 3
     var terrain = (parent as? TerrainGameScene)?.rasterTerrain
 
@@ -30,6 +29,8 @@ open class Projectile(
     companion object {
         val activeProjectiles = mutableSetOf<Projectile>()
         val gravity = 0.25 * (60/GameRunner.fps)
+        private val fatStroke = BasicStroke(3f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
+        private val thinStroke = BasicStroke(1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
     }
 
     override fun update() {
@@ -124,10 +125,15 @@ open class Projectile(
     }
 
     override fun draw(g: Graphics2D) {
-        g.color = Color.LIGHT_GRAY
-        g.stroke = stroke
         val p0 = position.plus(velocity)
         val p1 = position.plus(velocity.times(-1.0))
+
+        g.stroke = fatStroke
+        g.color = Color.BLACK
+        g.drawLine(p0.x.toInt(), p0.y.toInt(), p1.x.toInt(), p1.y.toInt())
+
+        g.stroke = thinStroke
+        g.color = Color.LIGHT_GRAY
         g.drawLine(p0.x.toInt(), p0.y.toInt(), p1.x.toInt(), p1.y.toInt())
     }
 }

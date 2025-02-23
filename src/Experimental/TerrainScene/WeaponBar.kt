@@ -14,6 +14,10 @@ class WeaponBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, posit
     val purple = Color(30, 30, 80)
     val darkPurple = Color(20, 20, 40)
 
+    init {
+        drawOrder = 100
+    }
+
     override fun update() {
 
     }
