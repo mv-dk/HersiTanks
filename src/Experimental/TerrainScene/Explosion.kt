@@ -2,7 +2,10 @@ package Experimental.TerrainScene
 
 import Engine.*
 import Experimental.Menu.Transition
+import Experimental.particles.DirtFragmentEmitter
 import Experimental.particles.Emitter
+import Experimental.particles.FireEmitter
+import Experimental.particles.SmokeEmitter
 import Game.GameController
 import java.awt.Color
 import java.awt.Graphics2D
@@ -21,6 +24,8 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
         GameController.glowUp = 10
         val terrain = (parent as TerrainGameScene).rasterTerrain
         terrain.pokeHole(position.x.toInt(), position.y.toInt(), size)
+        terrain.addOutlines(position.x.toInt()-(size/2), position.x.toInt()+(size/2))
+
         if (size >= 100){
             AudioHelper.play(SND_BIG_BOOM)
         } else {
@@ -29,6 +34,9 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
 
         Explosion.currentExplosions.add(this)
         parent.add(Transition(parent, 0.2))
+        parent.add(SmokeEmitter(parent, position, size/2, 0.5))
+        parent.add(FireEmitter(parent, position, size/2, 0.5))
+        parent.add(DirtFragmentEmitter(parent, position, size/2))
     }
 
     override fun update() {

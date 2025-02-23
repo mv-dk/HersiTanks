@@ -1,6 +1,7 @@
 package Experimental.particles
 
 import Engine.*
+import Experimental.TerrainScene.TerrainGameScene
 import Game.GameController
 import java.awt.BasicStroke
 import java.awt.Color
@@ -12,7 +13,8 @@ abstract class Emitter(
     parent: IGameScene,
     position: Pos2D,
     val width: Int,
-    emitSeconds: Double
+    emitSeconds: Double,
+    val particlesToCreatePerUpdate: Int = 1
     ) : GameObject2(parent, position) {
 
     var emitTicksLeft = (emitSeconds * GameRunner.fps).toInt()
@@ -27,10 +29,12 @@ abstract class Emitter(
             return
         }
         if (emitTicksLeft %2 == 0) return
-        val particle = makeParticle(emitTicksLeft)
+        repeat(particlesToCreatePerUpdate) {
+            val particle = makeParticle(emitTicksLeft)
 
-        particle.drawOrder = this.drawOrder
-        parent.add(particle)
+            particle.drawOrder = this.drawOrder
+            parent.add(particle)
+        }
     }
 
     override fun draw(g: Graphics2D) = Unit
@@ -117,6 +121,52 @@ class SmokeEmitter(
             smokeColors,
             smokeSizes
         )
+    }
+
+}
+
+class DirtFragmentEmitter(
+    parent: IGameScene,
+    position: Pos2D,
+    width: Int
+) :Emitter(parent, position, width, 0.1, 10) {
+
+    lateinit var fragmentDarkColor: Color
+    lateinit var fragmentLightColor: Color
+    lateinit var darkerColors: Array<Color>
+    lateinit var lighterColors: Array<Color>
+
+    init {
+        (parent as? TerrainGameScene)?.rasterTerrain?.let {
+            fragmentDarkColor = it.darkOutlineColor
+            fragmentLightColor = it.primaryColor
+            darkerColors = arrayOf(fragmentDarkColor)
+            lighterColors = arrayOf(fragmentLightColor)
+        }
+    }
+
+    companion object {
+        val sizes = arrayOf(
+            1.0
+        )
+    }
+
+    override fun makeParticle(emitTicksLeft: Int): Particle {
+        val xOffset = Random.nextDouble(-width.toDouble(), width.toDouble())
+        val xVelocity = Random.nextDouble(2.0) * (xOffset / Math.abs(xOffset)) // of offset < 0, xVelocity should be < 0
+
+        val yVelocity = Random.nextDouble(-5.0, -3.0)
+        val p = Particle(
+            parent,
+            Pos2D(position.x+xOffset, position.y),
+            Vec2D(xVelocity, yVelocity),
+            Vec2D(0.0, 0.2),
+            0.5,
+            if (Random.nextDouble() <= 0.5) lighterColors else darkerColors,
+            sizes
+        )
+        println("Made dirt fragment particle at (${position.x+xOffset},${position.y})")
+        return p
     }
 
 }

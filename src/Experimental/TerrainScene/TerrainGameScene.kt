@@ -47,8 +47,15 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
         when (GameController.skyOption) {
             OPTION_SKY_BLUE -> {
                 val g = skyImage.createGraphics()
-                g.color = color
+                var c = Color(12, 138, 255)
+                g.color = c
                 g.fillRect(0, 0, width, height)
+                var bands = 60
+                for (i in 1 .. bands) {
+                    c = c.lighter(150/bands)
+                    g.color = c
+                    g.fillRect(0, i*height/bands, width, height/bands)
+                }
             }
             OPTION_SKY_STARRY -> {
                 var g = skyImage.createGraphics()
@@ -236,6 +243,9 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
                     tank.updateCanonXY()
                     println("Tank size: ${tank.size}")
                 }
+            }
+            KeyEvent.VK_1 -> { // Toy
+                rasterTerrain.addColoredTopLayer(rasterTerrain.rasterImage, 2, Color.BLACK)
             }
             KeyEvent.VK_9 -> { // Toy
                 val tank = GameController.getCurrentPlayersTank()

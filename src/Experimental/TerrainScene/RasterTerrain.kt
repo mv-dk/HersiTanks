@@ -10,6 +10,8 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.random.Random
 
 class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int) : GameObject2(parent, position){
@@ -17,20 +19,30 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
     var mode: Int = 1
     var crumble: Boolean = false
     var earthquake: Earthquake? = null
+    lateinit var primaryColor: Color
+    lateinit var darkerColor: Color
+    lateinit var darkOutlineColor: Color
 
     init {
         val g = rasterImage.createGraphics()
-        g.color = when (GameController.groundOption) {
+        when (GameController.groundOption) {
             OPTION_GROUND_GRASS -> {
-                Color.GREEN.darker(40);
+                primaryColor = Color.GREEN.darker(40)
+                darkerColor = primaryColor.darker(20)
+                darkOutlineColor = primaryColor.darker(100)
             }
             OPTION_GROUND_SNOW -> {
-                Color(240, 240, 255)
+                primaryColor = Color(240, 240, 255)
+                darkerColor = Color(190, 210, 255)
+                darkOutlineColor = Color(150, 190, 255)
             }
-
-            else -> { Color.orange.darker(50) }
+            else -> {
+                primaryColor = Color.orange.darker(50)
+                darkerColor = primaryColor.darker(20)
+                darkOutlineColor = primaryColor.darker(100)
+            }
         }
-
+        g.color = primaryColor
         val rand = Random(System.currentTimeMillis())
         val xs = mutableListOf<Int>()
         var ys = mutableListOf<Int>()
@@ -76,20 +88,9 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
 
         g.fillPolygon(xs.toIntArray(), ys.toIntArray(), xs.size)
 
+        addOutlines()
         when (GameController.groundOption) {
-            OPTION_GROUND_GRASS -> {
-                addColoredTopLayer(rasterImage, 10, g.color.darker(20))
-                addColoredTopLayer(rasterImage, 8, g.color.darker(40))
-                addColoredTopLayer(rasterImage, 6, g.color.darker(60))
-                addColoredTopLayer(rasterImage, 4, g.color.darker(80))
-                addColoredTopLayer(rasterImage, 2, g.color.darker(100))
-            }
             OPTION_GROUND_SNOW -> {
-                addColoredTopLayer(rasterImage, 10, Color(230,230,255))
-                addColoredTopLayer(rasterImage, 8, Color(210, 220, 255))
-                addColoredTopLayer(rasterImage, 6, Color(190, 210, 255))
-                addColoredTopLayer(rasterImage, 4, Color(170, 200, 255))
-                addColoredTopLayer(rasterImage, 2, Color(150, 190, 255))
                 addSnowmen(rasterImage, 5)
             }
         }
@@ -132,14 +133,30 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
         g.drawLine(x, (y+size/5.0).toInt(), (x-size).toInt(), (y+size/10.0).toInt())
     }
 
-    fun addColoredTopLayer(rasterImage: BufferedImage, depth: Int, color: Color){
+    fun addColoredTopLayer(rasterImage: BufferedImage, depth: Int, color: Color, startX: Int = 0, endX: Int = rasterImage.width-1){
         for (y in depth .. rasterImage.height - 1) {
-            for (x in 0 .. rasterImage.width - 1) {
+            for (x in max(0, startX) .. min(endX, rasterImage.width - 1)) {
                 if (rasterImage.getRGB(x,y) != 0){
                     if (rasterImage.getRGB(x, y-depth) == 0){
                         rasterImage.setRGB(x,y ,color.rgb)
                     }
                 }
+            }
+        }
+    }
+
+    fun addOutlines(startX: Int = 0, endX: Int = rasterImage.width-1) {
+        when (GameController.groundOption) {
+            OPTION_GROUND_GRASS -> {
+                addColoredTopLayer(rasterImage, 10, darkerColor.darker(20), startX, endX)
+                addColoredTopLayer(rasterImage, 2, darkOutlineColor.darker(100), startX, endX)
+            }
+            OPTION_GROUND_SNOW -> {
+                addColoredTopLayer(rasterImage, 10, Color(230,230,255), startX, endX)
+                addColoredTopLayer(rasterImage, 8, Color(210, 220, 255), startX, endX)
+                addColoredTopLayer(rasterImage, 6, Color(190, 210, 255), startX, endX)
+                addColoredTopLayer(rasterImage, 4, Color(170, 200, 255), startX, endX)
+                addColoredTopLayer(rasterImage, 2, Color(150, 190, 255), startX, endX)
             }
         }
     }

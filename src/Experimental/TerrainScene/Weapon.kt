@@ -133,7 +133,7 @@ class ExplosionWeapon(id: Int, name: String, purchasePrice: Double, purchaseQuan
         gameScene.remove(projectile)
         GameController.projectilesFlying -= 1
         Projectile.activeProjectiles.remove(projectile)
-        val exp = Explosion(gameScene, projectile.position, size, size / 2, {
+        val exp = Explosion(gameScene, projectile.position, size, 20 + size/3, {
             terrain.crumble = true
         })
         gameScene.add(exp)
