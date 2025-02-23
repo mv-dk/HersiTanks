@@ -15,12 +15,14 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
     var size = 20
         set(value) {
             field = value
-            stroke = BasicStroke(value/7f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
+            stroke = BasicStroke(value/10f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
+            fatStroke = BasicStroke(value/5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
         }
     var power = 100
     var angle = 45.0
     var energy = 100
-    var stroke = BasicStroke(size/7f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
+    var stroke = BasicStroke(size/10f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
+    var fatStroke = BasicStroke(size/5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
     var falling: Boolean = false
     var firstFall = true
     var playing = true
@@ -98,13 +100,21 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
     }
 
     override fun draw(g: Graphics2D) {
-        g.color = if (GameController.glowUp > 0) color.lighter(GameController.glowUp*10) else color.mult(energy/100.0)
-        g.stroke = stroke
+        val fillColor = if (GameController.glowUp > 0) color.lighter(GameController.glowUp*10) else color.mult(energy/100.0)
+        var strokeColor = fillColor.darker(100)
+        g.color = fillColor
+        g.stroke = fatStroke
 
+        g.color = strokeColor
         g.drawLine(position.x.toInt(), position.y.toInt(), canonX, canonY)
-        g.fillArc((position.x - size/2).toInt(), (position.y - size/2).toInt()+2, size, size, 0, 180)
 
-        drawCenter(g)
+        g.stroke = stroke
+        g.drawArc((position.x - size/2).toInt(), (position.y - (size/2.0) + 2).toInt(), size, size, 0, 180)
+        g.color = fillColor
+        g.drawLine(position.x.toInt(), position.y.toInt(), canonX, canonY)
+        g.fillArc((position.x - size/2).toInt(), (position.y - (size/2.0) + 2).toInt(), size, size, 0, 180)
+
+        //drawCenter(g)
 
         if (GameController.decorationOption == OPTION_DECO_CHRISTMAS) {
             drawChristmasHat(g)
