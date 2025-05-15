@@ -34,8 +34,8 @@ object CloudMaker {
 
 class CloudPart(parent: IGameScene, position: Pos2D, var size: Int): GameObject2(parent, position) {
     var velocity = Vec2D(GameController.wind/10.0, 0.0)
-    var dying = false
-    var life = -1
+    private var dying = false
+    private var life = -1
 
     companion object {
         var cloudOutlineStroke = BasicStroke(4f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND)
@@ -70,12 +70,14 @@ class CloudPart(parent: IGameScene, position: Pos2D, var size: Int): GameObject2
                     } else if (!dying) {
                         split(p.position)
                     }
+                    p.velocity.y *= 0.95
+                    p.velocity.x *= 0.98
                 }
             }
         }
     }
 
-    fun split(projectilePosition: Pos2D) {
+    private fun split(projectilePosition: Pos2D) {
         repeat(4) {
             val cloud1 = CloudPart(
                 parent,
