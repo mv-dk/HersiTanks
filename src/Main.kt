@@ -1,7 +1,7 @@
 import Engine.AudioHelper
 import Engine.GameWindow
 import Experimental.ManyBalls.BallGameScene
-import Experimental.Menu.MenuGameScene
+import Game.Menu.MenuGameScene
 import java.awt.Color
 import java.awt.GraphicsEnvironment
 import kotlin.math.min
