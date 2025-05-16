@@ -41,7 +41,9 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
     private var panel = JPanel()
     var frame: JFrame = JFrame()
 
-    private val renderingHints = mapOf<Key, Any>(Pair(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON))
+    private val renderingHints = mapOf<Key, Any>(
+        KEY_TEXT_ANTIALIASING to VALUE_TEXT_ANTIALIAS_ON
+    )
 
     var gameRunner: GameRunner = GameRunner(this, gameScene)
     private var scale = 1.0
@@ -260,7 +262,7 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListen
                     }
                 }
                 if (timeTaken < (updatesPerDraw * period)){
-                    if (updatesPerDraw > 1) { println("Skipped ${updatesPerDraw-1} draws") }
+                    //if (updatesPerDraw > 1) { println("Skipped ${updatesPerDraw-1} draws") }
                     Thread.sleep(((updatesPerDraw * period) - timeTaken).inWholeMilliseconds)
                     break;
                 }

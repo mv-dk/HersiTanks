@@ -11,6 +11,7 @@ open class Projectile(
     position: Pos2D,
     var velocity: Vec2D,
     val weaponId: Int,
+    val trailColor: Color,
     val simulated: Boolean = false,
     val onExplode: ((pos: Pos2D) -> Unit)? = null
     ) : GameObject2(parent, position) {
@@ -63,7 +64,7 @@ open class Projectile(
         }
         if (!simulated) {
             val newSmokes = oldPos.stepsTo(position, 10)
-            newSmokes.forEach { parent.add(ProjectileTrail(parent, it)) }
+            newSmokes.forEach { parent.add(ProjectileTrail(parent, it, trailColor)) }
         }
     }
 
@@ -138,7 +139,7 @@ open class Projectile(
     }
 }
 
-class MidairExplodingProjectile(parent: IGameScene, position: Pos2D, velocity: Vec2D, weaponId: Int): Projectile(parent, position, velocity, weaponId) {
+class MidairExplodingProjectile(parent: IGameScene, position: Pos2D, velocity: Vec2D, weaponId: Int, trailColor: Color): Projectile(parent, position, velocity, weaponId, trailColor) {
     var ticks = 0
     val minTicks = 0.5 * GameRunner.fps
 

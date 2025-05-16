@@ -10,6 +10,8 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.Polygon
+import kotlin.math.cos
+import kotlin.math.sin
 
 class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D, val color: Color) : GameObject2(parent, position) {
     var size = 20
@@ -21,13 +23,13 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
     var power = 100
     var angle = 45.0
     var energy = 100
-    var stroke = BasicStroke(size/10f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
-    var fatStroke = BasicStroke(size/5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
+    private var stroke = BasicStroke(size/10f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
+    private var fatStroke = BasicStroke(size/5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
     var falling: Boolean = false
-    var firstFall = true
+    private var firstFall = true
     var playing = true
-    var canonX = (position.x + size * Math.cos(Math.PI*angle/180.0)).toInt()
-    var canonY = (position.y - size * Math.sin(Math.PI*angle/180.0)).toInt()
+    var canonX = (position.x + size * cos(Math.PI*angle/180.0)).toInt()
+    var canonY = (position.y - size * sin(Math.PI*angle/180.0)).toInt()
     var smokeEmitter: Emitter? = null
     var fireEmitter: Emitter? = null
 
@@ -43,7 +45,7 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
 
                     if (!firstFall && energy > 0) {
                         energy -= 1
-                        GameController.getCurrentPlayer().money += 1
+                        GameController.getCurrentPlayer()?.let { p -> p.money += 1 }
                     }
 
                     onTankMoved()
@@ -101,7 +103,7 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
 
     override fun draw(g: Graphics2D) {
         val fillColor = if (GameController.glowUp > 0) color.lighter(GameController.glowUp*10) else color.mult(energy/100.0)
-        var strokeColor = fillColor.darker(100)
+        val strokeColor = fillColor.darker(100)
         g.color = fillColor
         g.stroke = fatStroke
 

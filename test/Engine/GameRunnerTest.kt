@@ -3,10 +3,12 @@ package Engine
 import Game.BattleState
 import Game.GameController
 import Game.Menu.OPTION_WIND_NONE
+import Game.Menu.OPTION_WIND_STRONG
 import Game.Team
 import Game.TerrainScene.Player.Player
 import Game.TerrainScene.Player.PlayerType
 import Game.TerrainScene.BattleScene
+import Game.TerrainScene.CloudMaker
 import Game.TerrainScene.Player.PlayerDecision
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -53,6 +55,18 @@ class GameRunnerTest {
         assert(GameController.players.any { it.tank?.energy == 0 })
     }
 
+    @Test
+    fun `Clouds must be drifting`() {
+        // Arrange
+        val scene = StartBattleSceneWithNoPlayersAndWind()
+
+        // Act
+        runWindowed(scene, 120_000)
+
+        // Assert
+
+    }
+
     /**
      * Make a BattleScene, and add one Player, having the color red,
      * and with 100 shots of weapon 2.
@@ -76,6 +90,18 @@ class GameRunnerTest {
             tanksFallFromSky = false
         ).apply {
             load()
+        }
+        return scene
+    }
+
+    private fun StartBattleSceneWithNoPlayersAndWind(): IGameScene {
+        val scene = BattleScene(
+            640
+        ).apply {
+            load()
+            CloudMaker.make(this, Pos2D(0.0, 100.0), 100)
+            CloudMaker.make(this, Pos2D(200.0, 200.0), 200)
+            GameController.wind = 40.0
         }
         return scene
     }
@@ -132,7 +158,7 @@ class GameRunnerTest {
         if (delayThread.isAlive) {
             delayThread.interrupt()
         }
-//        AudioHelper.unload()
+
         gameWindow.frame.dispose()
     }
 

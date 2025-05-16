@@ -53,14 +53,14 @@ object GameController {
         players.addAll(t.players)
     }
 
-    fun getCurrentPlayer(): Player {
+    fun getCurrentPlayer(): Player? {
         val battleState = state as BattleState
         val currentPlayer = battleState.currentPlayer(players)
         return currentPlayer
     }
 
     fun getCurrentPlayersTank(): Tank?{
-        return getCurrentPlayer().tank
+        return getCurrentPlayer()?.tank
     }
 
     fun getCurrentPlayersTeam(): Team {
@@ -96,8 +96,8 @@ class BattleState(): IState{
         }
     }
 
-    fun currentPlayer(players: List<Player>): Player {
-        return players[turnIndex]
+    fun currentPlayer(players: List<Player>): Player? {
+        return players.getOrNull(turnIndex)
     }
 
     fun isBattleOver(): Boolean {

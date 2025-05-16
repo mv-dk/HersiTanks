@@ -3,8 +3,7 @@ package Engine
 import nextId
 import java.awt.Color
 import java.awt.Graphics2D
-import java.awt.RenderingHints.KEY_TEXT_ANTIALIASING
-import java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+import java.awt.RenderingHints.*
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.awt.event.MouseEvent
@@ -86,7 +85,9 @@ abstract class GameScene(val color: Color, override val width: Int, override val
         gameObjectsByDrawOrder.forEach { it.draw(g) }
     }
 
-    private val renderingHints = mapOf(Pair(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON))
+    private val renderingHints = mapOf(
+        KEY_TEXT_ANTIALIASING to VALUE_TEXT_ANTIALIAS_ON
+    )
 
     override fun drawOnImage() : BufferedImage {
         val image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)

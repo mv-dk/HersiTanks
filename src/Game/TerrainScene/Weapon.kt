@@ -33,7 +33,7 @@ abstract class Weapon(
     abstract fun drawIcon(g: Graphics2D, x: Int, y: Int)
 
     open fun getProjectile(gameScene: IGameScene, pos: Pos2D, velocity: Vec2D): Projectile {
-        return Projectile(gameScene, pos, velocity, id)
+        return Projectile(gameScene, pos, velocity, id, GameController.getCurrentPlayer()?.color ?: Color.WHITE)
     }
 
     abstract fun onExplode(terrain: RasterTerrain, gameScene: IGameScene, projectile: Projectile)
@@ -75,13 +75,13 @@ class MirvWeapon(id: Int, name: String, purchasePrice: Double, purchaseQuantity:
         Projectile.activeProjectiles.remove(projectile)
         for (i in 1 .. subProjectiles) {
             val velocity = Vec2D(Random.nextDouble(-5.0, 5.0), -3.0)
-            val p = Projectile(gameScene, projectile.position.copy(), velocity, 3)
+            val p = Projectile(gameScene, projectile.position.copy(), velocity, 3, GameController.getCurrentPlayer()?.color ?: Color.WHITE)
             gameScene.add(p)
         }
     }
 
     override fun getProjectile(gameScene: IGameScene, pos: Pos2D, velocity: Vec2D): Projectile {
-        return MidairExplodingProjectile(gameScene, pos, velocity, id)
+        return MidairExplodingProjectile(gameScene, pos, velocity, id, GameController.getCurrentPlayer()?.color ?: Color.WHITE)
     }
 
 }

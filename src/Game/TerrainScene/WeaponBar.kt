@@ -32,12 +32,12 @@ class WeaponBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, posit
             var i = 0
             var idx = 0
 
-            val currentPlayer = GameController.getCurrentPlayer()
-            var currentWeaponId = currentPlayer.currentWeaponId
+            val currentPlayer = GameController.getCurrentPlayer() ?: return@drawAsHud
+            val currentWeaponId = currentPlayer.currentWeaponId
 
             for (weapon in Weapon.allWeapons.values) {
                 if (weapon.id == currentWeaponId) {
-                    g.color = Color.RED
+                    g.color = currentPlayer.color
                 } else {
                     g.color = darkPurple
                 }

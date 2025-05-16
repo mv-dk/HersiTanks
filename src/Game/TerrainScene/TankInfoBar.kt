@@ -32,8 +32,9 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
             g.stroke = stroke
             g.color = Color.WHITE
             g.font = font
-            val currentTank = GameController.getCurrentPlayersTank()
-            if (currentTank != null) {
+            val currentPlayer = GameController.getCurrentPlayer()
+            val currentTank = currentPlayer?.tank
+            if (currentPlayer != null && currentTank != null) {
                 g.drawString(
                     "Power: ${currentTank.power}",
                     position.x.toInt() + 16,
@@ -45,7 +46,7 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
                     position.y.toInt() + 22
                 )
                 g.drawString(
-                    "\$${GameController.getCurrentPlayer().money}",
+                    "\$${currentPlayer.money}",
                     position.x.toInt() + 420,
                     position.y.toInt() + 22
                 )
@@ -54,15 +55,14 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
                     position.x.toInt() + 516,
                     position.y.toInt() + 22
                 )
-                val player = GameController.getCurrentPlayer()
 
-                val nameWidth = g.fontMetrics.stringWidth(player.name)
+                val nameWidth = g.fontMetrics.stringWidth(currentPlayer.name)
                 // shadow
                 g.color = Color.BLACK
-                g.drawString(player.name, (gameResX / 2 - nameWidth / 2) + 1, position.y.toInt() + 22 + 1)
+                g.drawString(currentPlayer.name, (gameResX / 2 - nameWidth / 2) + 1, position.y.toInt() + 22 + 1)
 
-                g.color = player.color
-                g.drawString(player.name, gameResX / 2 - nameWidth / 2, position.y.toInt() + 22)
+                g.color = currentPlayer.color
+                g.drawString(currentPlayer.name, gameResX / 2 - nameWidth / 2, position.y.toInt() + 22)
 
                 if (GameRunner.debug) {
                     g.color = Color.RED

@@ -9,6 +9,8 @@ import java.awt.Color
 import java.awt.Graphics2D
 import SND_BIG_BOOM
 import SND_SMALL_BOOM
+import kotlin.math.abs
+import kotlin.math.min
 
 class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration: Int, val onDone: () -> Unit) : GameObject2(parent, position) {
     var tick: Int = 0
@@ -48,18 +50,24 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
                         if (distance < tank.size/2) { // direct hit
                             tank.energy = 0
                             if (GameController.getCurrentPlayersTank() != it.tank) {
-                                GameController.getCurrentPlayer().money += 100
+                                GameController.getCurrentPlayer()?.let { p ->
+                                    p.money += 100
+                                }
                             }
                         } else if (distance < size*1.3) {
-                            val delta = Math.abs(20 * (size / distance).toInt())
+                            val delta = abs(20 * (size / distance).toInt())
                             tank.energy -= delta / 10
                             if (GameController.getCurrentPlayersTank() != it.tank) {
-                                GameController.getCurrentPlayer().money += Math.min(200, delta)
+                                GameController.getCurrentPlayer()?.let { p ->
+                                    p.money += min(200, delta)
+                                }
                             }
                             if (tank.energy < 0) {
                                 tank.energy = 0
                                 if (GameController.getCurrentPlayersTank() != it.tank) {
-                                    GameController.getCurrentPlayer().money += 100
+                                    GameController.getCurrentPlayer()?.let { p ->
+                                        p.money += 100
+                                    }
                                 }
                             }
                         }

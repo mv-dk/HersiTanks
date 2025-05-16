@@ -12,11 +12,13 @@ import SND_INCREASE_POWER
 import gameResX
 import gameResY
 import gameWindow
+import scale
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.event.KeyEvent
 import java.awt.event.MouseEvent
 import java.awt.image.BufferedImage
+import kotlin.math.min
 import kotlin.random.Random
 
 val random = Random(1)
@@ -77,7 +79,7 @@ class BattleScene(
             )
         }
 
-        if (randomizeFirstTurn) {
+        if (randomizeFirstTurn && GameController.players.size > 0) {
             repeat(Random.nextInt(GameController.players.size)) {
                 GameController.nextPlayersTurn()
             }
@@ -171,7 +173,7 @@ class BattleScene(
 
     fun showDecisionOutcome() {
         GameController.getCurrentPlayer().also { player ->
-            player.tank?.also { tank ->
+            player?.tank?.also { tank ->
                 val p = PlayerDecision(
                     player,
                     tank.angle.toInt() ?: 0,
@@ -197,7 +199,7 @@ class BattleScene(
 
         if (busy()) return
         if (updatePlayersTurnOnNextPossibleOccasion) return
-        if (GameController.getCurrentPlayer().playerType != PlayerType.LocalHuman) return
+        if (GameController.getCurrentPlayer()?.playerType != PlayerType.LocalHuman) return
 
         when (keyPressed) {
             KeyEvent.VK_LEFT -> {
@@ -250,12 +252,14 @@ class BattleScene(
             }
             KeyEvent.VK_ENTER, KeyEvent.VK_SPACE -> {
                 keyPressed = null
-                GameController.getCurrentPlayer().fire()
-                updatePlayersTurnOnNextPossibleOccasion = true
+                GameController.getCurrentPlayer()?.also {
+                    it.fire()
+                    updatePlayersTurnOnNextPossibleOccasion = true
+                }
             }
             KeyEvent.VK_TAB -> {
                 keyPressed = null
-                GameController.getCurrentPlayer().cycleWeapon()
+                GameController.getCurrentPlayer()?.cycleWeapon()
             }
             KeyEvent.VK_E -> { // Toy
                 GameController.getCurrentPlayersTank()?.addFire()
@@ -325,17 +329,18 @@ class BattleScene(
     override fun mouseMoved(e: MouseEvent) {
         super.mouseMoved(e)
         mouseWasMoved = true
-        translationY = Math.min(180, e.y - 300)
+        translationY = min(180, e.y * 2 / scale - 300)
         if (GameController.groundSizeOption == OPTION_GROUNDSIZE_SMALL) return
         if (GameController.groundSizeOption == OPTION_GROUNDSIZE_MEDIUM) {
-            translationX = e.x
+            translationX = e.x * 2/ scale
         } else if (GameController.groundSizeOption == OPTION_GROUNDSIZE_LARGE) {
-            translationX = e.x * 2
+            translationX = e.x * 4 / scale
         }
     }
 
     override fun update() {
         handleKeyPressed()
+
         if (!busy() && updatePlayersTurnOnNextPossibleOccasion) {
             handleNextPlayersTurn()
         }
@@ -357,7 +362,8 @@ class BattleScene(
             GameController.glowUp -= 1
         }
 
-        if (GameController.getCurrentPlayer().playerType == PlayerType.LocalCpu &&
+        if (GameController.players.size > 0 &&
+            GameController.getCurrentPlayer()?.playerType == PlayerType.LocalCpu &&
             GameController.getCurrentPlayersTank()?.playing == true) {
             carryOutDecision()
         }
@@ -368,7 +374,7 @@ class BattleScene(
     private fun carryOutDecision() {
         decision?.let {
             val player = GameController.getCurrentPlayer()
-            val tank = player.tank ?: return
+            val tank = player?.tank ?: return
             if (tank.angle.toInt() < it.angle) {
                 tank.increaseAngle(+1)
                 AudioHelper.loop(SND_CHANGE_ANGLE)
@@ -398,6 +404,8 @@ class BattleScene(
     }
 
     private fun handleNextPlayersTurn() {
+        if (GameController.players.size == 0) return
+
         explodeDeadPlayers()
         if (!busy()) {
             updatePlayersTurnOnNextPossibleOccasion = false
@@ -409,7 +417,7 @@ class BattleScene(
                 GameController.getCurrentPlayersTank()?.let { viewport.setFocus(it.position) }
             }
 
-            val currentPlayer = GameController.getCurrentPlayer()
+            val currentPlayer = GameController.getCurrentPlayer() ?: return
             if (currentPlayer.playerType == PlayerType.LocalCpu) {
                 if (decision == null) {
                     DelayedAction(this, 1.0, {

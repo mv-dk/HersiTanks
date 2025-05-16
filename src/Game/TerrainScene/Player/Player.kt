@@ -48,19 +48,20 @@ class Player(var name: String, val playerType: PlayerType) {
             2 -> AudioHelper.play(SND_FIRE3)
         }
 
-        val player = GameController.getCurrentPlayer()
-
-        if ((player.weaponry[player.currentWeaponId] ?: 0) == 0) {
-            AudioHelper.play(SND_FIZZLE);
-        } else {
-            tank?.let {
-                val velocity = it.getFireVelocity()
-                val position = Pos2D(it.canonX.toDouble(), it.canonY.toDouble())
-                val projectile = Weapon.allWeapons[player.currentWeaponId]?.getProjectile(it.parent, position, velocity)
-                if (projectile != null) {
-                    it.parent.add(projectile)
+        GameController.getCurrentPlayer()?.let { player ->
+            if ((player.weaponry[player.currentWeaponId] ?: 0) == 0) {
+                AudioHelper.play(SND_FIZZLE);
+            } else {
+                tank?.let {
+                    val velocity = it.getFireVelocity()
+                    val position = Pos2D(it.canonX.toDouble(), it.canonY.toDouble())
+                    val projectile =
+                        Weapon.allWeapons[player.currentWeaponId]?.getProjectile(it.parent, position, velocity)
+                    if (projectile != null) {
+                        it.parent.add(projectile)
+                    }
+                    player.decreaseAmmoAndCycleIfZero()
                 }
-                player.decreaseAmmoAndCycleIfZero()
             }
         }
     }

@@ -56,6 +56,6 @@ class FloatingBlob(parent: GameScene) : GameObject2(parent, Pos2D(0.0, 0.0)) {
 
     override fun draw(g: Graphics2D) {
         g.color = color
-        g.fillArc((position.x - size/2).toInt(), (position.y - size/2).toInt(), size.toInt(), size.toInt(), 0, 360)
+        g.fillArc((position.x - size/2).toInt(), (position.y - size/2).toInt(), size, size, 0, 360)
     }
 }

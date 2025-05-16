@@ -1,10 +1,8 @@
 package Game.TerrainScene
 
-import Engine.GameObject2
-import Engine.IGameScene
-import Engine.Pos2D
-import Engine.Vec2D
+import Engine.*
 import Game.GameController
+import Game.Menu.FloatingBlob
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
@@ -13,20 +11,28 @@ import kotlin.random.Random
 object CloudMaker {
 
     fun make(parent: IGameScene, position: Pos2D, width: Int) {
-        var x = position.x
+        var x = 0
         var size = 4
 
         while (x < width) {
             parent.add(
                 CloudPart(parent, Pos2D(position.x + x, position.y - size/2), size)
             )
-            x += 5
+            x += size/2
 
             if (x > width/2) {
-                size -= Random.nextInt(1,4)
-                if (size < 3) size += Random.nextInt(10, 15)
+                Random.nextInt(1, 4).let {
+                    size -= it
+                }
+                if (size < 3) {
+                    Random.nextInt(10, 15).let {
+                        size += it
+                    }
+                }
             } else {
-                size += Random.nextInt(1, 4)
+                Random.nextInt(1, 4).let {
+                    size += it
+                }
             }
         }
     }
@@ -53,10 +59,12 @@ class CloudPart(parent: IGameScene, position: Pos2D, var size: Int): GameObject2
         position.x += velocity.x
         position.y += velocity.y
 
-        if (position.x + size < 0) {
-            position.x = ((parent as BattleScene).terrainWidth + size).toDouble()
-        } else if (position.x - size > (parent as BattleScene).terrainWidth) {
-            position.x = -size.toDouble()
+        velocity.x = GameController.wind/10.0
+
+        if (position.x < -300) {
+            position.x = (parent as BattleScene).terrainWidth + 300.0
+        } else if (position.x > (parent as BattleScene).terrainWidth + 300) {
+            position.x = -300.0
         }
         if (!dying) {
             Projectile.activeProjectiles.forEach { p ->
@@ -94,7 +102,6 @@ class CloudPart(parent: IGameScene, position: Pos2D, var size: Int): GameObject2
     override fun draw(g: Graphics2D) {
         g.color = Color.WHITE
         g.fillArc((position.x - size/2).toInt(), (position.y - size/2).toInt(), size, size, 0, 360)
-
         g.color = Color.LIGHT_GRAY
         g.stroke = cloudOutlineStroke
         g.drawArc((position.x - size/2).toInt(), (position.y - size/2).toInt(), size, size, 20,  -160)

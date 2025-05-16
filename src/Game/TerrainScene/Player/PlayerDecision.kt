@@ -5,6 +5,7 @@ import Engine.Vec2D
 import Game.TerrainScene.Projectile
 import Game.TerrainScene.Tank
 import gameWindow
+import java.awt.Color
 
 class PlayerDecision(
     var player: Player,
@@ -32,6 +33,7 @@ class PlayerDecision(
                 Pos2D(canonX.toDouble(), canonY.toDouble()),
                 velocity,
                 0,
+                trailColor = Color.BLACK,
                 simulated = true,
                 onExplode = { position ->
                     explosionPosition.x = position.x

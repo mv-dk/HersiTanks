@@ -16,6 +16,7 @@ var gameWindow: GameWindow? = null
  */
 var gameResX = 640
 var gameResY = 360
+var scale = 1
 
 fun main() {
     println("Hello World!")
@@ -23,7 +24,7 @@ fun main() {
     //val gameScene = BallGameScene(800, 600)
     //val gameScene = CollisionBallsGameScene(Color.LIGHT_GRAY, width, height)
 
-    val scale = getBestScale()
+    scale = getBestScale()
 
     gameWindow = GameWindow(gameResX * scale, gameResY * scale, "Hersi", MenuScene(), false)
     val gameThread = Thread(gameWindow)
