@@ -85,9 +85,9 @@ class MenuState: IState {}
 class SettingsState: IState{}
 class CreatePlayersState: IState{}
 class BattleState(): IState{
-    private var turnIndex = 0
+    var turnIndex = 0
 
-    fun nextTurn(players: List<Player>){
+    fun nextTurn(players: List<Player>) {
         val oldIndex = turnIndex
         while (true) {
             turnIndex = (turnIndex + 1).mod(players.size)
@@ -100,7 +100,7 @@ class BattleState(): IState{
         return players[turnIndex]
     }
 
-    fun isBattleOver(): Boolean{
+    fun isBattleOver(): Boolean {
         var numTeamsWithAliveTanks = 0
         for (t in GameController.teams){
             if (t.players.any { it.playing }) {
@@ -110,9 +110,8 @@ class BattleState(): IState{
         }
         return true
     }
-
-
 }
+
 class StatusState: IState{}
 class GameOverState: IState{}
 class PurchaseState: IState{}

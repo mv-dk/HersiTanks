@@ -1,7 +1,7 @@
 package Game.particles
 
 import Engine.*
-import Game.TerrainScene.TerrainGameScene
+import Game.TerrainScene.BattleScene
 import Game.GameController
 import java.awt.BasicStroke
 import java.awt.Color
@@ -137,7 +137,7 @@ class DirtFragmentEmitter(
     lateinit var lighterColors: Array<Color>
 
     init {
-        (parent as? TerrainGameScene)?.rasterTerrain?.let {
+        (parent as? BattleScene)?.rasterTerrain?.let {
             fragmentDarkColor = it.darkOutlineColor
             fragmentLightColor = it.primaryColor
             darkerColors = arrayOf(fragmentDarkColor)
@@ -165,7 +165,7 @@ class DirtFragmentEmitter(
             if (Random.nextDouble() <= 0.5) lighterColors else darkerColors,
             sizes
         )
-        println("Made dirt fragment particle at (${position.x+xOffset},${position.y})")
+        //println("Made dirt fragment particle at (${position.x+xOffset},${position.y})")
         return p
     }
 
@@ -227,20 +227,6 @@ class Particle(
             nextPos.x.toInt(),
             nextPos.y.toInt()
             )
-
-//        g.fillOval(
-//            (position.x - size/2.0).toInt(),
-//            (position.y - size*2.0/3.0).toInt(),
-//            size.toInt(),
-//            (size*1.5).toInt())
-
-//        g.fillArc(
-//            (position.x - size/2).toInt(),
-//            (position.y - size/2).toInt(),
-//            size.toInt(),
-//            size.toInt(),
-//            0,
-//            360)
     }
 
 }

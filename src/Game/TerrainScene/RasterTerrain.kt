@@ -245,4 +245,18 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
     override fun draw(g: Graphics2D) {
         g.drawImage(rasterImage, null, 0, 0);
     }
+
+    fun surfaceAt(x: Int): Int {
+        var interval = rasterImage.height/2
+        var y = interval
+        while (interval > 1) {
+            interval /= 2
+            if (rasterImage.getRGB(x, y) == 0) {
+                y += interval
+            } else {
+                y -= interval
+            }
+        }
+        return y
+    }
 }

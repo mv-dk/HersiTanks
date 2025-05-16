@@ -3,7 +3,6 @@ package Engine
 import Game.GameController
 import gameResX
 import gameResY
-import gameWindow
 import java.awt.*
 import java.awt.RenderingHints.*
 import java.awt.event.KeyEvent
@@ -39,19 +38,19 @@ var screenHeight = gameResY.toDouble()
  * Contains currentGameScene, on which update() and draw() is called.
  */
 open class GameWindow(val width: Int, val height: Int, title: String, val gameScene: IGameScene, var fullScreen: Boolean) : Runnable, IGameWindow {
-    var panel = JPanel()
+    private var panel = JPanel()
     var frame: JFrame = JFrame()
 
-    val renderingHints = mapOf<Key, Any>(Pair(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON))
+    private val renderingHints = mapOf<Key, Any>(Pair(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON))
 
     var gameRunner: GameRunner = GameRunner(this, gameScene)
-    var scale = 1.0
+    private var scale = 1.0
 
     init {
         initFrameAndPanel(fullScreen)
     }
 
-    fun initFrameAndPanel(fullScreen: Boolean){
+    private fun initFrameAndPanel(fullScreen: Boolean){
         panel.preferredSize = Dimension(width, height)
         panel.size = Dimension(width, height)
         panel.isFocusable = true
@@ -83,7 +82,7 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
         panel.setFocusTraversalKeysEnabled(false)
     }
 
-    var image: VolatileImage = panel.createVolatileImage(screenWidth.toInt(), screenHeight.toInt())
+    private var image: VolatileImage = panel.createVolatileImage(screenWidth.toInt(), screenHeight.toInt())
 
     fun toggleFullScreen(){
         frame.dispose()
@@ -120,14 +119,14 @@ open class GameWindow(val width: Int, val height: Int, title: String, val gameSc
         return g;
     }
 
-    override fun render(gameSceneWidth: Int, gameSceneHeight: Int){
+    override fun render(width: Int, height: Int){
         if (panel.graphics == null) return
         val g2d = panel.graphics as Graphics2D
-        val scaleX = screenWidth / gameSceneWidth
-        val scaleY = screenHeight / gameSceneHeight
+        val scaleX = screenWidth / width
+        val scaleY = screenHeight / height
         scale = min(scaleX, scaleY)
         g2d.scale(scale, scale)
-        g2d.translate((screenWidth / scale - gameSceneWidth) / 2, (screenHeight / scale - gameSceneHeight) / 2)
+        g2d.translate((screenWidth / scale - width) / 2, (screenHeight / scale - height) / 2)
 
         g2d.drawImage(image, 0, 0, null)
         Toolkit.getDefaultToolkit().sync()
@@ -226,6 +225,12 @@ class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListen
 
             i += 1
         }
+    }
+
+    fun runUpdatesOnly(whilePredicate: () -> Boolean) {
+        do {
+            update()
+        } while (whilePredicate())
     }
 
     fun run(){

@@ -35,7 +35,7 @@ class Snowflake(parent: IGameScene, position: Pos2D) : GameObject2(parent, posit
         if (tick > 10) {
             tick = 0
 
-            val img = (parent as TerrainGameScene).rasterTerrain.rasterImage
+            val img = (parent as BattleScene).rasterTerrain.rasterImage
             if (position.x > 0 && position.x < img.width && position.y > 0 && position.y+1 < img.height) {
                 val colAtPos = img.getRGB(position.x.toInt(), position.y.toInt() + 1)
                 if (colAtPos != 0) {

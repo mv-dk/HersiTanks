@@ -17,7 +17,7 @@ open class Projectile(
 
     var jumps: Int = 0
     var size = 3
-    var terrain = (parent as? TerrainGameScene)?.rasterTerrain
+    var terrain = (parent as? BattleScene)?.rasterTerrain
 
     init {
         if (!simulated) {

@@ -11,7 +11,7 @@ import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.event.KeyEvent
 
-class SettingsGameScene() : GameScene(Color(228, 217, 135), gameResX, gameResY) {
+class SettingsScene() : GameScene(Color(228, 217, 135), gameResX, gameResY) {
 
     val menuPoints = mutableListOf<MenuPointGameObject>(
         OptionSelectorMenuPoint("Sky", this,
@@ -64,7 +64,7 @@ class SettingsGameScene() : GameScene(Color(228, 217, 135), gameResX, gameResY) 
                 GameController.decorationOption = new.id
             }),
         ToggleFullScreenMenuPoint(this),
-        ChangeSceneMenuPoint("Done", this, { MenuGameScene() })
+        ChangeSceneMenuPoint("Done", this, { MenuScene() })
     )
 
     val menuGameObject = MenuGameObject(
@@ -77,7 +77,7 @@ class SettingsGameScene() : GameScene(Color(228, 217, 135), gameResX, gameResY) 
         menuPoints,
         {
             unload()
-            gameWindow?.gameRunner?.currentGameScene = MenuGameScene()
+            gameWindow?.gameRunner?.currentGameScene = MenuScene()
         })
 
     init {

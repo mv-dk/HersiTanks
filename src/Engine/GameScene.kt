@@ -89,8 +89,8 @@ abstract class GameScene(val color: Color, override val width: Int, override val
     private val renderingHints = mapOf(Pair(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON))
 
     override fun drawOnImage() : BufferedImage {
-        var image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
-        var graphics = image.graphics as Graphics2D
+        val image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+        val graphics = image.graphics as Graphics2D
         graphics.setRenderingHints(renderingHints)
         draw(graphics)
         return image
@@ -98,8 +98,8 @@ abstract class GameScene(val color: Color, override val width: Int, override val
 }
 
 fun drawAsHud(g:Graphics2D,  draw: (g:Graphics2D) -> Unit) {
-    var oldTranslationX = g.transform.translateX
-    var oldTranslationY = g.transform.translateY
+    val oldTranslationX = g.transform.translateX
+    val oldTranslationY = g.transform.translateY
     g.translate(-oldTranslationX, -oldTranslationY)
 
     draw(g)

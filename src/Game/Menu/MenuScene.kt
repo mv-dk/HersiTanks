@@ -4,7 +4,7 @@ import Engine.DelayedAction
 import Engine.GameRunner
 import Engine.GameScene
 import Engine.Pos2D
-import Game.EditPlayers.EditPlayers
+import Game.EditPlayers.EditPlayersScene
 import Game.GameController
 import Game.Menu.MenuPoints.ChangeSceneMenuPoint
 import Game.Menu.MenuPoints.ExitGameMenuPoint
@@ -33,7 +33,7 @@ val OPTION_GROUNDSIZE_SMALL = 0
 val OPTION_GROUNDSIZE_MEDIUM = 1
 val OPTION_GROUNDSIZE_LARGE = 2
 
-class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
+class MenuScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
 
     companion object {
         var numPlayersSelected = 2
@@ -48,7 +48,7 @@ class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
             GameController.gamesPlayed = 0
             GameController.numberOfPlayersOption = numPlayersSelected
 
-            EditPlayers()
+            EditPlayersScene(GameController.numberOfPlayersOption)
         }),
         NumberSelectorMenuPoint("Players", this, numPlayersSelected, 2, 10, onChange = {_,new ->
             numPlayersSelected = new
@@ -56,8 +56,8 @@ class MenuGameScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
         NumberSelectorMenuPoint("Rounds", this, numGamesSelected, 1, 99, onChange = {_,new ->
             numGamesSelected = new
         }),
-        ChangeSceneMenuPoint("Settings", this, { SettingsGameScene() }),
-        ChangeSceneMenuPoint("About", this, { AboutGameScene() }),
+        ChangeSceneMenuPoint("Settings", this, { SettingsScene() }),
+        ChangeSceneMenuPoint("About", this, { AboutScene() }),
         ExitGameMenuPoint("Exit", this)
     )
     val menuGameObject = MenuGameObject(

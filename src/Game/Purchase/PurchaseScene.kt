@@ -6,7 +6,7 @@ import Game.Menu.MenuGameObject
 import Game.Menu.MenuPoints.MenuPointGameObject
 import Game.Menu.MenuPoints.ChangeSceneMenuPoint
 import Game.Menu.Transition
-import Game.TerrainScene.TerrainGameScene
+import Game.TerrainScene.BattleScene
 import Game.TerrainScene.Weapon
 import Game.GameController
 import Game.TerrainScene.Player.Player
@@ -20,7 +20,7 @@ import java.awt.Graphics2D
 import java.awt.event.KeyEvent
 import kotlin.random.Random
 
-class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(players[idx].color.contrast(0.3), gameResX, gameResY) {
+class PurchaseScene(val players: List<Player>, val idx: Int) : GameScene(players[idx].color.contrast(0.3), gameResX, gameResY) {
     val menuPoints = mutableListOf<MenuPointGameObject>()
     val player = players[idx]
 
@@ -65,9 +65,9 @@ class PurchaseGameScene(val players: List<Player>, val idx: Int) : GameScene(pla
     private fun nextScene(): IGameScene {
         AudioHelper.play(SND_BUY_FINISH)
         return if (idx == players.size - 1) {
-            TerrainGameScene(GameController.groundSize)
+            BattleScene(GameController.groundSize)
         } else {
-            PurchaseGameScene(players, idx + 1)
+            PurchaseScene(players, idx + 1)
         }
     }
 

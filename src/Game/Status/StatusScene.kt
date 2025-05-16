@@ -1,12 +1,9 @@
 package Game.Status
 
-import Engine.GameRunner
 import Engine.GameScene
-import Engine.GameWindow
-import Engine.nextColor
-import Game.Menu.MenuGameScene
-import Game.Purchase.PurchaseGameScene
-import Game.TerrainScene.TerrainGameScene
+import Game.Menu.MenuScene
+import Game.Purchase.PurchaseScene
+import Game.TerrainScene.BattleScene
 import Game.TerrainScene.Weapon
 import Game.GameController
 import gameResX
@@ -16,9 +13,8 @@ import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
 import java.awt.event.KeyEvent
-import kotlin.random.Random
 
-class StatusScreen(val lines: List<StatusLine>) : GameScene(Color(182, 179, 173), gameResX, gameResY) {
+class StatusScene(val lines: List<StatusLine>) : GameScene(Color(182, 179, 173), gameResX, gameResY) {
     val headerFont = Font("Helvetica", Font.BOLD, 22)
 
     override fun load() {
@@ -29,16 +25,16 @@ class StatusScreen(val lines: List<StatusLine>) : GameScene(Color(182, 179, 173)
         super.keyPressed(e)
         if (GameController.gamesPlayed == GameController.gamesToPlay) {
             unload()
-            gameWindow?.gameRunner?.currentGameScene = MenuGameScene()
+            gameWindow?.gameRunner?.currentGameScene = MenuScene()
         } else {
 
             val cheapestWeaponPrice = Weapon.allWeapons.minOf { it.value.purchasePrice }
             val playersAbleToPurchase = GameController.players.filter { it.money > cheapestWeaponPrice }
             if (playersAbleToPurchase.size > 0) {
                 gameWindow?.gameRunner?.currentGameScene =
-                    PurchaseGameScene(GameController.players.filter { it.money > cheapestWeaponPrice }, 0)
+                    PurchaseScene(GameController.players.filter { it.money > cheapestWeaponPrice }, 0)
             } else {
-                gameWindow?.gameRunner?.currentGameScene = TerrainGameScene(GameController.groundSize)
+                gameWindow?.gameRunner?.currentGameScene = BattleScene(GameController.groundSize)
             }
         }
     }

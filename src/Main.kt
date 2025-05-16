@@ -1,8 +1,6 @@
 import Engine.AudioHelper
 import Engine.GameWindow
-import Experimental.ManyBalls.BallGameScene
-import Game.Menu.MenuGameScene
-import java.awt.Color
+import Game.Menu.MenuScene
 import java.awt.GraphicsEnvironment
 import kotlin.math.min
 
@@ -27,7 +25,7 @@ fun main() {
 
     val scale = getBestScale()
 
-    gameWindow = GameWindow(gameResX * scale, gameResY * scale, "Hersi", MenuGameScene(), false)
+    gameWindow = GameWindow(gameResX * scale, gameResY * scale, "Hersi", MenuScene(), false)
     val gameThread = Thread(gameWindow)
     gameThread.start()
     gameThread.join()

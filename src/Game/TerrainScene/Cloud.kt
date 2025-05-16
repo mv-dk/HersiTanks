@@ -54,8 +54,8 @@ class CloudPart(parent: IGameScene, position: Pos2D, var size: Int): GameObject2
         position.y += velocity.y
 
         if (position.x + size < 0) {
-            position.x = ((parent as TerrainGameScene).terrainWidth + size).toDouble()
-        } else if (position.x - size > (parent as TerrainGameScene).terrainWidth) {
+            position.x = ((parent as BattleScene).terrainWidth + size).toDouble()
+        } else if (position.x - size > (parent as BattleScene).terrainWidth) {
             position.x = -size.toDouble()
         }
         if (!dying) {

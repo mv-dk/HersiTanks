@@ -1,9 +1,7 @@
 package Game.TerrainScene
 
 import Engine.*
-import Game.Menu.Transition
 import Game.particles.DirtFragmentEmitter
-import Game.particles.Emitter
 import Game.particles.FireEmitter
 import Game.particles.SmokeEmitter
 import Game.GameController
@@ -22,7 +20,7 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
     init {
         GameController.explosionsActive += 1
         GameController.glowUp = 10
-        val terrain = (parent as TerrainGameScene).rasterTerrain
+        val terrain = (parent as BattleScene).rasterTerrain
         terrain.pokeHole(position.x.toInt(), position.y.toInt(), size)
         terrain.addOutlines(position.x.toInt()-(size/2), position.x.toInt()+(size/2))
 

@@ -3,9 +3,9 @@ package Game.EditPlayers
 import Engine.*
 import Game.Menu.FloatingBlob
 import Game.Menu.MenuGameObject
-import Game.Menu.MenuGameScene
+import Game.Menu.MenuScene
 import Game.Menu.Transition
-import Game.TerrainScene.TerrainGameScene
+import Game.TerrainScene.BattleScene
 import Game.GameController
 import Game.Menu.MenuPoints.*
 import Game.TerrainScene.Player.Player
@@ -19,13 +19,8 @@ import gameWindow
 import java.awt.Color
 import java.awt.event.KeyEvent
 
-class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
+class EditPlayersScene(numPlayers: Int) : GameScene(Color(123, 129, 78), gameResX, gameResY) {
 
-    init {
-        repeat(10) {
-            add(FloatingBlob(this))
-        }
-    }
     private val menuWidth = 137
     private val menuHeight = 100
     private val menuPadding = 20
@@ -41,9 +36,21 @@ class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
         return pos
     }
 
-    private val colors = listOf(Color.RED, Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.BLACK, Color.WHITE, Color.ORANGE, Color.PINK, Color.MAGENTA, Color.LIGHT_GRAY)
+    private val colors = listOf(
+        Color.RED,
+        Color.BLUE,
+        Color.GREEN,
+        Color.CYAN,
+        Color.YELLOW,
+        Color.BLACK,
+        Color.WHITE,
+        Color.ORANGE,
+        Color.PINK,
+        Color.MAGENTA,
+        Color.LIGHT_GRAY
+    )
 
-    private val playerMenuBoxes = (0..<GameController.numberOfPlayersOption).mapIndexed { index, it ->
+    private val playerMenuBoxes = (0..< numPlayers).mapIndexed { index, it ->
         MenuGameObject(this, nextMenuPos(), menuWidth, menuHeight, 25.0, leftMargin = 10.0,
             mutableListOf(
                 MenuPointGameObject("<<< >>>", this, true, false, 14, blinkWhenActive = index == 0, onActivate = {}).apply {
@@ -94,7 +101,7 @@ class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
                                 GameController.players.add(newPlayer)
                             }
 
-                            TerrainGameScene(GameController.groundSize)
+                            BattleScene(GameController.groundSize)
                         }
                     )
                 ),
@@ -133,7 +140,11 @@ class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
         }
     }
 
-    override fun load() { }
+    override fun load() {
+        repeat(10) {
+            add(FloatingBlob(this))
+        }
+    }
 
     private var keyHasBeenReleasedOnce = false
     override fun keyTyped(e: KeyEvent) {
@@ -145,7 +156,7 @@ class EditPlayers() : GameScene(Color(123, 129, 78), gameResX, gameResY) {
         if (!keyHasBeenReleasedOnce) return
         if (e.keyCode == KeyEvent.VK_ESCAPE) {
             unload()
-            gameWindow?.gameRunner?.currentGameScene = MenuGameScene()
+            gameWindow?.gameRunner?.currentGameScene = MenuScene()
             return
         }
 

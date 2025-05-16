@@ -2,12 +2,10 @@ package Game.TerrainScene
 
 import Engine.*
 import Game.Status.StatusLine
-import Game.Status.StatusScreen
+import Game.Status.StatusScene
 import Game.*
 import Game.Menu.*
-import Game.TerrainScene.Player.MonteCarloCpu
-import Game.TerrainScene.Player.PlayerDecision
-import Game.TerrainScene.Player.PlayerType
+import Game.TerrainScene.Player.*
 import SND_CHANGE_ANGLE
 import SND_DECREASE_POWER
 import SND_INCREASE_POWER
@@ -23,8 +21,14 @@ import kotlin.random.Random
 
 val random = Random(1)
 
-class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), gameResX, gameResY) {
-    lateinit var rasterTerrain: RasterTerrain
+class BattleScene(
+    val terrainWidth: Int,
+    val getNextDecision: (currentPlayer: Player) -> PlayerDecision = {
+        MonteCarloCpu(repetitions = 10, showDecisionOutcomes = false).getDecision(it)
+    },
+    val tanksFallFromSky: Boolean = true
+) : GameScene(Color(113, 136, 248), gameResX, gameResY) {
+    var rasterTerrain: RasterTerrain = RasterTerrain(this, Pos2D(0.0, 0.0), terrainWidth, height)
     var updatePlayersTurnOnNextPossibleOccasion = false
     var tankInfoBar = TankInfoBar(this, Pos2D(0.0, 0.0))
     var weaponBar = WeaponBar(this, Pos2D(0.0, 32.0))
@@ -43,80 +47,23 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
         minX = if (GameController.groundSizeOption == OPTION_GROUNDSIZE_SMALL) 0 else Int.MIN_VALUE,
         maxX = if (GameController.groundSizeOption == OPTION_GROUNDSIZE_SMALL) 0 else Int.MAX_VALUE
     )
+    var randomizeFirstTurn = true
     var mouseWasMoved = false
     var decision: PlayerDecision? = null
 
-    init {
-        when (GameController.skyOption) {
-            OPTION_SKY_BLUE -> {
-                val g = skyImage.createGraphics()
-                var c = Color(12, 138, 255)
-                g.color = c
-                g.fillRect(0, 0, width, height)
-                var bands = 60
-                for (i in 1 .. bands) {
-                    c = c.lighter(150/bands)
-                    g.color = c
-                    g.fillRect(0, i*height/bands, width, height/bands)
-                }
-            }
-            OPTION_SKY_STARRY -> {
-                var g = skyImage.createGraphics()
-                g.color = Color(0, 0, 50)
-                g.fillRect(0, 0, width, height)
-                g.color = Color(128,128,255)
-                for (i in 1 .. 100) {
-                    val size = random.nextInt(2,4)
-                    g.fillArc(
-                        random.nextInt(0, width),
-                        random.nextInt(0, height),
-                        size, size, 0, 360)
-                }
-            }
-            OPTION_SKY_EVENING -> {
-                var g = skyImage.createGraphics()
-                var c = Color(255, 155, 0)
-                g.color = c
-                g.fillRect(0, 0, width, height)
-                var bands = 60
-                for (i in 1 .. bands) {
-                    c = c.darker(200/bands)
-                    g.color = c
-                    g.fillRect(0, i*height/bands, width, height/bands)
-                }
-            }
-        }
-
-        when (GameController.groundOption) {
-            OPTION_GROUND_SNOW -> {
-                add(SnowMaker(this, Pos2D(0.0, 0.0), terrainWidth))
-            }
-        }
-
-        add(Transition(this))
-    }
-
     override fun load() {
         GameController.state = BattleState()
-        rasterTerrain = RasterTerrain(this, Pos2D(0.0, 0.0), terrainWidth, height)
+
+        // Glow effect
+        add(Transition(this))
+
         add(rasterTerrain)
         add(tankInfoBar)
         add(weaponBar)
 
-        val margin = 40.0
-        val numPlayers = GameController.players.size
-        val spaceBetweenTanks = if (numPlayers == 1) (terrainWidth-margin)/2.0 else ((terrainWidth-2.0*margin) / (numPlayers-1))
-        var x = margin
-        val randomIndices = (0..<numPlayers).shuffled()
-        repeat (numPlayers){
-            val p = GameController.players[randomIndices[it]]
-            val tank = Tank(this, rasterTerrain, Pos2D(x, 30.0), p.color)
-            tank.falling = true
-            p.tank = tank
-            p.playing = true
-            add(tank)
-            x += spaceBetweenTanks
-        }
+        initializeSky()
+        initializeGround()
+        initializePlayers()
         updateWind(true)
 
         repeat(Random.nextInt(3)) {
@@ -130,10 +77,87 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
             )
         }
 
-        repeat(Random.nextInt(numPlayers)) {
-            GameController.nextPlayersTurn()
+        if (randomizeFirstTurn) {
+            repeat(Random.nextInt(GameController.players.size)) {
+                GameController.nextPlayersTurn()
+            }
         }
         updatePlayersTurnOnNextPossibleOccasion = true
+    }
+
+    private fun initializePlayers() {
+        val margin = 40.0
+        val numPlayers = GameController.players.size
+        val spaceBetweenTanks =
+            if (numPlayers == 1) (terrainWidth - margin) / 2.0 else ((terrainWidth - 2.0 * margin) / (numPlayers - 1))
+        var x = margin
+        val randomIndices = (0..<numPlayers).shuffled()
+        repeat(numPlayers) {
+            val p = GameController.players[randomIndices[it]]
+            var y = 30.0
+            if (!tanksFallFromSky) {
+                y = rasterTerrain.surfaceAt(x.toInt()).toDouble()
+            }
+            val tank = Tank(this, rasterTerrain, Pos2D(x, y), p.color)
+            tank.falling = true
+            p.tank = tank
+            p.playing = true
+            add(tank)
+            x += spaceBetweenTanks
+        }
+    }
+
+    private fun initializeGround() {
+        when (GameController.groundOption) {
+            OPTION_GROUND_SNOW -> {
+                add(SnowMaker(this, Pos2D(0.0, 0.0), terrainWidth))
+            }
+        }
+    }
+
+    private fun initializeSky() {
+        when (GameController.skyOption) {
+            OPTION_SKY_BLUE -> {
+                val g = skyImage.createGraphics()
+                var c = Color(12, 138, 255)
+                g.color = c
+                g.fillRect(0, 0, width, height)
+                val bands = 60
+                for (i in 1..bands) {
+                    c = c.lighter(150 / bands)
+                    g.color = c
+                    g.fillRect(0, i * height / bands, width, height / bands)
+                }
+            }
+
+            OPTION_SKY_STARRY -> {
+                val g = skyImage.createGraphics()
+                g.color = Color(0, 0, 50)
+                g.fillRect(0, 0, width, height)
+                g.color = Color(128, 128, 255)
+                for (i in 1..100) {
+                    val size = random.nextInt(2, 4)
+                    g.fillArc(
+                        random.nextInt(0, width),
+                        random.nextInt(0, height),
+                        size, size, 0, 360
+                    )
+                }
+            }
+
+            OPTION_SKY_EVENING -> {
+                val g = skyImage.createGraphics()
+                var c = Color(255, 155, 0)
+                g.color = c
+                g.fillRect(0, 0, width, height)
+                var bands = 60
+                for (i in 1..bands) {
+                    c = c.darker(200 / bands)
+                    g.color = c
+                    g.fillRect(0, i * height / bands, width, height / bands)
+                }
+            }
+        }
     }
 
     fun busy(): Boolean{
@@ -166,7 +190,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
         if (keyPressed == KeyEvent.VK_ESCAPE){
             keyPressed = null
             unload()
-            gameWindow?.gameRunner?.currentGameScene = MenuGameScene()
+            gameWindow?.gameRunner?.currentGameScene = MenuScene()
             GameController.onGoingToMenu()
             return
         }
@@ -333,7 +357,8 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
             GameController.glowUp -= 1
         }
 
-        if (GameController.getCurrentPlayer().playerType == PlayerType.LocalCpu) {
+        if (GameController.getCurrentPlayer().playerType == PlayerType.LocalCpu &&
+            GameController.getCurrentPlayersTank()?.playing == true) {
             carryOutDecision()
         }
 
@@ -359,6 +384,8 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
                     AudioHelper.loop(SND_INCREASE_POWER)
                     tank.increasePower(1)
                 }
+            } else if ((player.weaponry[it.weaponId] ?: 0) > 0 && player.currentWeaponId != it.weaponId) {
+                player.cycleWeapon()
             } else {
                 AudioHelper.stop(SND_CHANGE_ANGLE)
                 AudioHelper.stop(SND_DECREASE_POWER)
@@ -386,7 +413,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
             if (currentPlayer.playerType == PlayerType.LocalCpu) {
                 if (decision == null) {
                     DelayedAction(this, 1.0, {
-                        decision = MonteCarloCpu(repetitions = 10, showDecisionOutcomes = false).getDecision(currentPlayer)
+                        decision = getNextDecision(currentPlayer)
                     })
                 }
             }
@@ -407,7 +434,7 @@ class TerrainGameScene(val terrainWidth: Int) : GameScene(Color(113, 136, 248), 
         }
 
         unload()
-        gameWindow?.gameRunner?.currentGameScene = StatusScreen(statusLines)
+        gameWindow?.gameRunner?.currentGameScene = StatusScene(statusLines)
     }
 
     private fun explodeDeadPlayers() {

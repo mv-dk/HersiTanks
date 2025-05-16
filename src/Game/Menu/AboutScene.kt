@@ -12,7 +12,7 @@ import java.awt.Graphics2D
 import java.awt.event.KeyEvent
 import kotlin.math.min
 
-class AboutGameScene: GameScene(Color(229, 204, 202), gameResX, gameResY) {
+class AboutScene: GameScene(Color(229, 204, 202), gameResX, gameResY) {
     private val font: Font = Font(Font.DIALOG, Font.PLAIN, 12)
     private val textColor = Color(49, 24, 22)
     var scrollIdx = 0
@@ -84,7 +84,7 @@ class AboutGameScene: GameScene(Color(229, 204, 202), gameResX, gameResY) {
     for all humans once and for all, thereby reconciling Man with our
     Creator.
     
-    Therefore, according to the Bible, it possible to win eternal 
+    Therefore, according to the Bible, it is possible to win eternal 
     life by accepting the payment that Jesus Christ offers to pay.
     
        "For God so loved the world, 
@@ -148,7 +148,7 @@ class AboutGameScene: GameScene(Color(229, 204, 202), gameResX, gameResY) {
             KeyEvent.VK_ESCAPE -> {
                 unload()
                 AudioHelper.play(SND_SWOOSH2)
-                gameWindow?.gameRunner?.currentGameScene = MenuGameScene()
+                gameWindow?.gameRunner?.currentGameScene = MenuScene()
             }
             KeyEvent.VK_DOWN -> {
                 scrollDown()

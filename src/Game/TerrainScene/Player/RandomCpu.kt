@@ -38,3 +38,18 @@ class RandomCpu : Cpu() {
         return decision
     }
 }
+
+class TestControlledCpu(): Cpu() {
+    private var _angle = 0
+    private var _power = 0
+    private var _weaponIndex = 0
+
+    fun setDecision(angle: Int, power: Int, weaponIndex: Int) {
+        _angle = angle
+        _power = power
+        _weaponIndex = weaponIndex
+    }
+
+    override fun getDecision(player: Player): PlayerDecision =
+        PlayerDecision(player, _angle, _power, _weaponIndex)
+}
