@@ -101,7 +101,7 @@ class EditPlayersScene(numPlayers: Int) : GameScene(Color(123, 129, 78), gameRes
                                 GameController.players.add(newPlayer)
                             }
 
-                            BattleScene(GameController.groundSize)
+                            BattleScene(GameController.groundSize, tanksFallFromSky = false)
                         }
                     )
                 ),

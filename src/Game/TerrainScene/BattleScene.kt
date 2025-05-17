@@ -222,39 +222,15 @@ class BattleScene(
                     //showDecisionOutcome()
                 }
             }
-            KeyEvent.VK_DOWN -> {
-                AudioHelper.loop(SND_DECREASE_POWER, -1)
-                GameController.getCurrentPlayersTank()?.let {
-                    it.increasePower(-1)
-                    if (!viewport.inside(it)) {
-                        viewport.setFocus(it.position)
-                    }
-                    //showDecisionOutcome()
-                }
-            }
-            KeyEvent.VK_UP -> {
-                AudioHelper.loop(SND_INCREASE_POWER, -1)
-                GameController.getCurrentPlayersTank()?.let {
-                    it.increasePower(1)
-                    if (!viewport.inside(it)) {
-                        viewport.setFocus(it.position)
-                    }
-                    //showDecisionOutcome()
-                }
-            }
-            KeyEvent.VK_PAGE_DOWN -> {
-                AudioHelper.loop(SND_DECREASE_POWER, -1)
-                GameController.getCurrentPlayersTank()?.increasePower(-10)
-            }
-            KeyEvent.VK_PAGE_UP -> {
-                AudioHelper.loop(SND_INCREASE_POWER, -1)
-                GameController.getCurrentPlayersTank()?.increasePower(10)
-            }
             KeyEvent.VK_ENTER, KeyEvent.VK_SPACE -> {
                 keyPressed = null
-                GameController.getCurrentPlayer()?.also {
-                    it.fire()
-                    updatePlayersTurnOnNextPossibleOccasion = true
+                GameController.getCurrentPlayersTank()?.let {
+                    if (it.chargeIndicator == null) {
+                        val chargeIndicator =
+                            ChargeIndicator(this@BattleScene, Pos2D(it.canonX.toDouble(), it.canonY.toDouble()), it)
+                        add(chargeIndicator)
+                        it.chargeIndicator = chargeIndicator
+                    }
                 }
             }
             KeyEvent.VK_TAB -> {
@@ -318,10 +294,11 @@ class BattleScene(
     override fun keyReleased(e: KeyEvent) {
         if (e.keyCode == KeyEvent.VK_LEFT || e.keyCode == KeyEvent.VK_RIGHT) {
             AudioHelper.stop(SND_CHANGE_ANGLE)
-        } else if (e.keyCode == KeyEvent.VK_UP || e.keyCode == KeyEvent.VK_PAGE_UP) {
-            AudioHelper.stop(SND_INCREASE_POWER)
-        } else if (e.keyCode == KeyEvent.VK_DOWN || e.keyCode == KeyEvent.VK_PAGE_DOWN) {
-            AudioHelper.stop(SND_DECREASE_POWER)
+        } else if (e.keyCode == KeyEvent.VK_SPACE || e.keyCode == KeyEvent.VK_ENTER) {
+            GameController.getCurrentPlayersTank()?.let { tank ->
+                tank.chargeIndicator?.let { remove(it) }
+                tank.chargeIndicator = null
+            }
         }
         keyPressed = null
     }
@@ -381,24 +358,29 @@ class BattleScene(
             } else if (tank.angle.toInt() > it.angle) {
                 tank.increaseAngle(-1)
                 AudioHelper.loop(SND_CHANGE_ANGLE)
-            } else if (tank.power != it.power) {
-                AudioHelper.stop(SND_CHANGE_ANGLE)
-                if (tank.power > it.power) {
-                    AudioHelper.loop(SND_DECREASE_POWER)
-                    tank.increasePower(-1)
-                } else {
-                    AudioHelper.loop(SND_INCREASE_POWER)
-                    tank.increasePower(1)
-                }
             } else if ((player.weaponry[it.weaponId] ?: 0) > 0 && player.currentWeaponId != it.weaponId) {
                 player.cycleWeapon()
             } else {
                 AudioHelper.stop(SND_CHANGE_ANGLE)
-                AudioHelper.stop(SND_DECREASE_POWER)
-                AudioHelper.stop(SND_INCREASE_POWER)
-                player.fire()
-                updatePlayersTurnOnNextPossibleOccasion = true
-                decision = null
+                if (tank.chargeIndicator == null) {
+                    val chargeIndicator =
+                        ChargeIndicator(
+                            this@BattleScene,
+                            Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble()),
+                            tank,
+                            destinationPower = it.power
+                        )
+                    add(chargeIndicator)
+                    tank.chargeIndicator = chargeIndicator
+                }
+                tank.chargeIndicator?.let { chargeIndicator ->
+                    if (chargeIndicator.charge > it.power) {
+                        chargeIndicator.charge = it.power.toDouble()
+                        remove(chargeIndicator)
+                        tank.chargeIndicator = null
+                        decision = null
+                    }
+                }
             }
         }
     }
