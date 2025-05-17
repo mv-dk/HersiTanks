@@ -24,7 +24,7 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
         GameController.glowUp = 10
         val terrain = (parent as BattleScene).rasterTerrain
         terrain.pokeHole(position.x.toInt(), position.y.toInt(), size)
-        terrain.addOutlines(position.x.toInt()-(size/2), position.x.toInt()+(size/2))
+        terrain.addScorchFromExplosion(position.x.toInt()-(size/2), position.x.toInt()+(size/2))
 
         if (size >= 100){
             AudioHelper.play(SND_BIG_BOOM)

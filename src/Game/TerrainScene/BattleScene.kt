@@ -224,12 +224,16 @@ class BattleScene(
             }
             KeyEvent.VK_ENTER, KeyEvent.VK_SPACE -> {
                 keyPressed = null
-                GameController.getCurrentPlayersTank()?.let {
-                    if (it.chargeIndicator == null) {
-                        val chargeIndicator =
-                            ChargeIndicator(this@BattleScene, Pos2D(it.canonX.toDouble(), it.canonY.toDouble()), it)
-                        add(chargeIndicator)
-                        it.chargeIndicator = chargeIndicator
+                GameController.getCurrentPlayer()?.let { player ->
+                    if (player.playerType == PlayerType.LocalHuman) {
+                        player.tank?.let { tank ->
+                            if (tank.chargeIndicator == null) {
+                                val chargeIndicator =
+                                    ChargeIndicator(this@BattleScene, Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble()), tank)
+                                add(chargeIndicator)
+                                tank.chargeIndicator = chargeIndicator
+                            }
+                        }
                     }
                 }
             }
@@ -295,9 +299,13 @@ class BattleScene(
         if (e.keyCode == KeyEvent.VK_LEFT || e.keyCode == KeyEvent.VK_RIGHT) {
             AudioHelper.stop(SND_CHANGE_ANGLE)
         } else if (e.keyCode == KeyEvent.VK_SPACE || e.keyCode == KeyEvent.VK_ENTER) {
-            GameController.getCurrentPlayersTank()?.let { tank ->
-                tank.chargeIndicator?.let { remove(it) }
-                tank.chargeIndicator = null
+            GameController.getCurrentPlayer()?.let { player ->
+                if (player.playerType == PlayerType.LocalHuman) {
+                    player.tank?.let { tank ->
+                        tank.chargeIndicator?.let { remove(it) }
+                        tank.chargeIndicator = null
+                    }
+                }
             }
         }
         keyPressed = null

@@ -134,7 +134,8 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
     }
 
     fun addColoredTopLayer(rasterImage: BufferedImage, depth: Int, color: Color, startX: Int = 0, endX: Int = rasterImage.width-1){
-        for (y in depth .. rasterImage.height - 1) {
+        if (startX >= endX) return
+        for (y in depth..<rasterImage.height) {
             for (x in max(0, startX) .. min(endX, rasterImage.width - 1)) {
                 if (rasterImage.getRGB(x,y) != 0){
                     if (rasterImage.getRGB(x, y-depth) == 0){
@@ -152,13 +153,20 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
                 addColoredTopLayer(rasterImage, 2, darkOutlineColor.darker(100), startX, endX)
             }
             OPTION_GROUND_SNOW -> {
-                addColoredTopLayer(rasterImage, 10, Color(230,230,255), startX, endX)
+                addColoredTopLayer(rasterImage, 10, Color(230, 230, 255), startX, endX)
                 addColoredTopLayer(rasterImage, 8, Color(210, 220, 255), startX, endX)
                 addColoredTopLayer(rasterImage, 6, Color(190, 210, 255), startX, endX)
                 addColoredTopLayer(rasterImage, 4, Color(170, 200, 255), startX, endX)
                 addColoredTopLayer(rasterImage, 2, Color(150, 190, 255), startX, endX)
             }
         }
+    }
+
+    fun addScorchFromExplosion(startX: Int, endX: Int) {
+        addColoredTopLayer(rasterImage, 20, darkerColor, startX+8, endX-8)
+        addColoredTopLayer(rasterImage, 10, darkOutlineColor, startX+5, endX-5)
+        addColoredTopLayer(rasterImage, 5, Color.black, startX-3, endX+3)
+        addColoredTopLayer(rasterImage, 3, Color.black, startX-2, endX+2)
     }
 
     override fun update() {
