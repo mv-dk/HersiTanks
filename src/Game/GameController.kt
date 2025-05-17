@@ -30,8 +30,8 @@ object GameController {
     var decorationOption: Int = OPTION_DECO_NONE
     var wind: Double = 0.0
     var windOption: Int = OPTION_WIND_MEDIUM
-    var groundOption: Int = OPTION_GROUND_GRASS
-    var skyOption: Int = OPTION_SKY_BLUE
+    var groundOption: Int = OPTION_GROUND_RANDOM
+    var skyOption: Int = OPTION_SKY_RANDOM
     var groundSizeOption: Int = OPTION_GROUNDSIZE_SMALL
     var groundSize: Int = gameResX
     var state: IState = MenuState()

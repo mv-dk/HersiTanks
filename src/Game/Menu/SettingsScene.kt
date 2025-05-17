@@ -16,18 +16,20 @@ class SettingsScene() : GameScene(Color(228, 217, 135), gameResX, gameResY) {
     val menuPoints = mutableListOf<MenuPointGameObject>(
         OptionSelectorMenuPoint("Sky", this,
             listOf(
+                OptionValue(OPTION_SKY_RANDOM, "Random"),
                 OptionValue(OPTION_SKY_BLUE, "Blue sky"),
                 OptionValue(OPTION_SKY_STARRY, "Starry sky"),
                 OptionValue(OPTION_SKY_EVENING, "Evening")
-            ), GameController.skyOption,
+            ), 0,
             { old,new ->
                 GameController.skyOption = new.id
             }),
         OptionSelectorMenuPoint("Ground", this,
             listOf(
+                OptionValue(OPTION_GROUND_RANDOM, "Random"),
                 OptionValue(OPTION_GROUND_GRASS, "Grass"),
                 OptionValue(OPTION_GROUND_SNOW, "Snow")
-            ), GameController.groundOption,
+            ), 0,
             {old,new ->
                 GameController.groundOption = new.id
             }),

@@ -14,7 +14,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
-class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int) : GameObject2(parent, position){
+class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int, val groundType: Int) : GameObject2(parent, position){
     var rasterImage: BufferedImage = BufferedImage(width, height, BufferedImage.BITMASK)
     var mode: Int = 1
     var crumble: Boolean = false
@@ -25,7 +25,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
 
     init {
         val g = rasterImage.createGraphics()
-        when (GameController.groundOption) {
+        when (groundType) {
             OPTION_GROUND_GRASS -> {
                 primaryColor = Color.GREEN.darker(40)
                 darkerColor = primaryColor.darker(20)
@@ -89,7 +89,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
         g.fillPolygon(xs.toIntArray(), ys.toIntArray(), xs.size)
 
         addOutlines()
-        when (GameController.groundOption) {
+        when (groundType) {
             OPTION_GROUND_SNOW -> {
                 addSnowmen(rasterImage, 5)
             }
@@ -147,7 +147,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
     }
 
     fun addOutlines(startX: Int = 0, endX: Int = rasterImage.width-1) {
-        when (GameController.groundOption) {
+        when (groundType) {
             OPTION_GROUND_GRASS -> {
                 addColoredTopLayer(rasterImage, 10, darkerColor.darker(20), startX, endX)
                 addColoredTopLayer(rasterImage, 2, darkOutlineColor.darker(100), startX, endX)

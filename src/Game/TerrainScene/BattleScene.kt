@@ -30,7 +30,15 @@ class BattleScene(
     },
     val tanksFallFromSky: Boolean = true
 ) : GameScene(Color(113, 136, 248), gameResX, gameResY) {
-    var rasterTerrain: RasterTerrain = RasterTerrain(this, Pos2D(0.0, 0.0), terrainWidth, height)
+    var groundType = when (GameController.groundOption) {
+        OPTION_GROUND_RANDOM -> arrayOf(OPTION_GROUND_GRASS, OPTION_GROUND_GRASS).random()
+        else -> GameController.groundOption
+    }
+    var skyType = when (GameController.skyOption) {
+        OPTION_SKY_RANDOM -> arrayOf(OPTION_SKY_BLUE, OPTION_SKY_STARRY, OPTION_SKY_EVENING).random()
+        else -> GameController.skyOption
+    }
+    var rasterTerrain: RasterTerrain = RasterTerrain(this, Pos2D(0.0, 0.0), terrainWidth, height, groundType)
     var updatePlayersTurnOnNextPossibleOccasion = false
     var tankInfoBar = TankInfoBar(this, Pos2D(0.0, 0.0))
     var weaponBar = WeaponBar(this, Pos2D(0.0, 32.0))
@@ -110,7 +118,7 @@ class BattleScene(
     }
 
     private fun initializeGround() {
-        when (GameController.groundOption) {
+        when (groundType) {
             OPTION_GROUND_SNOW -> {
                 add(SnowMaker(this, Pos2D(0.0, 0.0), terrainWidth))
             }
@@ -118,7 +126,7 @@ class BattleScene(
     }
 
     private fun initializeSky() {
-        when (GameController.skyOption) {
+        when (skyType) {
             OPTION_SKY_BLUE -> {
                 val g = skyImage.createGraphics()
                 var c = Color(12, 138, 255)
