@@ -30,7 +30,7 @@ class BattleScene(
     val tanksFallFromSky: Boolean = true
 ) : GameScene(Color(113, 136, 248), gameResX, gameResY) {
     var groundType = when (GameController.groundOption) {
-        OPTION_GROUND_RANDOM -> arrayOf(OPTION_GROUND_GRASS, OPTION_GROUND_GRASS).random()
+        OPTION_GROUND_RANDOM -> arrayOf(OPTION_GROUND_GRASS, OPTION_GROUND_SNOW, OPTION_GROUND_DESERT).random()
         else -> GameController.groundOption
     }
     var skyType = when (GameController.skyOption) {

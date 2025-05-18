@@ -4,6 +4,7 @@ import Engine.*
 import Game.Menu.OPTION_GROUND_GRASS
 import Game.Menu.OPTION_GROUND_SNOW
 import Game.GameController
+import Game.Menu.OPTION_GROUND_DESERT
 import SND_EARTHQUAKE
 import java.awt.AlphaComposite
 import java.awt.BasicStroke
@@ -35,6 +36,11 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
                 primaryColor = Color(240, 240, 255)
                 darkerColor = Color(190, 210, 255)
                 darkOutlineColor = Color(150, 190, 255)
+            }
+            OPTION_GROUND_DESERT -> {
+                primaryColor = Color(200, 150, 100)
+                darkerColor = primaryColor.darker(20)
+                darkOutlineColor = primaryColor.darker(100)
             }
             else -> {
                 primaryColor = Color.orange.darker(50)
@@ -148,6 +154,7 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
 
     fun addOutlines(startX: Int = 0, endX: Int = rasterImage.width-1) {
         when (groundType) {
+            OPTION_GROUND_DESERT,
             OPTION_GROUND_GRASS -> {
                 addColoredTopLayer(rasterImage, 10, darkerColor.darker(20), startX, endX)
                 addColoredTopLayer(rasterImage, 2, darkOutlineColor.darker(100), startX, endX)

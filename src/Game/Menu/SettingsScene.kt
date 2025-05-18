@@ -28,7 +28,8 @@ class SettingsScene() : GameScene(Color(228, 217, 135), gameResX, gameResY) {
             listOf(
                 OptionValue(OPTION_GROUND_RANDOM, "Random"),
                 OptionValue(OPTION_GROUND_GRASS, "Grass"),
-                OptionValue(OPTION_GROUND_SNOW, "Snow")
+                OptionValue(OPTION_GROUND_SNOW, "Snow"),
+                OptionValue(OPTION_GROUND_DESERT, "Desert")
             ), 0,
             {old,new ->
                 GameController.groundOption = new.id

@@ -14,9 +14,10 @@ import gameResY
 import java.awt.Color
 import java.awt.event.KeyEvent
 
-val OPTION_GROUND_GRASS = 0
-val OPTION_GROUND_SNOW = 1
-val OPTION_GROUND_RANDOM = 2
+val OPTION_GROUND_RANDOM = 0
+val OPTION_GROUND_GRASS = 1
+val OPTION_GROUND_SNOW = 2
+val OPTION_GROUND_DESERT = 3
 
 val OPTION_SKY_BLUE = 0
 val OPTION_SKY_STARRY = 1
