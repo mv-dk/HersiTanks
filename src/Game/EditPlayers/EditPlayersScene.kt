@@ -131,6 +131,7 @@ class EditPlayersScene(numPlayers: Int) : GameScene(Color(123, 129, 78), gameRes
 //              weaponry.put(7, 100)
 //              weaponry.put(8, 100)
 //              weaponry.put(9, 100)
+            fuel = 100.0
         }
     }
 

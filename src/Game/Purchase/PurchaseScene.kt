@@ -49,6 +49,22 @@ class PurchaseScene(val players: List<Player>, val idx: Int) : GameScene(players
             })
             )
         }
+        if (player.money >= 10) {
+            menuPoints.add(
+                MenuPointGameObject("Fuel, 10 L for $10",
+                    this,
+                    shadow = true,
+                    cursor = false,
+                    fontSize = 16,
+                    onActivate = {
+                        if (player.money >= 10) {
+                            AudioHelper.play(SND_BUY)
+                            player.fuel += 10
+                            player.money -= 10
+                        }
+                    })
+            )
+        }
         if (idx == players.size - 1) {
             menuPoints.add(
                 ChangeSceneMenuPoint("Done", this, ::nextScene)

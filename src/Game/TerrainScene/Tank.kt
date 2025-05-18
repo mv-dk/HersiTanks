@@ -13,6 +13,8 @@ import java.awt.Polygon
 import kotlin.math.cos
 import kotlin.math.sin
 
+enum class Direction { LEFT, RIGHT }
+
 class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D, val color: Color) : GameObject2(parent, position) {
     var chargeIndicator: ChargeIndicator? = null
     var size = 20
@@ -33,6 +35,8 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
     var canonY = (position.y - size * sin(Math.PI*angle/180.0)).toInt()
     var smokeEmitter: Emitter? = null
     var fireEmitter: Emitter? = null
+    var direction = Direction.RIGHT
+    var fuel = 0.0
 
     override fun update() {
         if (falling){
@@ -174,8 +178,8 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
         g.drawLine(position.x.toInt()-1, position.y.toInt(), position.x.toInt()+1, position.y.toInt())
     }
 
-    fun onTankMoved(){
-        updateCanonXY()
+    fun onTankMoved(pokeTerrain: Boolean = true){
+        updateCanonXY(pokeTerrain)
     }
 
     fun onAngleChanged(){
@@ -186,10 +190,14 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
     }
 
     // Call this every time the tank has moved, or the angle has changed
-    fun updateCanonXY(){
+    fun updateCanonXY(pokeTerrain: Boolean = true){
         canonX = (position.x + size * cos(Math.PI*angle/180.0)).toInt()
         canonY = (position.y - size * sin(Math.PI*angle/180.0)).toInt()
-        rasterTerrain.pokeLine(position.x.toInt(), position.y.toInt(), canonX, canonY, 3f)
+        val fromX = (position.x + size*0.9 * cos(Math.PI*angle/180.0)).toInt()
+        val fromY = (position.y - size*0.9 * sin(Math.PI*angle/180.0)).toInt()
+        if (pokeTerrain) {
+            rasterTerrain.pokeLine(fromX, fromY, canonX, canonY, 3f)
+        }
         chargeIndicator?.let {
             it.position.x = canonX.toDouble()
             it.position.y = canonY.toDouble()

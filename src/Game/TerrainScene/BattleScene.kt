@@ -7,8 +7,7 @@ import Game.*
 import Game.Menu.*
 import Game.TerrainScene.Player.*
 import SND_CHANGE_ANGLE
-import SND_DECREASE_POWER
-import SND_INCREASE_POWER
+import SND_DRIVE
 import gameResX
 import gameResY
 import gameWindow
@@ -61,6 +60,11 @@ class BattleScene(
     var mouseWasMoved = false
     var decision: PlayerDecision? = null
 
+    // Used to introduce a short waiting time when the player changes direction,
+    // to prevent the tank from driving and using fuel. First, the movePressBuffer
+    // must be decreased to zero, before the tank starts driving.
+    private var movePressBuffer = 10
+
     override fun load() {
         GameController.state = BattleState()
 
@@ -112,6 +116,16 @@ class BattleScene(
             tank.falling = true
             p.tank = tank
             p.playing = true
+
+            // Take at max 100 L fuel from Player into the tank.
+            // If the tank dies, the fuel is lost. If the tank survives,
+            // The fuel is kept for next round. If the player buys more
+            // fuel, the tank will be filled to max 100 L, and any surplus
+            // will be used to refill the tank in subsequent rounds.
+            val f = min(100.0, p.fuel)
+            tank.fuel = f
+            p.fuel -= f
+
             add(tank)
             x += spaceBetweenTanks
         }
@@ -211,25 +225,79 @@ class BattleScene(
 
         when (keyPressed) {
             KeyEvent.VK_LEFT -> {
-                AudioHelper.loop(SND_CHANGE_ANGLE, -1)
                 GameController.getCurrentPlayersTank()?.let {
-                    it.increaseAngle(1)
-                    if (!viewport.inside(it)) {
-                        viewport.setFocus(it.position)
+                    if (it.direction == Direction.RIGHT) {
+                        it.direction = Direction.LEFT
+                        it.increaseAngle((90 - it.angle).toInt()*2)
+                        movePressBuffer = 10
+                    } else if (movePressBuffer > 0) {
+                        movePressBuffer -= 1
+                    } else if (it.position.x > 1 && it.fuel > 0) {
+                        // drive left
+                        AudioHelper.loop(SND_DRIVE)
+                        it.fuel -= 0.1
+                        val newY = rasterTerrain.surfaceAt(it.position.x.toInt()-1, minY = (it.position.y - 5).toInt())
+                        val dy = newY - it.position.y // positive - tank is moving down
+                        if (dy > -5 && dy < 10) {
+                            it.position.x -= 1
+                            it.position.y = newY.toDouble()
+                            it.onTankMoved(pokeTerrain = false)
+                        }
                     }
                     //showDecisionOutcome()
                 }
             }
             KeyEvent.VK_RIGHT -> {
-                AudioHelper.loop(SND_CHANGE_ANGLE, -1)
                 GameController.getCurrentPlayersTank()?.let {
-                    it.increaseAngle(-1)
+                    if (it.direction == Direction.LEFT) {
+                        it.direction = Direction.RIGHT
+                        it.increaseAngle(-(it.angle-90).toInt()*2)
+                        movePressBuffer = 10
+                    } else if (movePressBuffer > 0) {
+                        movePressBuffer -= 1
+                    } else if (it.position.x < terrainWidth-1 && it.fuel > 0) {
+                        // drive right
+                        AudioHelper.loop(SND_DRIVE)
+                        it.fuel -= 0.1
+                        val newY = rasterTerrain.surfaceAt(it.position.x.toInt()+1, minY = (it.position.y - 5).toInt())
+                        val dy = newY - it.position.y // positive - tank is moving down
+                        if (dy > -5 && dy < 10) {
+                            it.position.x += 1
+                            it.position.y = newY.toDouble()
+                            it.onTankMoved(pokeTerrain = false)
+                        }
+                    }
+                    //showDecisionOutcome()
+                }
+            }
+            KeyEvent.VK_UP -> {
+                GameController.getCurrentPlayersTank()?.let {
+                    AudioHelper.loop(SND_CHANGE_ANGLE, -1)
+                    if (it.direction == Direction.RIGHT && it.angle < 90) {
+                        it.increaseAngle(1)
+                    } else if (it.direction == Direction.LEFT && it.angle > 90) {
+                        it.increaseAngle(-1)
+                    }
+                    if (!viewport.inside(it)) {
+                        viewport.setFocus(it.position)
+                    }
+                }
+            }
+            KeyEvent.VK_DOWN -> {
+                GameController.getCurrentPlayersTank()?.let {
+                    AudioHelper.loop(SND_CHANGE_ANGLE, -1)
+                    if (it.direction == Direction.RIGHT && it.angle > 0) {
+                        it.increaseAngle(-1)
+                    } else if (it.direction == Direction.LEFT && it.angle < 180) {
+                        it.increaseAngle(1)
+                    }
                     if (!viewport.inside(it)) {
                         viewport.setFocus(it.position)
                     }
                     //showDecisionOutcome()
                 }
             }
+
             KeyEvent.VK_ENTER, KeyEvent.VK_SPACE -> {
                 keyPressed = null
                 GameController.getCurrentPlayer()?.let { player ->
@@ -304,8 +372,10 @@ class BattleScene(
     }
 
     override fun keyReleased(e: KeyEvent) {
-        if (e.keyCode == KeyEvent.VK_LEFT || e.keyCode == KeyEvent.VK_RIGHT) {
+        if (e.keyCode == KeyEvent.VK_UP || e.keyCode == KeyEvent.VK_DOWN) {
             AudioHelper.stop(SND_CHANGE_ANGLE)
+        } else if (e.keyCode == KeyEvent.VK_LEFT || e.keyCode == KeyEvent.VK_RIGHT) {
+            AudioHelper.stop(SND_DRIVE)
         } else if (e.keyCode == KeyEvent.VK_SPACE || e.keyCode == KeyEvent.VK_ENTER) {
             GameController.getCurrentPlayer()?.let { player ->
                 if (player.playerType == PlayerType.LocalHuman) {
@@ -431,6 +501,8 @@ class BattleScene(
         team.players.filter { it.playing && (it.tank?.energy ?: 0) > 0 }.let {survivors ->
             for (player in survivors) {
                 player.money += 100
+                // If there is any fuel left in the tank, give it back to the player
+                player.fuel += player.tank?.fuel ?: 0.0
             }
         }
         team.victories += 1

@@ -8,6 +8,7 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics2D
+import kotlin.math.roundToInt
 
 class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, position) {
     val stroke = BasicStroke(3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
@@ -41,7 +42,7 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
                     position.y.toInt() + 22
                 )
                 g.drawString(
-                    "Angle: ${currentTank.angle.toInt()}",
+                    "Fuel: ${currentTank.fuel.roundToInt()} L",
                     position.x.toInt() + 120,
                     position.y.toInt() + 22
                 )

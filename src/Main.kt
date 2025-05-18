@@ -50,8 +50,8 @@ const val SND_SMALL_BOOM = "small-boom"
 const val SND_BIG_BOOM = "big-boom"
 const val SND_FIRE = "fire"
 const val SND_CHANGE_ANGLE = "change-angle"
-const val SND_INCREASE_POWER = "increase-power"
-const val SND_DECREASE_POWER = "decrease-power"
+//const val SND_INCREASE_POWER = "increase-power"
+const val SND_DRIVE = "drive"
 const val SND_FIZZLE = "fizzle"
 const val SND_FIRE2 = "fire2"
 const val SND_FIRE3 = "fire3"
@@ -70,8 +70,8 @@ fun preloadSounds(){
     AudioHelper.load("boom3.wav", SND_BIG_BOOM)
     AudioHelper.load("vhup.wav", SND_FIRE)
     AudioHelper.load("hersi-vinkel.wav", SND_CHANGE_ANGLE)
-    AudioHelper.load("increase_power.wav", SND_INCREASE_POWER)
-    AudioHelper.load("decrease_power.wav", SND_DECREASE_POWER)
+//    AudioHelper.load("increase_power.wav", SND_INCREASE_POWER)
+    AudioHelper.load("decrease_power.wav", SND_DRIVE)
     AudioHelper.load("fjuj.wav", SND_FIZZLE)
     AudioHelper.load("pew1.wav", SND_FIRE2)
     AudioHelper.load("pew2.wav", SND_FIRE3)

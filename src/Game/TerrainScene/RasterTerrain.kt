@@ -254,9 +254,9 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
         g.drawImage(rasterImage, null, 0, 0);
     }
 
-    fun surfaceAt(x: Int): Int {
-        var interval = rasterImage.height/2
-        var y = interval
+    fun surfaceAt(x: Int, minY: Int = 0): Int {
+        var interval = (rasterImage.height - minY)/2
+        var y = interval + minY
         while (interval > 1) {
             interval /= 2
             if (rasterImage.getRGB(x, y) == 0) {
@@ -264,6 +264,9 @@ class RasterTerrain(parent: IGameScene, position: Pos2D, width: Int, height: Int
             } else {
                 y -= interval
             }
+        }
+        while (rasterImage.getRGB(x,y) != 0 && y > 0) {
+            y -= 1
         }
         return y
     }

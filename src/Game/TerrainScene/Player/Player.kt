@@ -16,6 +16,7 @@ class Player(var name: String, val playerType: PlayerType) {
     var tank: Tank? = null
     var playing: Boolean = true
     var weaponry = mutableMapOf<Int,Int>() // Map from weaponId to ammo
+    var fuel = 0.0
     var money = 200.0
     var color = Color.RED
     var currentWeaponId = 1
