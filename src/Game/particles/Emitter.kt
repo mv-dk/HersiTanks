@@ -7,11 +7,12 @@ import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.Stroke
+import kotlin.math.abs
 import kotlin.random.Random
 
 abstract class Emitter(
     parent: IGameScene,
-    position: Pos2D,
+    override var position: Pos2D,
     val width: Int,
     emitSeconds: Double,
     val particlesToCreatePerUpdate: Int = 1
@@ -128,8 +129,9 @@ class SmokeEmitter(
 class DirtFragmentEmitter(
     parent: IGameScene,
     position: Pos2D,
-    width: Int
-) : Emitter(parent, position, width, 0.1, 10) {
+    width: Int,
+    particlesToCreatePerUpdate: Int = 10
+) : Emitter(parent, position, width, 0.1, particlesToCreatePerUpdate) {
 
     lateinit var fragmentDarkColor: Color
     lateinit var fragmentLightColor: Color
@@ -153,7 +155,7 @@ class DirtFragmentEmitter(
 
     override fun makeParticle(emitTicksLeft: Int): Particle {
         val xOffset = Random.nextDouble(-width.toDouble(), width.toDouble())
-        val xVelocity = Random.nextDouble(2.0) * (xOffset / Math.abs(xOffset)) // of offset < 0, xVelocity should be < 0
+        val xVelocity = Random.nextDouble(2.0) * (xOffset / abs(xOffset)) // of offset < 0, xVelocity should be < 0
 
         val yVelocity = Random.nextDouble(-5.0, -3.0)
         val p = Particle(
@@ -168,7 +170,6 @@ class DirtFragmentEmitter(
         //println("Made dirt fragment particle at (${position.x+xOffset},${position.y})")
         return p
     }
-
 }
 
 class Particle(
@@ -226,7 +227,6 @@ class Particle(
             position.y.toInt(),
             nextPos.x.toInt(),
             nextPos.y.toInt()
-            )
+        )
     }
-
 }

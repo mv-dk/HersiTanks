@@ -6,6 +6,8 @@ import Game.particles.Emitter
 import Game.particles.FireEmitter
 import Game.particles.SmokeEmitter
 import Game.GameController
+import SND_CHANGE_ANGLE
+import SND_DRIVE
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics2D
@@ -226,5 +228,94 @@ class Tank(parent: IGameScene, var rasterTerrain: RasterTerrain, position: Pos2D
             Pos2D(this.canonX.toDouble(), this.canonY.toDouble())
         ).times(power / 400.0)
         return velocity
+    }
+
+    private var movePressBuffer = 10
+
+    fun onLeftKeyPressed() {
+        if (direction == Direction.RIGHT) {
+            direction = Direction.LEFT
+            increaseAngle((90 - angle).toInt()*2)
+            movePressBuffer = 10
+        } else if (movePressBuffer > 0) {
+            movePressBuffer -= 1
+        } else if (position.x > 1 && fuel > 0) {
+            // drive left
+            AudioHelper.loop(SND_DRIVE)
+            fuel -= 0.1
+            val newY = rasterTerrain.surfaceAt(position.x.toInt()-1, minY = (position.y - 5).toInt())
+            val dy = newY - position.y // positive - tank is moving down
+            if (dy > -5 && dy < 10) {
+                position.x -= 1
+                position.y = newY.toDouble()
+                onTankMoved(pokeTerrain = false)
+            }
+        }
+    }
+
+    fun onRightKeyPressed() {
+        if (direction == Direction.LEFT) {
+            direction = Direction.RIGHT
+            increaseAngle(-(angle-90).toInt()*2)
+            movePressBuffer = 10
+        } else if (movePressBuffer > 0) {
+            movePressBuffer -= 1
+        } else if (position.x < parent.width-1 && fuel > 0) {
+            // drive right
+            AudioHelper.loop(SND_DRIVE)
+            fuel -= 0.1
+            val newY = rasterTerrain.surfaceAt(position.x.toInt()+1, minY = (position.y - 5).toInt())
+            val dy = newY - position.y // positive - tank is moving down
+            if (dy > -5 && dy < 10) {
+                position.x += 1
+                position.y = newY.toDouble()
+                onTankMoved(pokeTerrain = false)
+            }
+        }
+    }
+
+    fun onLeftOrRightKeyReleased() {
+        AudioHelper.stop(SND_DRIVE)
+    }
+
+    fun onUpKeyPressed() {
+        if (direction == Direction.RIGHT && angle < 90) {
+            AudioHelper.loop(SND_CHANGE_ANGLE, -1)
+            increaseAngle(1)
+        } else if (direction == Direction.LEFT && angle > 90) {
+            AudioHelper.loop(SND_CHANGE_ANGLE, -1)
+            increaseAngle(-1)
+        }
+    }
+
+    fun onDownKeyPressed() {
+        if (direction == Direction.RIGHT && angle > 0) {
+            AudioHelper.loop(SND_CHANGE_ANGLE, -1)
+            increaseAngle(-1)
+        } else if (direction == Direction.LEFT && angle < 180) {
+            AudioHelper.loop(SND_CHANGE_ANGLE, -1)
+            increaseAngle(1)
+        }
+    }
+
+    fun onUpOrDownKeyReleased() {
+        AudioHelper.stop(SND_CHANGE_ANGLE)
+    }
+
+    fun onSpaceKeyPressed() {
+        if (chargeIndicator == null) {
+            chargeIndicator = ChargeIndicator(
+                parent,
+                Pos2D(canonX.toDouble(), canonY.toDouble()),
+                this
+            ).also {
+                parent.add(it)
+            }
+        }
+    }
+
+    fun onSpaceKeyReleased() {
+        chargeIndicator?.let { parent.remove(it) }
+        chargeIndicator = null
     }
 }

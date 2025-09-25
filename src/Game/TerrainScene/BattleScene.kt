@@ -6,6 +6,7 @@ import Game.Status.StatusScene
 import Game.*
 import Game.Menu.*
 import Game.TerrainScene.Player.*
+import Game.particles.DirtFragmentEmitter
 import SND_CHANGE_ANGLE
 import SND_DRIVE
 import gameResX
@@ -156,8 +157,17 @@ class BattleScene(
 
             OPTION_SKY_STARRY -> {
                 val g = skyImage.createGraphics()
-                g.color = Color(0, 0, 50)
+
+                var c = Color(0, 0, 50)
+                g.color = c
                 g.fillRect(0, 0, width, height)
+                val bands = 60
+                for (i in 1..bands) {
+                    c = c.lighter(150 / bands)
+                    g.color = c
+                    g.fillRect(0, i * height / bands, width, height / bands)
+                }
+
                 g.color = Color(128, 128, 255)
                 for (i in 1..100) {
                     val size = random.nextInt(2, 4)
@@ -184,7 +194,7 @@ class BattleScene(
         }
     }
 
-    fun busy(): Boolean{
+    private fun busy(): Boolean{
         if (rasterTerrain.crumble || rasterTerrain.earthquake != null) return true
         if (GameController.players.any {it.playing && (it.tank?.falling == true)}) return true
         if (GameController.projectilesFlying > 0) return true
@@ -210,7 +220,7 @@ class BattleScene(
     /**
      * This is running on every update.
      */
-    fun handleKeyPressed() {
+    private fun handleKeyPressed() {
         if (keyPressed == KeyEvent.VK_ESCAPE){
             keyPressed = null
             unload()
@@ -221,104 +231,44 @@ class BattleScene(
 
         if (busy()) return
         if (updatePlayersTurnOnNextPossibleOccasion) return
-        if (GameController.getCurrentPlayer()?.playerType != PlayerType.LocalHuman) return
 
+        val player = GameController.getCurrentPlayer()
+        if (player?.playerType != PlayerType.LocalHuman) return
+
+        val tank = GameController.getCurrentPlayersTank()
         when (keyPressed) {
             KeyEvent.VK_LEFT -> {
-                GameController.getCurrentPlayersTank()?.let {
-                    if (it.direction == Direction.RIGHT) {
-                        it.direction = Direction.LEFT
-                        it.increaseAngle((90 - it.angle).toInt()*2)
-                        movePressBuffer = 10
-                    } else if (movePressBuffer > 0) {
-                        movePressBuffer -= 1
-                    } else if (it.position.x > 1 && it.fuel > 0) {
-                        // drive left
-                        AudioHelper.loop(SND_DRIVE)
-                        it.fuel -= 0.1
-                        val newY = rasterTerrain.surfaceAt(it.position.x.toInt()-1, minY = (it.position.y - 5).toInt())
-                        val dy = newY - it.position.y // positive - tank is moving down
-                        if (dy > -5 && dy < 10) {
-                            it.position.x -= 1
-                            it.position.y = newY.toDouble()
-                            it.onTankMoved(pokeTerrain = false)
-                        }
-                    }
-                    //showDecisionOutcome()
-                }
+                tank?.onLeftKeyPressed()
             }
             KeyEvent.VK_RIGHT -> {
-                GameController.getCurrentPlayersTank()?.let {
-                    if (it.direction == Direction.LEFT) {
-                        it.direction = Direction.RIGHT
-                        it.increaseAngle(-(it.angle-90).toInt()*2)
-                        movePressBuffer = 10
-                    } else if (movePressBuffer > 0) {
-                        movePressBuffer -= 1
-                    } else if (it.position.x < terrainWidth-1 && it.fuel > 0) {
-                        // drive right
-                        AudioHelper.loop(SND_DRIVE)
-                        it.fuel -= 0.1
-                        val newY = rasterTerrain.surfaceAt(it.position.x.toInt()+1, minY = (it.position.y - 5).toInt())
-                        val dy = newY - it.position.y // positive - tank is moving down
-                        if (dy > -5 && dy < 10) {
-                            it.position.x += 1
-                            it.position.y = newY.toDouble()
-                            it.onTankMoved(pokeTerrain = false)
-                        }
-                    }
-                    //showDecisionOutcome()
-                }
+                tank?.onRightKeyPressed()
             }
             KeyEvent.VK_UP -> {
-                GameController.getCurrentPlayersTank()?.let {
-                    AudioHelper.loop(SND_CHANGE_ANGLE, -1)
-                    if (it.direction == Direction.RIGHT && it.angle < 90) {
-                        it.increaseAngle(1)
-                    } else if (it.direction == Direction.LEFT && it.angle > 90) {
-                        it.increaseAngle(-1)
-                    }
+                tank?.let {
+                    it.onUpKeyPressed()
                     if (!viewport.inside(it)) {
                         viewport.setFocus(it.position)
                     }
                 }
             }
             KeyEvent.VK_DOWN -> {
-                GameController.getCurrentPlayersTank()?.let {
-                    AudioHelper.loop(SND_CHANGE_ANGLE, -1)
-                    if (it.direction == Direction.RIGHT && it.angle > 0) {
-                        it.increaseAngle(-1)
-                    } else if (it.direction == Direction.LEFT && it.angle < 180) {
-                        it.increaseAngle(1)
-                    }
+                tank?.let {
+                    it.onDownKeyPressed()
                     if (!viewport.inside(it)) {
                         viewport.setFocus(it.position)
                     }
-                    //showDecisionOutcome()
                 }
             }
-
             KeyEvent.VK_ENTER, KeyEvent.VK_SPACE -> {
                 keyPressed = null
-                GameController.getCurrentPlayer()?.let { player ->
-                    if (player.playerType == PlayerType.LocalHuman) {
-                        player.tank?.let { tank ->
-                            if (tank.chargeIndicator == null) {
-                                val chargeIndicator =
-                                    ChargeIndicator(this@BattleScene, Pos2D(tank.canonX.toDouble(), tank.canonY.toDouble()), tank)
-                                add(chargeIndicator)
-                                tank.chargeIndicator = chargeIndicator
-                            }
-                        }
-                    }
-                }
+                tank?.onSpaceKeyPressed()
             }
             KeyEvent.VK_TAB -> {
                 keyPressed = null
-                GameController.getCurrentPlayer()?.cycleWeapon()
+                player?.cycleWeapon()
             }
             KeyEvent.VK_E -> { // Toy
-                GameController.getCurrentPlayersTank()?.addFire()
+                tank?.addFire()
             }
             KeyEvent.VK_U -> { // Toy
                 GameController.players.forEach {
@@ -336,11 +286,10 @@ class BattleScene(
                 add(Transition(this))
             }
             KeyEvent.VK_0 -> { // Toy
-                val tank = GameController.getCurrentPlayersTank()
-                if (tank != null) {
-                    tank.size += 1
-                    tank.updateCanonXY()
-                    println("Tank size: ${tank.size}")
+                tank?.let {
+                    it.size += 1
+                    it.updateCanonXY()
+                    println("Tank size: ${it.size}")
                 }
             }
             KeyEvent.VK_1 -> { // Toy
@@ -357,11 +306,10 @@ class BattleScene(
                 )
             }
             KeyEvent.VK_9 -> { // Toy
-                val tank = GameController.getCurrentPlayersTank()
-                if (tank != null) {
-                    tank.size -= 1
-                    tank.updateCanonXY()
-                    println("Tank size: ${tank.size}")
+                tank?.let {
+                    it.size -= 1
+                    it.updateCanonXY()
+                    println("Tank size: ${it.size}")
                 }
             }
         }
@@ -372,18 +320,18 @@ class BattleScene(
     }
 
     override fun keyReleased(e: KeyEvent) {
-        if (e.keyCode == KeyEvent.VK_UP || e.keyCode == KeyEvent.VK_DOWN) {
-            AudioHelper.stop(SND_CHANGE_ANGLE)
-        } else if (e.keyCode == KeyEvent.VK_LEFT || e.keyCode == KeyEvent.VK_RIGHT) {
-            AudioHelper.stop(SND_DRIVE)
-        } else if (e.keyCode == KeyEvent.VK_SPACE || e.keyCode == KeyEvent.VK_ENTER) {
-            GameController.getCurrentPlayer()?.let { player ->
-                if (player.playerType == PlayerType.LocalHuman) {
-                    player.tank?.let { tank ->
-                        tank.chargeIndicator?.let { remove(it) }
-                        tank.chargeIndicator = null
-                    }
-                }
+        if (GameController.getCurrentPlayer()?.playerType != PlayerType.LocalHuman) return
+
+        val tank = GameController.getCurrentPlayersTank()
+        when (e.keyCode) {
+            KeyEvent.VK_UP, KeyEvent.VK_DOWN -> {
+                tank?.onUpOrDownKeyReleased()
+            }
+            KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> {
+                tank?.onLeftOrRightKeyReleased()
+            }
+            KeyEvent.VK_SPACE, KeyEvent.VK_ENTER -> {
+                tank?.onSpaceKeyReleased()
             }
         }
         keyPressed = null

@@ -49,6 +49,7 @@ abstract class GameScene(val color: Color, override val width: Int, override val
     final override fun unload() {
         forEachGameObject {
             it.unload()
+            remove(it)
         }
         if (gameObjectsToRemove.size < gameObjects.size) {
             println("GameScene is unloaded, but its ${gameObjects.size} objects are not removed.")
