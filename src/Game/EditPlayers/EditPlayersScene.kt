@@ -63,7 +63,8 @@ class EditPlayersScene(numPlayers: Int) : GameScene(Color(123, 129, 78), gameRes
                     "Player $index",
                     colors[index],
                     initialFontSize = 14,
-                    maxTextLength = 15
+                    maxTextLength = 10,
+                    maxTextLengthIsMs = true
                 ).apply {
                     cursor = false
                 },
