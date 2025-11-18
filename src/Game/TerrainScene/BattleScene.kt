@@ -393,14 +393,15 @@ class BattleScene(
         decision?.let {
             val player = GameController.getCurrentPlayer()
             val tank = player?.tank ?: return
-            if (tank.angle.toInt() < it.angle) {
+            if ((player.weaponry[it.weaponId] ?: 0) > 0 && player.currentWeaponId != it.weaponId) {
+                player.cycleWeapon()
+                cpuCooldown += (random.nextDouble(fps) + fps/4).toInt()
+            } else if (tank.angle.toInt() < it.angle) {
                 tank.increaseAngle(+1)
                 AudioHelper.loop(SND_CHANGE_ANGLE)
             } else if (tank.angle.toInt() > it.angle) {
                 tank.increaseAngle(-1)
                 AudioHelper.loop(SND_CHANGE_ANGLE)
-            } else if ((player.weaponry[it.weaponId] ?: 0) > 0 && player.currentWeaponId != it.weaponId) {
-                player.cycleWeapon()
             } else {
                 AudioHelper.stop(SND_CHANGE_ANGLE)
                 if (tank.chargeIndicator == null) {
