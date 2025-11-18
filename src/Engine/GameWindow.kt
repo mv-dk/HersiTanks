@@ -150,7 +150,7 @@ open class GameWindow(
 
     override fun getGraphics2D(): Graphics2D {
         if (isImageValid()) {
-            createNewImage(true)
+            createNewImage(fullScreen)
         }
         val g = createGraphics()
         return g
