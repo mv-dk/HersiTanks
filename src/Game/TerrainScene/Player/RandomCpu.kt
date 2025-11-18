@@ -5,9 +5,7 @@ import kotlin.random.Random
 
 class RandomCpu : Cpu() {
     override fun getDecision(player: Player): PlayerDecision {
-        repeat (Random.nextInt(10)) {
-            player.cycleWeapon()
-        }
+        val chosenWeaponId = player.weaponry.filter { it.value > 0 }.keys.random()
         if (GameController.players.count { it.playing} <= 1) {
             return PlayerDecision(player, 0, 0, player.currentWeaponId)
         }
@@ -32,7 +30,7 @@ class RandomCpu : Cpu() {
             player,
             Random.nextInt(minAngle, maxAngle),
             Random.nextInt(minPower, maxPower),
-            player.currentWeaponId
+            chosenWeaponId
         )
         //println("Decision: angle ${decision.angle}, power ${decision.power}, weapon ${decision.weaponId}")
         return decision
