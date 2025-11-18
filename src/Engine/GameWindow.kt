@@ -246,7 +246,7 @@ class GameRunner(
 
     fun run(){
         val period: Duration = (1 / fps).seconds
-        var maxSkips: Int = 5
+        val maxSkips: Int = 5
         var timeTaken: Duration
         while(!exitGame){
             var updatesPerDraw = 1
