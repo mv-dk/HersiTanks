@@ -37,7 +37,13 @@ var screenHeight = gameResY.toDouble()
  * Contains the game loop in the function run().
  * Contains currentGameScene, on which update() and draw() is called.
  */
-open class GameWindow(val width: Int, val height: Int, title: String, val gameScene: IGameScene, var fullScreen: Boolean) : Runnable, IGameWindow {
+open class GameWindow(
+    val width: Int,
+    val height: Int,
+    title: String,
+    private val gameScene: IGameScene,
+    private var fullScreen: Boolean
+) : Runnable, IGameWindow {
     private var panel = JPanel()
     var frame: JFrame = JFrame()
 
