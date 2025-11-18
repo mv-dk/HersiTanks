@@ -185,7 +185,7 @@ class BattleScene(
                 var c = Color(255, 155, 0)
                 g.color = c
                 g.fillRect(0, 0, width, height)
-                var bands = 60
+                val bands = 60
                 for (i in 1..bands) {
                     c = c.darker(200 / bands)
                     g.color = c
