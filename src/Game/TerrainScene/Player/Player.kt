@@ -5,10 +5,13 @@ import Engine.Pos2D
 import Game.GameController
 import Game.TerrainScene.Tank
 import Game.TerrainScene.Weapon
+import SND_CLICK
 import SND_FIRE
 import SND_FIRE2
 import SND_FIRE3
 import SND_FIZZLE
+import SND_SWOOSH
+import SND_SWOOSH2
 import java.awt.Color
 import kotlin.random.Random
 
@@ -34,6 +37,10 @@ class Player(var name: String, val playerType: PlayerType) {
 
     fun cycleWeapon() {
         val oldWeaponId = currentWeaponId
+        if ((tank?.id ?: 0) % 3 == 0) AudioHelper.play(SND_CLICK)
+        else if ((tank?.id ?: 0) % 2 == 0) AudioHelper.play(SND_SWOOSH)
+        else AudioHelper.play(SND_SWOOSH2)
+
         while (true) {
             currentWeaponId += 1
             if (currentWeaponId > Weapon.maxWeaponId) currentWeaponId = Weapon.minWeaponId

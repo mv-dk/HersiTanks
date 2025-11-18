@@ -63,6 +63,7 @@ const val SND_BAMBOO_03 = "bamboo03"
 const val SND_SWOOSH = "swoosh"
 const val SND_SWOOSH2 = "swoosh2"
 const val SND_CHARGE = "charge"
+const val SND_CLICK = "click"
 
 fun preloadSounds(){
     AudioHelper.load("earthquake3.wav",SND_EARTHQUAKE)
@@ -83,6 +84,7 @@ fun preloadSounds(){
     AudioHelper.load("swoosh.wav", SND_SWOOSH) // https://freesound.org/people/lesaucisson/sounds/585257/
     AudioHelper.load("swoosh2.wav", SND_SWOOSH2) // https://freesound.org/people/Benboncan/sounds/74692/
     AudioHelper.load("charge.wav", SND_CHARGE) // https://freesound.org/people/RescopicSound/sounds/751756/
+    AudioHelper.load("click.wav", SND_CLICK)
 }
 
 /*
