@@ -157,7 +157,10 @@ open class GameWindow(
     }
 }
 
-class GameRunner(val window: IGameWindow, val gameScene: IGameScene) : KeyListener, MouseListener, MouseMotionListener {
+class GameRunner(
+    private val window: IGameWindow,
+    private val gameScene: IGameScene
+) : KeyListener, MouseListener, MouseMotionListener {
     private val keyEventQueue: ConcurrentLinkedQueue<KeyEvent> = ConcurrentLinkedQueue()
     private val mouseEventQueue: ConcurrentLinkedQueue<MouseEvent> = ConcurrentLinkedQueue()
 
