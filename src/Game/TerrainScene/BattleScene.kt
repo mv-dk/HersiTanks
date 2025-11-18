@@ -1,6 +1,7 @@
 package Game.TerrainScene
 
 import Engine.*
+import Engine.GameRunner.Companion.fps
 import Game.Status.StatusLine
 import Game.Status.StatusScene
 import Game.*
@@ -376,11 +377,17 @@ class BattleScene(
         if (GameController.players.size > 0 &&
             GameController.getCurrentPlayer()?.playerType == PlayerType.LocalCpu &&
             GameController.getCurrentPlayersTank()?.playing == true) {
-            carryOutDecision()
+            if (cpuCooldown > 0) {
+                cpuCooldown -= 1
+            } else {
+                carryOutDecision()
+            }
         }
 
         super.update()
     }
+
+    var cpuCooldown = 0
 
     private fun carryOutDecision() {
         decision?.let {
