@@ -329,8 +329,10 @@ object AudioHelper {
 
     fun load(path: String, name: String){
         val url = AudioHelper.javaClass.classLoader.getResource(path)
-        _lock.withLock {
-            clipPlayer.loadSound(url, name)
+        if (url != null) {
+            _lock.withLock {
+                clipPlayer.loadSound(url, name)
+            }
         }
     }
 
