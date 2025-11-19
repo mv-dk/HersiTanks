@@ -46,7 +46,7 @@ class EditPlayersScene(numPlayers: Int) : GameScene(Color(123, 129, 78), gameRes
         Color.GREEN,
         Color.CYAN,
         Color.YELLOW,
-        Color.BLACK,
+        Color(96,38,0),
         Color.WHITE,
         Color.ORANGE,
         Color.PINK,
