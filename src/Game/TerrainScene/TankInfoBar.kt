@@ -27,9 +27,6 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
 
     override fun draw(g: Graphics2D) {
         drawAsHud(g) {
-            g.color = Color.DARK_GRAY
-            g.fillRect(position.x.toInt(), position.y.toInt(), parent.width, 32)
-
             g.stroke = stroke
             g.color = Color.WHITE
             g.font = font

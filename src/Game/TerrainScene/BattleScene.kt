@@ -286,6 +286,12 @@ class BattleScene(
             KeyEvent.VK_O -> { // Toy
                 add(Transition(this))
             }
+            KeyEvent.VK_S -> { // Toy
+                keyPressed = null
+                GameController.skyOption = (GameController.skyOption+1) % 3
+                skyType = GameController.skyOption
+                initializeSky()
+            }
             KeyEvent.VK_0 -> { // Toy
                 tank?.let {
                     it.size += 1
