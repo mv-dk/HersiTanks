@@ -4,13 +4,13 @@ HersiTanks is a tiny indie game dev project by me. It is inspired by the classic
 
 > ![Screenshot](docs/screenshot-00.png)
 
-> ![Screenshot](docs/screenshot-06.png)
-
 > ![Screenshot](docs/screenshot-01.png)
 
 > ![Screenshot](docs/screenshot-02.png)
 
 > ![Screenshot](docs/screenshot-03.png)
+
+> ![Screenshot](docs/screenshot-06.png)
 
 > ![Screenshot](docs/screenshot-04.png)
 
