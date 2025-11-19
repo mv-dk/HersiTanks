@@ -266,7 +266,7 @@ class BattleScene(
             }
             KeyEvent.VK_TAB -> {
                 keyPressed = null
-                player?.cycleWeapon()
+                player.cycleWeapon()
             }
             KeyEvent.VK_E -> { // Toy
                 tank?.addFire()
