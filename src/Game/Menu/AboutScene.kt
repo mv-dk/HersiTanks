@@ -1,6 +1,6 @@
 package Game.Menu
 
-import Engine.AudioHelper
+import Engine.Audio.AudioHelper
 import Engine.GameScene
 import SND_SWOOSH2
 import gameResX

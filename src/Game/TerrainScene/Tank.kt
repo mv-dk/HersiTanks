@@ -1,6 +1,7 @@
 package Game.TerrainScene
 
 import Engine.*
+import Engine.Audio.AudioHelper
 import Game.Menu.OPTION_DECO_CHRISTMAS
 import Game.particles.Emitter
 import Game.particles.FireEmitter

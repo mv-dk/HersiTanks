@@ -1,15 +1,14 @@
 package Game.TerrainScene
 
 import Engine.*
+import Engine.Audio.AudioHelper
 import Engine.GameRunner.Companion.fps
 import Game.Status.StatusLine
 import Game.Status.StatusScene
 import Game.*
 import Game.Menu.*
 import Game.TerrainScene.Player.*
-import Game.particles.DirtFragmentEmitter
 import SND_CHANGE_ANGLE
-import SND_DRIVE
 import gameResX
 import gameResY
 import gameWindow

@@ -3,21 +3,16 @@ package Engine
 import Game.GameController
 import gameResX
 import gameResY
-import java.awt.*
+import java.awt.Dimension
+import java.awt.Graphics2D
+import java.awt.GraphicsEnvironment
 import java.awt.RenderingHints.*
-import java.awt.event.KeyEvent
-import java.awt.event.KeyListener
-import java.awt.event.MouseEvent
-import java.awt.event.MouseListener
-import java.awt.event.MouseMotionListener
+import java.awt.Toolkit
+import java.awt.event.*
 import java.awt.image.VolatileImage
-import java.net.URL
 import java.util.concurrent.ConcurrentLinkedQueue
-import java.util.concurrent.locks.ReentrantLock
-import javax.sound.sampled.*
 import javax.swing.JFrame
 import javax.swing.JPanel
-import kotlin.concurrent.withLock
 import kotlin.math.min
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -323,91 +318,3 @@ class GameRunner(
     }
 }
 
-object AudioHelper {
-    private val clipPlayer = AudioClipPlayer()
-    private val _lock = ReentrantLock()
-
-    fun load(path: String, name: String){
-        val url = AudioHelper.javaClass.classLoader.getResource(path)
-        if (url != null) {
-            _lock.withLock {
-                clipPlayer.loadSound(url, name)
-            }
-        }
-    }
-
-    fun play(name: String) {
-        _lock.withLock {
-            clipPlayer.playSound(name)
-        }
-    }
-
-    fun stop(name: String){
-        _lock.withLock {
-            clipPlayer.stopSound(name)
-        }
-    }
-
-    fun loop(name: String, times: Int = -1){
-        _lock.withLock {
-            clipPlayer.loopSound(name, times)
-        }
-    }
-
-    fun unload(){
-        _lock.withLock {
-            clipPlayer.unload()
-        }
-    }
-}
-
-class AudioClipPlayer {
-    private var audioInputStreamMap = mutableMapOf<String, AudioInputStream>()
-    private var clipMap = mutableMapOf<String, Clip>()
-
-    fun loadSound(path: URL, name: String) {
-        if (clipMap.containsKey(name)) return
-
-        val audioStream = AudioSystem.getAudioInputStream(path)
-        val audioClip = AudioSystem.getClip()
-        audioClip.open(audioStream)
-        audioInputStreamMap[name] = audioStream
-        clipMap[name] = audioClip
-    }
-
-    fun playSound(name: String) {
-         clipMap[name]?.let { clip ->
-             if (clip.isRunning) {
-                 clip.stop()
-                 clip.flush()
-             }
-             clip.framePosition = 0
-             while (!clip.isRunning)
-                 clip.start()
-
-         }
-    }
-
-    fun stopSound(name: String) {
-        clipMap[name]?.let { clip ->
-            while (clip.isRunning) {
-                clip.stop()
-                clip.flush()
-                clip.framePosition = 0
-            }
-        }
-    }
-
-    fun loopSound(name: String, times: Int = -1){
-        clipMap[name]?.loop(times)
-    }
-
-    fun unload(){
-        for (clip in clipMap){
-            clip.value.close()
-        }
-        for (audioStream in audioInputStreamMap){
-            audioStream.value.close()
-        }
-    }
-}

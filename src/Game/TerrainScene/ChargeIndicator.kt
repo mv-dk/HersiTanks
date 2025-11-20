@@ -1,6 +1,7 @@
 package Game.TerrainScene
 
 import Engine.*
+import Engine.Audio.AudioHelper
 import Game.GameController
 import SND_CHARGE
 import SND_FIZZLE

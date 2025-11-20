@@ -2,6 +2,7 @@ package Game.TerrainScene
 
 import Engine.*
 import Game.GameController
+import Game.Helpers.FontHelper
 import gameResX
 import gameResY
 import java.awt.BasicStroke
@@ -12,10 +13,8 @@ import kotlin.math.roundToInt
 
 class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, position) {
     val stroke = BasicStroke(3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND)
-    val font = Font("Helvetica", Font.PLAIN, 18)
+    val font = FontHelper.balooFont?.deriveFont(Font.PLAIN, 18f) ?: Font("Helvetica", Font.PLAIN, 18)
     val debugFont = Font("Helvetica", Font.PLAIN, 10)
-    val purple = Color(30, 30, 80)
-    val darkPurple = Color(20, 20, 40)
 
     init {
         drawOrder = 100
@@ -23,6 +22,19 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
 
     override fun update() {
 
+    }
+
+    private fun drawStringWithShadow(
+        g: Graphics2D,
+        text: String,
+        x: Int,
+        y: Int
+    ) {
+        val prevColor = g.color
+        g.color = Color.BLACK
+        g.drawString(text, x+1, y+1)
+        g.color = prevColor
+        g.drawString(text, x, y)
     }
 
     override fun draw(g: Graphics2D) {
@@ -33,34 +45,35 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
             val currentPlayer = GameController.getCurrentPlayer()
             val currentTank = currentPlayer?.tank
             if (currentPlayer != null && currentTank != null) {
-                g.drawString(
+                drawStringWithShadow(
+                    g,
                     "Power: ${currentTank.power}",
                     position.x.toInt() + 16,
                     position.y.toInt() + 22
                 )
-                g.drawString(
+                drawStringWithShadow(
+                    g,
                     "Fuel: ${currentTank.fuel.roundToInt()} L",
                     position.x.toInt() + 120,
                     position.y.toInt() + 22
                 )
-                g.drawString(
+                drawStringWithShadow(
+                    g,
                     "\$${currentPlayer.money}",
                     position.x.toInt() + 420,
                     position.y.toInt() + 22
                 )
-                g.drawString(
+                drawStringWithShadow(
+                    g,
                     "Energy: ${currentTank.energy}",
                     position.x.toInt() + 516,
                     position.y.toInt() + 22
                 )
 
                 val nameWidth = g.fontMetrics.stringWidth(currentPlayer.name)
-                // shadow
-                g.color = Color.BLACK
-                g.drawString(currentPlayer.name, (gameResX / 2 - nameWidth / 2) + 1, position.y.toInt() + 22 + 1)
 
                 g.color = currentPlayer.color
-                g.drawString(currentPlayer.name, gameResX / 2 - nameWidth / 2, position.y.toInt() + 22)
+                drawStringWithShadow(g, currentPlayer.name, gameResX / 2 - nameWidth / 2, position.y.toInt() + 22)
 
                 if (GameRunner.debug) {
                     g.color = Color.RED
@@ -78,3 +91,4 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
         }
     }
 }
+

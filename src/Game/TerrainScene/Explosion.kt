@@ -1,6 +1,7 @@
 package Game.TerrainScene
 
 import Engine.*
+import Engine.Audio.AudioHelper
 import Game.particles.DirtFragmentEmitter
 import Game.particles.FireEmitter
 import Game.particles.SmokeEmitter

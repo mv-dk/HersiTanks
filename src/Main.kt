@@ -1,4 +1,4 @@
-import Engine.AudioHelper
+import Engine.Audio.AudioHelper
 import Engine.GameWindow
 import Game.Menu.MenuScene
 import java.awt.GraphicsEnvironment

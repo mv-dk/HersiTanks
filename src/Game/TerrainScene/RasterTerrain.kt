@@ -1,6 +1,7 @@
 package Game.TerrainScene
 
 import Engine.*
+import Engine.Audio.AudioHelper
 import Game.Menu.OPTION_GROUND_GRASS
 import Game.Menu.OPTION_GROUND_SNOW
 import Game.GameController
