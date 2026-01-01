@@ -24,19 +24,6 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
 
     }
 
-    private fun drawStringWithShadow(
-        g: Graphics2D,
-        text: String,
-        x: Int,
-        y: Int
-    ) {
-        val prevColor = g.color
-        g.color = Color.BLACK
-        g.drawString(text, x+1, y+1)
-        g.color = prevColor
-        g.drawString(text, x, y)
-    }
-
     override fun draw(g: Graphics2D) {
         drawAsHud(g) {
             g.stroke = stroke
@@ -45,25 +32,25 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
             val currentPlayer = GameController.getCurrentPlayer()
             val currentTank = currentPlayer?.tank
             if (currentPlayer != null && currentTank != null) {
-                drawStringWithShadow(
+                FontHelper.drawStringWithShadow(
                     g,
                     "Power: ${currentTank.power}",
                     position.x.toInt() + 16,
                     position.y.toInt() + 22
                 )
-                drawStringWithShadow(
+                FontHelper.drawStringWithShadow(
                     g,
                     "Fuel: ${currentTank.fuel.roundToInt()} L",
                     position.x.toInt() + 120,
                     position.y.toInt() + 22
                 )
-                drawStringWithShadow(
+                FontHelper.drawStringWithShadow(
                     g,
                     "\$${currentPlayer.money}",
                     position.x.toInt() + 420,
                     position.y.toInt() + 22
                 )
-                drawStringWithShadow(
+                FontHelper.drawStringWithShadow(
                     g,
                     "Energy: ${currentTank.energy}",
                     position.x.toInt() + 516,
@@ -73,7 +60,7 @@ class TankInfoBar(parent: IGameScene, position: Pos2D) : GameObject2(parent, pos
                 val nameWidth = g.fontMetrics.stringWidth(currentPlayer.name)
 
                 g.color = currentPlayer.color
-                drawStringWithShadow(g, currentPlayer.name, gameResX / 2 - nameWidth / 2, position.y.toInt() + 22)
+                FontHelper.drawStringWithShadow(g, currentPlayer.name, gameResX / 2 - nameWidth / 2, position.y.toInt() + 22)
 
                 if (GameRunner.debug) {
                     g.color = Color.RED

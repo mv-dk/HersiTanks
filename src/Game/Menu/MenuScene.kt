@@ -78,12 +78,14 @@ class MenuScene() : GameScene(Color(77, 83, 128), gameResX, gameResY) {
                 GameRunner.exitGame = true
             }
         })
+    val hersiTanksText = HersiTanksTextGameObject(this, Pos2D(300,100), size = 2f)
 
     init {
         repeat(10) {
             add(FloatingBlob(this))
         }
         add(menuGameObject)
+        add(hersiTanksText)
         add(Transition(this))
     }
 
