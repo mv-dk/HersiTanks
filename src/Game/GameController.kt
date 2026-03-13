@@ -40,8 +40,6 @@ object GameController {
     var gamesToPlay: Int = 10
     var gamesPlayed: Int = 0
 
-    var projectilesFlying = 0
-    var explosionsActive = 0
     var glowUp = 0 // whether everything should glow up
 
     fun onGoingToMenu(){
@@ -54,8 +52,8 @@ object GameController {
     }
 
     fun getCurrentPlayer(): Player? {
-        val battleState = state as BattleState
-        val currentPlayer = battleState.currentPlayer(players)
+        val battleState = state as? BattleState
+        val currentPlayer = battleState?.currentPlayer(players)
         return currentPlayer
     }
 
@@ -71,7 +69,7 @@ object GameController {
     }
 
     fun nextPlayersTurn() {
-        (state as BattleState).nextTurn(players)
+        (state as? BattleState)?.nextTurn(players)
     }
 }
 

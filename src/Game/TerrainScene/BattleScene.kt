@@ -60,6 +60,8 @@ class BattleScene(
     var randomizeFirstTurn = true
     var mouseWasMoved = false
     var decision: PlayerDecision? = null
+    var projectilesFlying = 0
+    var explosionsActive = 0
 
     // Used to introduce a short waiting time when the player changes direction,
     // to prevent the tank from driving and using fuel. First, the movePressBuffer
@@ -92,7 +94,7 @@ class BattleScene(
             )
         }
 
-        if (randomizeFirstTurn && GameController.players.size > 0) {
+        if (randomizeFirstTurn && GameController.players.isNotEmpty()) {
             repeat(Random.nextInt(GameController.players.size)) {
                 GameController.nextPlayersTurn()
             }
@@ -197,8 +199,8 @@ class BattleScene(
     private fun busy(): Boolean{
         if (rasterTerrain.crumble || rasterTerrain.earthquake != null) return true
         if (GameController.players.any {it.playing && (it.tank?.falling == true)}) return true
-        if (GameController.projectilesFlying > 0) return true
-        if (GameController.explosionsActive > 0) return true
+        if (projectilesFlying > 0) return true
+        if (explosionsActive > 0) return true
         if (decision != null) return true
         return false
     }
@@ -365,7 +367,7 @@ class BattleScene(
             mouseWasMoved = false
             viewport.setFocus(translationX.toDouble(), translationY.toDouble())
         }
-        else if (Projectile.activeProjectiles.size > 0) {
+        else if (Projectile.activeProjectiles.isNotEmpty()) {
             val p = Projectile.activeProjectiles.first()
             viewport.setFocus(p.position)
         }
@@ -379,7 +381,7 @@ class BattleScene(
             GameController.glowUp -= 1
         }
 
-        if (GameController.players.size > 0 &&
+        if (GameController.players.isNotEmpty() &&
             GameController.getCurrentPlayer()?.playerType == PlayerType.LocalCpu &&
             GameController.getCurrentPlayersTank()?.playing == true) {
             if (cpuCooldown > 0) {

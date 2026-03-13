@@ -21,7 +21,7 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
     }
 
     init {
-        GameController.explosionsActive += 1
+        (parent as? BattleScene)?.explosionsActive += 1
         GameController.glowUp = 10
         val terrain = (parent as BattleScene).rasterTerrain
         terrain.pokeHole(position.x.toInt(), position.y.toInt(), size)
@@ -80,7 +80,7 @@ class Explosion(parent: IGameScene, position: Pos2D, var size: Int, val duration
         if (tick >= duration) {
             parent.remove(this)
             currentExplosions.remove(this)
-            GameController.explosionsActive -= 1
+            (parent as? BattleScene)?.explosionsActive -= 1
             onDone()
         }
     }

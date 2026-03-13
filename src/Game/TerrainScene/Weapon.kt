@@ -71,7 +71,7 @@ class MirvWeapon(id: Int, name: String, purchasePrice: Double, purchaseQuantity:
             terrain.crumble = true
         }))
         gameScene.remove(projectile)
-        GameController.projectilesFlying -= 1
+        (gameScene as? BattleScene)?.projectilesFlying -= 1
         Projectile.activeProjectiles.remove(projectile)
         for (i in 1 .. subProjectiles) {
             val velocity = Vec2D(Random.nextDouble(-5.0, 5.0), -3.0)
@@ -116,7 +116,7 @@ class FrogBombWeapon(id: Int, name: String, purchasePrice: Double, purchaseQuant
 
         if (projectile.jumps >= 3) {
             gameScene.remove(projectile)
-            GameController.projectilesFlying -= 1
+            (gameScene as? BattleScene)?.projectilesFlying -= 1
             Projectile.activeProjectiles.remove(projectile)
         }
     }
@@ -131,7 +131,7 @@ class ExplosionWeapon(id: Int, name: String, purchasePrice: Double, purchaseQuan
 
     override fun onExplode(terrain: RasterTerrain, gameScene: IGameScene, projectile: Projectile) {
         gameScene.remove(projectile)
-        GameController.projectilesFlying -= 1
+        (gameScene as? BattleScene)?.projectilesFlying -= 1
         Projectile.activeProjectiles.remove(projectile)
         val exp = Explosion(gameScene, projectile.position, size, 20 + size/3, {
             terrain.crumble = true
@@ -157,7 +157,7 @@ class EarthquakeWeapon(id: Int, name: String, purchasePrice: Double, purchaseQua
     override fun onExplode(terrain: RasterTerrain, gameScene: IGameScene, projectile: Projectile) {
         terrain.startEarthquake(projectile.position.x.toInt(), projectile.position.y.toInt())
         gameScene.remove(projectile)
-        GameController.projectilesFlying -= 1
+        (gameScene as? BattleScene)?.projectilesFlying -= 1
         Projectile.activeProjectiles.remove(projectile)
     }
 }

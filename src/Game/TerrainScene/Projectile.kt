@@ -22,7 +22,7 @@ open class Projectile(
 
     init {
         if (!simulated) {
-            GameController.projectilesFlying += 1
+            (parent as? BattleScene)?.projectilesFlying += 1
             activeProjectiles.add(this)
         }
     }
